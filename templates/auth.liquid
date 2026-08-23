@@ -416,7 +416,7 @@ Adımını At" | newline_to_br }}
   // Discord OAuth
   async function handleDiscordAuth(action = 'login') {
     try {
-      const redirectUri = window.location.origin + '/auth/sign-in';
+      const redirectUri = window.location.origin + '/';
       const res = await fetch(`/api/storefront/v2/auth/discord?action=${action}&redirectUri=${encodeURIComponent(redirectUri)}`);
       const data = await res.json();
       if (data.success && data.data?.oauthUrl) window.location.href = data.data.oauthUrl;
