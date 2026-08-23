@@ -1,0 +1,82 @@
+﻿<!-- MAĞAZA ANA SAYFASI -->
+<div class="container max-w-[1240px] mx-auto px-4 pt-32 pb-24 space-y-16">
+  
+  <!-- 1. HERO SHOWCASE BANNER -->
+  <div class="w-full bg-realm-bg border border-realm-border p-10 md:p-16 shadow-[0_20px_50px_rgba(0,0,0,0.95)] relative overflow-hidden text-center rounded-sm">
+    {% if settings.store.banner_image %}
+      <img src="{{ settings.store.banner_image }}" class="absolute inset-0 w-full h-full object-cover filter brightness-30 contrast-125 mix-blend-overlay">
+    {% else %}
+      <div class="absolute inset-0 bg-gradient-to-b from-[#15100a] via-realm-bg to-[#15100a] opacity-80"></div>
+    {% endif %}
+
+    <div class="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
+      <span class="text-sm md:text-base font-serif text-slate-300 tracking-widest italic mb-2">
+        {{ settings.store.banner_subtitle | default: 'Hoş Geldiniz' }}
+      </span>
+
+      <h1 class="text-4xl md:text-6xl font-medieval font-normal text-white tracking-wide uppercase leading-tight mb-3 drop-shadow-lg">
+        {{ settings.store.banner_title | default: 'KRALLIK MAĞAZASI' }}
+      </h1>
+
+      <!-- Divider -->
+      <div class="rpg-divider max-w-md my-4">
+        
+      </div>
+
+      <p class="text-xs md:text-sm text-slate-400 font-serif leading-relaxed max-w-2xl">
+        {{ settings.store.banner_description | default: 'Diyarın en seçkin rütbe paketlerini, oyun içi ayrıcalıkları ve kozmetik eşyaları hemen keşfedin.' }}
+      </p>
+    </div>
+  </div>
+
+  <!-- 2. SUNUCULAR & KATEGORİLER GRİDİ -->
+  <div>
+    <div class="flex items-center justify-between pb-4 border-b border-realm-border mb-10">
+      <h2 class="text-2xl font-medieval font-normal text-slate-100 uppercase tracking-widest flex items-center gap-3">
+        <i class="fa-solid fa-dungeon text-gold"></i>
+        <span>SUNUCULAR & DİYARLAR</span>
+      </h2>
+    </div>
+
+    <!-- Sunucu Kartları Gridi (Hanging Bottom Crests) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% if servers and servers.size > 0 %}
+        {% for server in servers %}
+          <a
+            href="/store/{{ server.slug }}"
+            class="rpg-card-frame h-64 group relative flex flex-col justify-end p-6 block overflow-hidden shadow-xl"
+          >
+            {% if server.image != blank %}
+              <img src="{{ server.image }}" class="absolute inset-0 w-full h-full object-cover filter brightness-50 group-hover:scale-110 transition-transform duration-700">
+            {% else %}
+              <div class="absolute inset-0 bg-realm-surface"></div>
+            {% endif %}
+
+            <div class="absolute inset-0 bg-gradient-to-t from-realm-bg via-realm-bg/60 to-transparent"></div>
+
+            <div class="relative z-10">
+              <span class="text-[10px] font-medieval text-amber-400 uppercase tracking-widest block mb-1">SUNUCU DİYARI</span>
+              <h3 class="text-2xl font-medieval font-bold text-white uppercase tracking-wider group-hover:text-gold-bright transition-colors mb-2">
+                {{ server.name }}
+              </h3>
+
+              <div class="pt-3 border-t border-white/10 flex items-center justify-between text-xs font-medieval text-gold-bright">
+                <span>MAĞAZAYA GİRİŞ YAP</span>
+                <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+              </div>
+            </div>
+
+            <!-- Hanging Ornate Crest Emblem -->
+            <div class="rpg-card-crest">
+              <i class="fa-solid fa-crown text-[8px]"></i>
+            </div>
+          </a>
+        {% endfor %}
+      {% else %}
+        <div class="col-span-1 md:col-span-2 lg:col-span-3 py-16 text-center text-slate-400 font-medieval bg-realm-bg border border-realm-border">
+          Henüz eklenmiş sunucu bulunmuyor.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

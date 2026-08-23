@@ -1,0 +1,1161 @@
+{% if customer %}
+  <div class="container max-w-[1350px] mx-auto px-4 sm:px-6 py-8 sm:py-12 min-h-[60vh] text-slate-100">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Sol Kolon -->
+      <div class="lg:col-span-4 space-y-6">
+        <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-8 shadow-2xl relative overflow-hidden flex flex-col items-center text-center">
+          <div class="relative w-28 h-28 mb-5">
+            <div class="absolute inset-0 bg-gold/20 rounded-full blur-xl animate-pulse"></div>
+            <img
+              src="https://mc-heads.net/avatar/{{ customer.username }}/128"
+              alt="{{ customer.username }}"
+              class="relative w-full h-full object-cover rounded-sm border-2 border-gold shadow-xl"
+            >
+          </div>
+
+          {% if customer.role %}
+            <div
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm text-[10px] font-medieval font-bold uppercase tracking-widest mb-4 border"
+              style="background-color: {{ customer.role.color }}15; color: {{ customer.role.color }}; border-color: {{ customer.role.color }}40;"
+            >
+              <i class="fa-solid fa-shield-halved text-xs"></i>
+              <span>{{ customer.role.name }}</span>
+            </div>
+          {% endif %}
+
+          <h1 class="text-2xl font-medieval font-black text-gold-bright mb-2 uppercase tracking-wider drop-shadow-md">
+            {{ customer.username }}
+          </h1>
+
+          <div class="flex items-center justify-center gap-4 text-xs font-medieval text-slate-400 mt-1">
+            <div class="flex items-center gap-1.5 bg-realm-card px-3 py-1 rounded-sm border border-realm-border">
+              <i class="fa-solid fa-calendar-days text-amber-500"></i>
+              <span>Kayıt: {{ customer.createdAt | date: '%d.%m.%Y' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- İstatistikler -->
+        <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-6 shadow-2xl">
+          <h3 class="text-sm font-medieval font-bold text-slate-200 mb-4 uppercase tracking-wider border-b border-realm-border pb-3 flex items-center gap-2">
+            <i class="fa-solid fa-chart-simple text-gold-bright"></i>
+            <span>İSTATİSTİKLER</span>
+          </h3>
+          <div class="space-y-3 font-medieval text-xs">
+            <div class="flex items-center justify-between p-3.5 rounded-sm bg-realm-card border border-realm-border">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-sm bg-emerald-950 text-emerald-400 flex items-center justify-center border border-emerald-800">
+                  <i class="fa-solid fa-coins"></i>
+                </div>
+                <div>
+                  <div class="text-[10px] text-slate-400 uppercase">Bakiye</div>
+                  <div class="text-sm font-black text-slate-100">{{ customer.balance | default: 0 }} ₺</div>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between p-3.5 rounded-sm bg-realm-card border border-realm-border">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-sm bg-amber-950 text-amber-400 flex items-center justify-center border border-amber-800">
+                  <i class="fa-solid fa-boxes-stacked"></i>
+                </div>
+                <div>
+                  <div class="text-[10px] text-slate-400 uppercase">Sandık Eşyaları</div>
+                  <div class="text-sm font-black text-slate-100">{{ customer.chest.size | default: 0 }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Menü -->
+        <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-6 shadow-2xl">
+          <h3 class="text-sm font-medieval font-bold text-slate-200 mb-4 uppercase tracking-wider border-b border-realm-border pb-3 flex items-center gap-2">
+            <i class="fa-solid fa-compass text-gold-bright"></i>
+            <span>MENÜ</span>
+          </h3>
+          <div class="space-y-2 flex flex-col font-medieval text-xs">
+            <a
+              href="/profile"
+              class="w-full flex items-center gap-3 p-3.5 rounded-sm font-bold transition-all text-left text-slate-400 hover:bg-realm-card hover:text-slate-200 border border-transparent"
+            >
+              <i class="fa-solid fa-scroll text-slate-400"></i>
+              <span>PROFİL DUVARI</span>
+            </a>
+            <a
+              href="/profile?tab=inventory"
+              class="w-full flex items-center gap-3 p-3.5 rounded-sm font-bold transition-all text-left text-slate-400 hover:bg-realm-card hover:text-slate-200 border border-transparent"
+            >
+              <i class="fa-solid fa-boxes-stacked text-slate-400"></i>
+              <span>ENVANTERİM</span>
+            </a>
+            <button
+              type="button"
+              onclick="switchSettingsTab('tab-general')"
+              id="sidebar-btn-general"
+              class="sidebar-tab-link w-full flex items-center gap-3 p-3.5 rounded-sm font-bold transition-all text-left bg-realm-card text-gold-bright border border-gold/60"
+            >
+              <i class="fa-solid fa-gear text-amber-400"></i>
+              <span>AYARLAR</span>
+            </button>
+            <button
+              type="button"
+              onclick="switchSettingsTab('tab-discord')"
+              id="sidebar-btn-discord"
+              class="sidebar-tab-link w-full flex items-center gap-3 p-3.5 rounded-sm font-bold transition-all text-left text-slate-400 hover:bg-realm-card hover:text-slate-200 border border-transparent"
+            >
+              <i class="fa-brands fa-discord text-sm text-[#5865F2]"></i>
+              <span>DISCORD</span>
+            </button>
+            <button
+              type="button"
+              onclick="switchSettingsTab('tab-2fa')"
+              id="sidebar-btn-2fa"
+              class="sidebar-tab-link w-full flex items-center gap-3 p-3.5 rounded-sm font-bold transition-all text-left text-slate-400 hover:bg-realm-card hover:text-slate-200 border border-transparent"
+            >
+              <i class="fa-solid fa-shield-halved text-sm text-indigo-400"></i>
+              <span>2FA GÜVENLİK</span>
+            </button>
+            <a
+              href="#" onclick="logoutAccount(); return false;"
+              class="w-full flex items-center gap-3 p-3.5 rounded-sm font-bold transition-all text-left text-red-400 hover:bg-red-950/40 border border-transparent"
+            >
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <span>ÇIKIŞ YAP</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sağ Kolon -->
+      <div class="lg:col-span-8 space-y-6">
+        <!-- Sub-Tabs Header -->
+        <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-2 shadow-2xl flex flex-wrap gap-2">
+          <button
+            type="button"
+            onclick="switchSettingsTab('tab-general')"
+            id="tab-btn-general"
+            class="settings-tab-btn flex-1 min-w-[120px] py-3 px-4 rounded-sm text-xs font-medieval font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 bg-realm-card text-gold-bright border border-gold/60"
+          >
+            <i class="fa-solid fa-user-gear"></i>
+            <span>Genel & Şifre</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="switchSettingsTab('tab-discord')"
+            id="tab-btn-discord"
+            class="settings-tab-btn flex-1 min-w-[120px] py-3 px-4 rounded-sm text-xs font-medieval font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-realm-card"
+          >
+            <i class="fa-brands fa-discord"></i>
+            <span>Discord</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="switchSettingsTab('tab-2fa')"
+            id="tab-btn-2fa"
+            class="settings-tab-btn flex-1 min-w-[120px] py-3 px-4 rounded-sm text-xs font-medieval font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-realm-card"
+          >
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>2FA Güvenlik</span>
+          </button>
+        </div>
+
+        <!-- TAB 1: GENEL AYARLAR -->
+        <div id="tab-general" class="settings-content bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 shadow-2xl">
+          <h2 class="text-xl font-medieval font-black text-slate-100 mb-8 flex items-center gap-3 uppercase tracking-wider border-b border-realm-border pb-4">
+            <i class="fa-solid fa-user-gear text-gold-bright"></i>
+            <span>PROFİL AYARLARI</span>
+          </h2>
+
+          <div id="settings-success" class="hidden mb-6 p-4 rounded-sm bg-emerald-950/80 border border-emerald-800/80 text-emerald-300 font-medieval text-xs font-bold flex items-center gap-3 uppercase">
+            <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+            <span>Değişiklikleriniz başarıyla kaydedildi!</span>
+          </div>
+          
+          <div id="settings-error" class="hidden mb-6 p-4 rounded-sm bg-red-950/80 border border-red-800/80 text-red-300 font-medieval text-xs font-bold flex items-center gap-3 uppercase">
+            <i class="fa-solid fa-circle-exclamation text-red-400 text-base"></i>
+            <span id="settings-error-text">Bir hata oluştu.</span>
+          </div>
+
+          <form id="settings-form" class="space-y-6 max-w-lg">
+            <div>
+              <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-2">Kullanıcı Adı</label>
+              <input
+                type="text"
+                value="{{ customer.username }}"
+                disabled
+                class="w-full px-4 py-3 bg-realm-card/40 border border-realm-border rounded-sm text-slate-500 font-sans text-sm cursor-not-allowed"
+              >
+              <p class="text-[10px] font-medieval text-slate-500 mt-1 uppercase">Kullanıcı adı değiştirilemez.</p>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-2">E-posta Adresi</label>
+              <input
+                type="email"
+                id="input-email"
+                value="{{ customer.email }}"
+                required
+                class="w-full px-4 py-3 bg-realm-bg border border-realm-border rounded-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all text-slate-100 font-sans text-sm"
+              >
+            </div>
+
+            <div class="pt-6 border-t border-realm-border">
+              <h4 class="text-sm font-medieval font-bold text-slate-100 uppercase tracking-wider mb-2">Şifre Değiştir</h4>
+              <p class="text-xs font-medieval text-slate-400 mb-4">Şifrenizi değiştirmek istemiyorsanız boş bırakabilirsiniz.</p>
+
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-2">Mevcut Şifre</label>
+                  <input
+                    type="password"
+                    id="input-current-password"
+                    placeholder="••••••••"
+                    class="w-full px-4 py-3 bg-realm-bg border border-realm-border rounded-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all text-slate-100 font-sans text-sm"
+                  >
+                </div>
+                <div>
+                  <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-2">Yeni Şifre</label>
+                  <input
+                    type="password"
+                    id="input-new-password"
+                    placeholder="••••••••"
+                    class="w-full px-4 py-3 bg-realm-bg border border-realm-border rounded-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all text-slate-100 font-sans text-sm"
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-4">
+              <button
+                type="submit"
+                id="btn-save-settings"
+                class="rpg-btn-sharp-gold px-8 py-3.5 rounded-sm text-xs font-medieval font-bold uppercase tracking-widest w-full sm:w-auto"
+              >
+                DEĞİŞİKLİKLERİ KAYDET
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- TAB 2: DISCORD -->
+        <div id="tab-discord" class="settings-content hidden bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 shadow-2xl">
+          <div class="flex items-center justify-between mb-6 border-b border-realm-border pb-4">
+            <h2 class="text-xl font-medieval font-black text-slate-100 flex items-center gap-3 uppercase tracking-wider">
+              <i class="fa-brands fa-discord text-[#5865F2]"></i>
+              <span>DISCORD HESABI</span>
+            </h2>
+            <div id="discordStatusBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm text-[10px] font-medieval font-bold bg-realm-card text-slate-400 border border-realm-border">
+              Yükleniyor...
+            </div>
+          </div>
+
+          <p class="text-slate-400 text-xs font-medieval mb-8 leading-relaxed">
+            Discord hesabınızı bağlayarak tek tıkla hızlı giriş yapabilir, sunucumuzdaki rollerinizi otomatik senkronize edebilir ve özel ayrıcalıklara erişebilirsiniz.
+          </p>
+
+          <div class="p-6 rounded-sm border border-realm-border bg-realm-card/60 mb-6 flex items-center gap-4">
+            <div class="w-14 h-14 rounded-sm bg-realm-bg border border-realm-border flex items-center justify-center overflow-hidden shrink-0">
+              <img id="discordAvatar" src="" class="w-full h-full object-cover hidden" alt="Discord Avatar">
+              <i id="discordDefaultIcon" class="fa-brands fa-discord text-2xl text-slate-500"></i>
+            </div>
+            <div class="flex-grow min-w-0 font-medieval">
+              <div id="discordUsernameText" class="font-black text-slate-100 text-sm truncate uppercase">Discord Bağlı Değil</div>
+              <div id="discordSubText" class="text-xs text-slate-400 mt-0.5">Hesabınızı şimdi bağlayın</div>
+            </div>
+            <div id="discordActionBtnContainer">
+              <button
+                type="button"
+                id="btnDiscordConnect"
+                onclick="connectDiscord()"
+                class="px-5 py-2.5 bg-[#5865F2] hover:bg-[#4752C4] text-white text-xs font-medieval font-bold rounded-sm uppercase tracking-wider transition-all flex items-center gap-2"
+              >
+                <i class="fa-brands fa-discord"></i>
+                <span>BAĞLA</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: 2FA GÜVENLİK -->
+        <div id="tab-2fa" class="settings-content hidden bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 shadow-2xl">
+          <div class="flex items-center justify-between mb-6 border-b border-realm-border pb-4">
+            <h2 class="text-xl font-medieval font-black text-slate-100 flex items-center gap-3 uppercase tracking-wider">
+              <i class="fa-solid fa-shield-halved text-indigo-400"></i>
+              <span>İKİ AŞAMALI DOĞRULAMA (2FA)</span>
+            </h2>
+            <div id="twofaOverallBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm text-[10px] font-medieval font-bold bg-realm-card text-slate-400 border border-realm-border">
+              Yükleniyor...
+            </div>
+          </div>
+
+          <p class="text-slate-400 text-xs font-medieval mb-8 leading-relaxed">
+            İki aşamalı doğrulama, hesabınıza giriş yapılırken şifrenize ek olarak ikinci bir güvenlik adımı ekleyerek hesabınızı tam koruma altına alır.
+          </p>
+
+          <div class="space-y-4 mb-8">
+            <!-- Authenticator -->
+            <div class="p-5 rounded-sm border border-realm-border bg-realm-card/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-medieval">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-sm bg-indigo-950 text-indigo-400 border border-indigo-800 flex items-center justify-center shrink-0">
+                  <i class="fa-solid fa-mobile-screen text-base"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-bold text-slate-100 text-xs uppercase">Doğrulama Uygulaması (Authenticator)</h4>
+                    <span id="badgeAuthenticator" class="text-[10px] font-bold px-2 py-0.5 rounded-sm bg-realm-bg text-slate-500 border border-realm-border">Kapalı</span>
+                  </div>
+                  <p class="text-[11px] text-slate-400 mt-0.5 font-sans">Google Authenticator veya Authy kullanın.</p>
+                </div>
+              </div>
+              <div id="actionAuthenticator" class="shrink-0">
+                <button type="button" onclick="startAuthenticatorSetup()" class="rpg-btn-sharp-gold px-4 py-2 rounded-sm text-xs font-medieval font-bold uppercase tracking-wider">KURULUM YAP</button>
+              </div>
+            </div>
+
+            <!-- Email 2FA -->
+            <div class="p-5 rounded-sm border border-realm-border bg-realm-card/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-medieval">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-sm bg-amber-950 text-amber-400 border border-amber-800 flex items-center justify-center shrink-0">
+                  <i class="fa-solid fa-envelope text-base"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-bold text-slate-100 text-xs uppercase">E-Posta Doğrulama</h4>
+                    <span id="badgeEmail2Fa" class="text-[10px] font-bold px-2 py-0.5 rounded-sm bg-realm-bg text-slate-500 border border-realm-border">Kapalı</span>
+                  </div>
+                  <p class="text-[11px] text-slate-400 mt-0.5 font-sans">Her girişte e-postanıza 6 haneli kod gönderilir.</p>
+                </div>
+              </div>
+              <div id="actionEmail2Fa" class="shrink-0">
+                <button type="button" onclick="startEmail2FaSetup()" class="rpg-btn-sharp-gold px-4 py-2 rounded-sm text-xs font-medieval font-bold uppercase tracking-wider">AKTİFLEŞTİR</button>
+              </div>
+            </div>
+
+            <!-- Discord 2FA -->
+            <div class="p-5 rounded-sm border border-realm-border bg-realm-card/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-medieval">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-sm bg-[#5865F2]/20 text-[#5865F2] border border-[#5865F2]/40 flex items-center justify-center shrink-0">
+                  <i class="fa-brands fa-discord text-base"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-bold text-slate-100 text-xs uppercase">Discord Hesabı ile Doğrulama</h4>
+                    <span id="badgeDiscord2Fa" class="text-[10px] font-bold px-2 py-0.5 rounded-sm bg-realm-bg text-slate-500 border border-realm-border">Kapalı</span>
+                  </div>
+                  <p class="text-[11px] text-slate-400 mt-0.5 font-sans" id="discord2FaSubText">Giriş yaparken Discord botumuz DM üzerinden 6 haneli güvenlik kodu gönderir.</p>
+                </div>
+              </div>
+              <div id="actionDiscord2Fa" class="shrink-0">
+                <button type="button" onclick="connectDiscord()" class="px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] text-white text-xs font-medieval font-bold rounded-sm uppercase tracking-wider flex items-center gap-1.5">
+                  <i class="fa-brands fa-discord"></i>
+                  <span>BAĞLA</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Advanced Section -->
+          <div id="twofaAdvancedSection" class="hidden space-y-6 pt-6 border-t border-realm-border font-medieval">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-sm bg-realm-card/60 border border-realm-border">
+              <div>
+                <h4 class="font-bold text-slate-100 text-xs uppercase">Varsayılan Doğrulama Yöntemi</h4>
+                <p class="text-[11px] text-slate-400 mt-0.5 font-sans">Giriş yaparken öncelikli istenecek yöntem.</p>
+              </div>
+              <select
+                id="selectPrimaryMethod"
+                onchange="updatePrimary2FaMethod(this.value)"
+                class="px-4 py-2.5 bg-realm-bg border border-realm-border rounded-sm text-xs font-medieval font-bold text-slate-100 focus:outline-none focus:border-gold"
+              >
+                <option value="authenticator">Authenticator Uygulaması</option>
+                <option value="email">E-Posta Kodu</option>
+                <option value="discord">Discord</option>
+              </select>
+            </div>
+
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-sm bg-realm-card/60 border border-realm-border">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="font-bold text-slate-100 text-xs uppercase">Kurtarma Kodları</h4>
+                  <span id="recoveryCodesCountBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-sm bg-blue-950 text-blue-300 border border-blue-800">8 kod mevcut</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-0.5 font-sans">Cihazınıza erişemediğinizde kurtarma kodlarıyla giriş yapabilirsiniz.</p>
+              </div>
+              <button
+                type="button"
+                onclick="regenerateRecoveryCodes()"
+                class="px-4 py-2 bg-realm-bg hover:bg-realm-card border border-realm-border text-slate-200 text-xs font-medieval font-bold rounded-sm uppercase tracking-wider transition-all shrink-0"
+              >
+                Yeni Kodlar Üret
+              </button>
+            </div>
+
+            <div class="pt-2">
+              <button
+                type="button"
+                onclick="openDisable2FaModal()"
+                class="px-5 py-2.5 bg-red-950/60 hover:bg-red-900/60 text-red-300 text-xs font-medieval font-bold rounded-sm uppercase tracking-wider transition-all border border-red-800"
+              >
+                2FA Güvenliğini Devre Dışı Bırak
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <div id="modalAuthSetup" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 max-w-md w-full shadow-2xl relative">
+      <button onclick="closeModal('modalAuthSetup')" class="absolute top-6 right-6 text-slate-400 hover:text-slate-200">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <h3 class="text-xl font-medieval font-black text-slate-100 mb-2 uppercase">Authenticator Kurulumu</h3>
+      <p class="text-xs font-medieval text-slate-400 mb-6">Google Authenticator veya Authy ile QR kodu taratın.</p>
+
+      <div class="flex flex-col items-center justify-center p-4 bg-realm-bg rounded-sm border border-realm-border mb-6">
+        <div id="authQrContainer" class="w-48 h-48 bg-white p-2 rounded-sm flex items-center justify-center mb-3">
+          <span class="text-xs text-slate-600 font-bold animate-pulse">QR Kod Yükleniyor...</span>
+        </div>
+        <div class="text-center w-full">
+          <div class="text-[10px] text-slate-500 uppercase font-medieval font-bold tracking-wider mb-1">Manuel Kurulum Anahtarı</div>
+          <div class="flex items-center justify-center gap-2">
+            <code id="authSecretCode" class="text-xs font-mono font-black text-amber-400 bg-realm-card px-2 py-1 rounded-sm border border-realm-border">...</code>
+            <button onclick="copyAuthSecret()" class="text-xs font-medieval text-gold-bright font-bold hover:underline uppercase">Kopyala</button>
+          </div>
+        </div>
+      </div>
+
+      <form id="formVerifyAuthSetup" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-1.5">6 Haneli Kod</label>
+          <input
+            type="text"
+            id="authSetupCodeInput"
+            required
+            maxlength="6"
+            placeholder="123456"
+            class="w-full text-center tracking-[0.3em] font-mono text-xl font-black bg-realm-bg border border-realm-border text-slate-100 rounded-sm px-4 py-2.5 outline-none focus:border-gold"
+          >
+        </div>
+
+        <button
+          type="submit"
+          id="btnSubmitAuthSetup"
+          class="w-full rpg-btn-sharp-gold py-3 rounded-sm text-xs font-medieval font-bold uppercase tracking-widest"
+        >
+          DOĞRULA VE AKTİFLEŞTİR
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EMAIL 2FA -->
+  <div id="modalEmailSetup" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 max-w-md w-full shadow-2xl relative">
+      <button onclick="closeModal('modalEmailSetup')" class="absolute top-6 right-6 text-slate-400 hover:text-slate-200">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <h3 class="text-xl font-medieval font-black text-slate-100 mb-2 uppercase">E-Posta 2FA Doğrulama</h3>
+      <p class="text-xs font-medieval text-slate-400 mb-3">
+        <strong class="text-gold-bright">{{ customer.email }}</strong> adresinize gönderilen 6 haneli kodu giriniz.
+      </p>
+
+      <div class="mb-5 p-3 rounded-sm bg-amber-950/60 border border-amber-800/80 text-amber-300 text-xs font-medieval flex items-start gap-2.5">
+        <i class="fa-solid fa-circle-info text-amber-400 mt-0.5"></i>
+        <span>Kod ulaşmadıysa lütfen <strong>Spam / Gereksiz</strong> klasörünüzü kontrol ediniz.</span>
+      </div>
+
+      <form id="formVerifyEmailSetup" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-1.5">6 Haneli Kod</label>
+          <input
+            type="text"
+            id="emailSetupCodeInput"
+            required
+            maxlength="6"
+            placeholder="123456"
+            class="w-full text-center tracking-[0.3em] font-mono text-xl font-black bg-realm-bg border border-realm-border text-slate-100 rounded-sm px-4 py-2.5 outline-none focus:border-gold"
+          >
+        </div>
+
+        <button
+          type="submit"
+          id="btnSubmitEmailSetup"
+          class="w-full rpg-btn-sharp-gold py-3 rounded-sm text-xs font-medieval font-bold uppercase tracking-widest"
+        >
+          E-POSTA 2FA'YI AKTİFLEŞTİR
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: RECOVERY CODES -->
+  <div id="modalRecoveryCodes" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 max-w-lg w-full shadow-2xl relative">
+      <h3 class="text-xl font-medieval font-black text-slate-100 mb-1 uppercase">Kurtarma Kodlarınızı Kaydedin!</h3>
+      <p class="text-xs font-medieval text-slate-400 mb-6">
+        Bu kodlar, 2FA cihazınıza erişimi kaybettiğinizde hesabınızı kurtarmanın TEK yoludur.
+      </p>
+
+      <div id="recoveryCodesGrid" class="grid grid-cols-2 gap-2 p-4 bg-realm-bg rounded-sm border border-realm-border mb-6 font-mono font-bold text-xs text-amber-400 text-center"></div>
+
+      <div class="flex flex-wrap items-center gap-3 font-medieval">
+        <button
+          type="button"
+          onclick="copyRecoveryCodes()"
+          class="flex-1 py-3 bg-realm-card hover:bg-realm-bg border border-realm-border text-slate-200 font-bold text-xs rounded-sm uppercase tracking-wider"
+        >
+          Tümünü Kopyala
+        </button>
+        <button
+          type="button"
+          onclick="closeModal('modalRecoveryCodes')"
+          class="flex-1 py-3 rpg-btn-sharp-gold rounded-sm text-xs font-bold uppercase tracking-wider"
+        >
+          KAYDETTİM, KAPAT
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DISABLE 2FA -->
+  <div id="modalDisable2Fa" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 max-w-md w-full shadow-2xl relative">
+      <button onclick="closeModal('modalDisable2Fa')" class="absolute top-6 right-6 text-slate-400 hover:text-slate-200">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <h3 class="text-xl font-medieval font-black text-slate-100 mb-2 uppercase">2FA'yı Devre Dışı Bırak</h3>
+      <p class="text-xs font-medieval text-slate-400 mb-6">Onaylamak için mevcut 2FA veya kurtarma kodunuzu giriniz.</p>
+
+      <form id="formDisable2Fa" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-1.5">Mevcut 2FA veya Kurtarma Kodu</label>
+          <input
+            type="text"
+            id="disable2FaCodeInput"
+            required
+            placeholder="123456"
+            class="w-full text-center font-mono text-lg font-black bg-realm-bg border border-realm-border text-slate-100 rounded-sm px-4 py-2.5 outline-none focus:border-red-500"
+          >
+        </div>
+
+        <button
+          type="submit"
+          id="btnSubmitDisable2Fa"
+          class="w-full py-3 bg-red-800 hover:bg-red-700 text-white font-medieval font-bold text-xs uppercase tracking-widest rounded-sm"
+        >
+          2FA'YI KAPAT
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: DISCORD 2FA SETUP (Bot DM) -->
+  <div id="modalDiscordSetup" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 max-w-md w-full shadow-2xl relative">
+      <button onclick="closeModal('modalDiscordSetup')" class="absolute top-6 right-6 text-slate-400 hover:text-slate-200">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+      <div class="flex items-center gap-3 mb-4 font-medieval">
+        <div class="w-12 h-12 rounded-sm bg-[#5865F2]/20 text-[#5865F2] flex items-center justify-center shrink-0">
+          <i class="fa-brands fa-discord text-2xl"></i>
+        </div>
+        <div>
+          <h3 class="text-xl font-black text-slate-100 uppercase">Discord 2FA Kurulumu</h3>
+          <p class="text-xs text-slate-400">Bot DM güvenlik doğrulaması</p>
+        </div>
+      </div>
+      <div class="mb-5 p-3 rounded-sm bg-[#5865F2]/10 border border-[#5865F2]/30 text-blue-200 text-xs font-medieval flex items-start gap-2.5">
+        <i class="fa-brands fa-discord text-[#5865F2] text-base shrink-0 mt-0.5"></i>
+        <span>Discord botumuz size bir DM gönderdi. <strong>DM kutunuzu</strong> kontrol edin ve 6 haneli kodu girin.</span>
+      </div>
+      <form id="formVerifyDiscordSetup" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-1.5">6 Haneli Discord Güvenlik Kodu</label>
+          <input type="text" id="discordSetupCodeInput" required maxlength="6" placeholder="123456" autocomplete="one-time-code"
+            class="w-full text-center tracking-[0.4em] font-mono text-xl font-black text-slate-100 bg-realm-bg border border-realm-border rounded-sm px-4 py-2.5 outline-none focus:border-[#5865F2]">
+        </div>
+        <button type="submit" id="btnSubmitDiscordSetup"
+          class="w-full py-3 bg-[#5865F2] hover:bg-[#4752C4] text-white font-medieval font-bold text-xs uppercase tracking-widest rounded-sm">
+          Doğrula ve Aktifleştir
+        </button>
+      </form>
+      <div class="mt-4 text-center">
+        <button type="button" onclick="startDiscord2FaSetup()"
+          class="text-xs font-medieval font-bold text-slate-400 hover:text-[#5865F2] flex items-center justify-center gap-1.5 mx-auto uppercase">
+          <i class="fa-solid fa-rotate-right text-xs"></i>
+          Kodu Tekrar Gönder
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let generatedRecoveryCodesCache = [];
+
+    const notify = (msg, type = 'info') => {
+      if (window.showToast) window.showToast(msg, type);
+      else alert(msg);
+    };
+
+    function switchSettingsTab(tabId) {
+      document.querySelectorAll('.settings-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.settings-tab-btn').forEach(btn => {
+        btn.classList.remove('bg-realm-card', 'text-gold-bright', 'border', 'border-gold/60');
+        btn.classList.add('text-slate-400');
+      });
+      document.querySelectorAll('.sidebar-tab-link').forEach(btn => {
+        btn.classList.remove('bg-realm-card', 'text-gold-bright', 'border-gold/60');
+        btn.classList.add('text-slate-400', 'border-transparent');
+      });
+
+      const targetContent = document.getElementById(tabId);
+      const suffix = tabId.replace('tab-', '');
+      const targetBtn = document.getElementById(`tab-btn-${suffix}`);
+      const sidebarBtn = document.getElementById(`sidebar-btn-${suffix}`);
+
+      if (targetContent) targetContent.classList.remove('hidden');
+      if (targetBtn) {
+        targetBtn.classList.add('bg-realm-card', 'text-gold-bright', 'border', 'border-gold/60');
+        targetBtn.classList.remove('text-slate-400');
+      }
+      if (sidebarBtn) {
+        sidebarBtn.classList.add('bg-realm-card', 'text-gold-bright', 'border-gold/60');
+        sidebarBtn.classList.remove('text-slate-400', 'border-transparent');
+      }
+    }
+
+    function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
+
+    // Discord Status
+    async function loadDiscordStatus() {
+      const badge = document.getElementById('discordStatusBadge');
+      const avatar = document.getElementById('discordAvatar');
+      const defaultIcon = document.getElementById('discordDefaultIcon');
+      const usernameText = document.getElementById('discordUsernameText');
+      const subText = document.getElementById('discordSubText');
+      const actionContainer = document.getElementById('discordActionBtnContainer');
+
+      try {
+        const res = await fetch('/api/storefront/v2/users/me/discord/status');
+        const json = await res.json();
+        const data = json.data || json;
+        const isLinked = data.isLinked === true || data.discordLinked === true || json.isLinked === true;
+        const dUsername = data.discordUsername || json.discordUsername;
+
+        if (isLinked) {
+          badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-sm text-[10px] font-medieval font-bold bg-emerald-950 text-emerald-300 border border-emerald-800';
+          badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> BAĞLANDI';
+          usernameText.innerText = dUsername || 'Bağlı Discord Hesabı';
+          subText.innerText = 'Hesabınız Discord ile başarıyla eşleştirildi.';
+
+          if (data.avatar) {
+            avatar.src = data.avatar;
+            avatar.classList.remove('hidden');
+            defaultIcon.classList.add('hidden');
+          } else {
+            avatar.classList.add('hidden');
+            defaultIcon.classList.remove('hidden');
+          }
+
+          actionContainer.innerHTML = `
+            <button type="button" onclick="unlinkDiscord()" class="px-4 py-2 bg-red-950 hover:bg-red-900 text-red-300 text-xs font-medieval font-bold rounded-sm uppercase tracking-wider border border-red-800">
+              BAĞLANTIYI KALDIR
+            </button>
+          `;
+        } else {
+          badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-sm text-[10px] font-medieval font-bold bg-realm-card text-slate-400 border border-realm-border';
+          badge.innerText = 'BAĞLI DEĞİL';
+          usernameText.innerText = 'Discord Bağlı Değil';
+          subText.innerText = 'Hesabınızı bağlayarak tek tıkla giriş yapın.';
+          avatar.classList.add('hidden');
+          defaultIcon.classList.remove('hidden');
+
+          actionContainer.innerHTML = `
+            <button type="button" onclick="connectDiscord()" class="px-5 py-2.5 bg-[#5865F2] hover:bg-[#4752C4] text-white text-xs font-medieval font-bold rounded-sm uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-brands fa-discord"></i>
+              <span>BAĞLA</span>
+            </button>
+          `;
+        }
+      } catch (e) {
+        if (badge) badge.innerText = 'HATA';
+      }
+    }
+
+    async function connectDiscord() {
+      try {
+        const redirectUri = window.location.origin + '/profile/settings?tab=discord';
+        const res = await fetch(`/api/storefront/v2/auth/discord?action=connect&redirectUri=${encodeURIComponent(redirectUri)}`);
+        const data = await res.json();
+        if (data.success && data.data?.oauthUrl) window.location.href = data.data.oauthUrl;
+        else if (data.oauthUrl) window.location.href = data.oauthUrl;
+        else (window.showToast?.(data.message || 'Discord bağlantı URL\'si alınamadı.', 'error') || alert(data.message));
+      } catch (e) {
+        (window.showToast?.('Discord servisine bağlanılamadı.', 'error') || alert('Discord servisine bağlanılamadı.'));
+      }
+    }
+
+    async function unlinkDiscord() {
+      if (!confirm('Discord bağlantınızı kaldırmak istediğinizden emin misiniz?')) return;
+      try {
+        const res = await fetch('/api/storefront/v2/users/me/discord/unlink', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Discord bağlantısı kaldırıldı.', 'success');
+          await loadDiscordStatus();
+        } else {
+          showToast(data.message || 'Bağlantı kaldırılamadı.', 'error');
+        }
+      } catch (e) {
+        showToast('Bağlantı hatası.', 'error');
+      }
+    }
+
+    // 2FA Status
+    async function loadTwoFaStatus() {
+      const overallBadge = document.getElementById('twofaOverallBadge');
+      const badgeAuth = document.getElementById('badgeAuthenticator');
+      const actionAuth = document.getElementById('actionAuthenticator');
+      const badgeEmail = document.getElementById('badgeEmail2Fa');
+      const actionEmail = document.getElementById('actionEmail2Fa');
+      const advancedSec = document.getElementById('twofaAdvancedSection');
+      const selectPrimary = document.getElementById('selectPrimaryMethod');
+      const recBadge = document.getElementById('recoveryCodesCountBadge');
+
+      try {
+        const res = await fetch('/api/storefront/v2/users/me/2fa/status');
+        const json = await res.json();
+        const data = json.data || json;
+
+        const is2FaEnabled = data.enabled === true || data.isEnabled === true || json.enabled === true || json.isEnabled === true;
+        let methodsArray = [];
+        if (Array.isArray(data.methods)) methodsArray = data.methods;
+        else if (Array.isArray(json.methods)) methodsArray = json.methods;
+        else if (data.methods && typeof data.methods === 'object') {
+          methodsArray = Object.keys(data.methods).filter(k => data.methods[k]?.isEnabled === true || data.methods[k] === true);
+        }
+
+        const hasAuth = methodsArray.includes('authenticator');
+        const hasEmail = methodsArray.includes('email');
+        const primary = data.primaryMethod || json.primaryMethod || 'authenticator';
+        const recCount = data.recoveryCodesCount !== undefined ? data.recoveryCodesCount : (data.recoveryCodesLeft !== undefined ? data.recoveryCodesLeft : 0);
+
+        if (is2FaEnabled) {
+          overallBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-sm text-[10px] font-medieval font-bold bg-emerald-950 text-emerald-300 border border-emerald-800';
+          overallBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> AKTİF';
+          advancedSec.classList.remove('hidden');
+
+          if (selectPrimary) selectPrimary.value = primary;
+          if (recBadge) recBadge.innerText = `${recCount} KOD MEVCUT`;
+
+          if (hasAuth) {
+            badgeAuth.className = 'text-[10px] font-bold px-2 py-0.5 rounded-sm bg-emerald-950 text-emerald-300 border border-emerald-800';
+            badgeAuth.innerText = 'Aktif';
+            actionAuth.innerHTML = `<button type="button" onclick="startAuthenticatorSetup()" class="px-3 py-1.5 bg-realm-card hover:bg-realm-bg border border-realm-border text-slate-200 text-xs font-medieval font-bold rounded-sm uppercase tracking-wider">Yeniden Kur</button>`;
+          } else {
+            badgeAuth.className = 'text-[10px] font-bold px-2 py-0.5 rounded-sm bg-realm-bg text-slate-500 border border-realm-border';
+            badgeAuth.innerText = 'Kapalı';
+            actionAuth.innerHTML = `<button type="button" onclick="startAuthenticatorSetup()" class="rpg-btn-sharp-gold px-4 py-2 rounded-sm text-xs font-medieval font-bold uppercase tracking-wider">KURULUM YAP</button>`;
+          }
+
+          if (hasEmail) {
+            badgeEmail.className = 'text-[10px] font-bold px-2 py-0.5 rounded-sm bg-emerald-950 text-emerald-300 border border-emerald-800';
+            badgeEmail.innerText = 'Aktif';
+            actionEmail.innerHTML = `<button type="button" onclick="openDisable2FaModal()" class="px-3 py-1.5 bg-realm-card hover:bg-realm-bg border border-realm-border text-slate-200 text-xs font-medieval font-bold rounded-sm uppercase tracking-wider">Kapat</button>`;
+          } else {
+            badgeEmail.className = 'text-[10px] font-bold px-2 py-0.5 rounded-sm bg-realm-bg text-slate-500 border border-realm-border';
+            badgeEmail.innerText = 'Kapalı';
+            actionEmail.innerHTML = `<button type="button" onclick="startEmail2FaSetup()" class="rpg-btn-sharp-gold px-4 py-2 rounded-sm text-xs font-medieval font-bold uppercase tracking-wider">AKTİFLEŞTİR</button>`;
+          }
+        } else {
+          overallBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-sm text-[10px] font-medieval font-bold bg-realm-card text-slate-500 border border-realm-border';
+          overallBadge.innerText = 'DEVRE DIŞI';
+          advancedSec.classList.add('hidden');
+
+          badgeAuth.className = 'text-[10px] font-bold px-2 py-0.5 rounded-sm bg-realm-bg text-slate-500 border border-realm-border';
+          badgeAuth.innerText = 'Kapalı';
+          actionAuth.innerHTML = `<button type="button" onclick="startAuthenticatorSetup()" class="rpg-btn-sharp-gold px-4 py-2 rounded-sm text-xs font-medieval font-bold uppercase tracking-wider">KURULUM YAP</button>`;
+
+          badgeEmail.className = 'text-[10px] font-bold px-2 py-0.5 rounded-sm bg-realm-bg text-slate-500 border border-realm-border';
+          badgeEmail.innerText = 'Kapalı';
+          actionEmail.innerHTML = `<button type="button" onclick="startEmail2FaSetup()" class="rpg-btn-sharp-gold px-4 py-2 rounded-sm text-xs font-medieval font-bold uppercase tracking-wider">AKTİFLEŞTİR</button>`;
+        }
+
+        // Discord 2FA
+        // Discord 2FA Status (Bot DM flow)
+        const badgeDiscord = document.getElementById('badgeDiscord2Fa');
+        const actionDiscord = document.getElementById('actionDiscord2Fa');
+        const discord2FaSub = document.getElementById('discord2FaSubText');
+        const isDiscordLinked = data.discordLinked === true || data.isDiscordLinked === true || (data.discordUsername && data.discordUsername !== null) || data.discordId != null;
+        const hasDiscord2Fa = methodsArray.includes('discord');
+        const dUsername = data.discordUsername || json.discordUsername;
+
+        if (badgeDiscord && actionDiscord) {
+          if (!isDiscordLinked) {
+            badgeDiscord.className = 'text-[10px] font-bold px-2 py-0.5 rounded-sm bg-realm-bg text-slate-500 border border-realm-border';
+            badgeDiscord.innerText = 'Kapalı';
+            if (discord2FaSub) discord2FaSub.innerHTML = `<span class="text-amber-400 font-semibold">⚠️ Önce Discord hesabınızı bağlayınız.</span> Bağlandıktan sonra bot DM ile 2FA aktifleştirebilirsiniz.`;
+            actionDiscord.innerHTML = `<button type="button" onclick="switchSettingsTab('tab-discord')" class="px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] text-white text-xs font-medieval font-bold rounded-sm uppercase tracking-wider flex items-center gap-1.5"><i class="fa-brands fa-discord"></i><span>DISCORD BAĞLA</span></button>`;
+          } else if (hasDiscord2Fa) {
+            badgeDiscord.className = 'text-[10px] font-bold px-2 py-0.5 rounded-sm bg-emerald-950 text-emerald-300 border border-emerald-800';
+            badgeDiscord.innerText = 'Aktif';
+            if (discord2FaSub) discord2FaSub.innerText = `Giriş sırasında @${dUsername || 'Discord'} hesabına bot DM ile kod gönderilir.`;
+            actionDiscord.innerHTML = `<button type="button" onclick="openDisable2FaModal()" class="px-3 py-1.5 bg-realm-card hover:bg-realm-bg border border-realm-border text-slate-200 text-xs font-medieval font-bold rounded-sm uppercase tracking-wider">Kapat</button>`;
+          } else {
+            badgeDiscord.className = 'text-[10px] font-bold px-2 py-0.5 rounded-sm bg-blue-950 text-blue-300 border border-blue-800';
+            badgeDiscord.innerText = 'Açılabilir';
+            if (discord2FaSub) discord2FaSub.innerText = `@${dUsername || 'Discord'} hesabınız bağlı. Aktifleştirmek için bota onay kodu gönderin.`;
+            actionDiscord.innerHTML = `<button type="button" onclick="startDiscord2FaSetup()" class="px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] text-white text-xs font-medieval font-bold rounded-sm uppercase tracking-wider flex items-center gap-1.5"><i class="fa-brands fa-discord"></i><span>DISCORD 2FA AKTİFLEŞTİR</span></button>`;
+          }
+        }
+      } catch (e) {
+        if (overallBadge) overallBadge.innerText = 'HATA';
+      }
+    }
+
+    // Authenticator Setup
+    async function startAuthenticatorSetup() {
+      openModal('modalAuthSetup');
+      const qrContainer = document.getElementById('authQrContainer');
+      const secretEl = document.getElementById('authSecretCode');
+      qrContainer.innerHTML = '<span class="text-xs text-slate-600 font-bold animate-pulse">QR Kod Yükleniyor...</span>';
+
+      try {
+        const res = await fetch('/api/storefront/v2/users/me/2fa/authenticator/setup', { method: 'POST' });
+        const data = await res.json();
+        const payload = data.data || data;
+        const qr = payload.qrCode || data.qrCode;
+        const secret = payload.secret || data.secret;
+
+        if (qr) qrContainer.innerHTML = `<img src="${qr}" class="w-full h-full object-contain" alt="2FA QR Code">`;
+        if (secret) secretEl.innerText = secret;
+      } catch (e) {
+        showToast('Authenticator kurulumu başlatılamadı.', 'error');
+      }
+    }
+
+    function copyAuthSecret() {
+      const code = document.getElementById('authSecretCode')?.innerText;
+      if (code && code !== '...') {
+        navigator.clipboard.writeText(code);
+        showToast('Kurulum anahtarı kopyalandı!', 'success');
+      }
+    }
+
+    document.getElementById('formVerifyAuthSetup')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const code = document.getElementById('authSetupCodeInput').value.trim();
+      const btn = document.getElementById('btnSubmitAuthSetup');
+      btn.disabled = true;
+      btn.innerText = 'DOĞRULANIYOR...';
+
+      try {
+        const res = await fetch('/api/storefront/v2/users/me/2fa/authenticator/enable', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code }),
+        });
+        const result = await res.json();
+        const payload = result.data || result;
+
+        if (result.success || payload.success) {
+          closeModal('modalAuthSetup');
+          document.getElementById('authSetupCodeInput').value = '';
+          showToast(result.message || payload.message || 'Authenticator başarıyla aktifleştirildi!', 'success');
+          await loadTwoFaStatus();
+
+          const codes = result.recoveryCodes || payload.recoveryCodes || [];
+          if (codes && codes.length > 0) displayRecoveryCodes(codes);
+        } else {
+          showToast(result.message || payload.message || 'Geçersiz doğrulama kodu.', 'error');
+        }
+      } catch (err) {
+        showToast('Doğrulama hatası!', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'DOĞRULA VE AKTİFLEŞTİR';
+      }
+    });
+
+    // Email 2FA Setup
+    async function startEmail2FaSetup() {
+      try {
+        const res = await fetch('/api/storefront/v2/users/me/2fa/email/send-code', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Doğrulama kodu e-postanıza gönderildi.', 'success');
+          openModal('modalEmailSetup');
+        } else {
+          showToast(data.message || 'Kod gönderilemedi.', 'error');
+        }
+      } catch (e) {
+        showToast('Bağlantı hatası.', 'error');
+      }
+    }
+
+    document.getElementById('formVerifyEmailSetup')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const code = document.getElementById('emailSetupCodeInput').value.trim();
+      const btn = document.getElementById('btnSubmitEmailSetup');
+      btn.disabled = true;
+      btn.innerText = 'DOĞRULANIYOR...';
+
+      try {
+        const res = await fetch('/api/storefront/v2/users/me/2fa/email/enable', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code }),
+        });
+        const result = await res.json();
+        const payload = result.data || result;
+
+        if (result.success || payload.success) {
+          closeModal('modalEmailSetup');
+          document.getElementById('emailSetupCodeInput').value = '';
+          showToast(result.message || payload.message || 'E-Posta 2FA başarıyla aktifleştirildi!', 'success');
+          await loadTwoFaStatus();
+
+          const codes = result.recoveryCodes || payload.recoveryCodes || [];
+          if (codes && codes.length > 0) displayRecoveryCodes(codes);
+        } else {
+          showToast(result.message || payload.message || 'Geçersiz kod.', 'error');
+        }
+      } catch (err) {
+        showToast('Doğrulama hatası!', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'E-POSTA 2FA\'YI AKTİFLEŞTİR';
+      }
+    });
+
+    // Primary Method
+    async function updatePrimary2FaMethod(method) {
+      try {
+        const res = await fetch('/api/storefront/v2/users/me/2fa/primary-method', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ method }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Birincil 2FA yöntemi güncellendi.', 'success');
+          await loadTwoFaStatus();
+        } else {
+          showToast(data.message || 'Güncellenemedi.', 'error');
+        }
+      } catch (e) {
+        showToast('Bağlantı hatası.', 'error');
+      }
+    }
+
+    // Recovery Codes
+    function displayRecoveryCodes(codes) {
+      generatedRecoveryCodesCache = codes;
+      const grid = document.getElementById('recoveryCodesGrid');
+      if (grid) {
+        grid.innerHTML = codes.map((c) => `<div class="p-2 bg-realm-card rounded-sm border border-realm-border tracking-wider font-mono font-bold">${c}</div>`).join('');
+      }
+      openModal('modalRecoveryCodes');
+    }
+
+    function copyRecoveryCodes() {
+      if (generatedRecoveryCodesCache.length > 0) {
+        navigator.clipboard.writeText(generatedRecoveryCodesCache.join('\n'));
+        showToast('Tüm kurtarma kodları kopyalandı!', 'success');
+      }
+    }
+
+    async function regenerateRecoveryCodes() {
+      if (!confirm('Yeni kurtarma kodları üretilsin mi?')) return;
+      try {
+        const res = await fetch('/api/storefront/v2/users/me/2fa/recovery-codes/regenerate', { method: 'POST' });
+        const result = await res.json();
+        const payload = result.data || result;
+        const codes = result.recoveryCodes || payload.recoveryCodes || [];
+
+        if ((result.success || payload.success) && codes.length > 0) {
+          displayRecoveryCodes(codes);
+          await loadTwoFaStatus();
+          showToast('Yeni kurtarma kodları üretildi.', 'success');
+        } else {
+          showToast(result.message || payload.message || 'Kodlar üretilemedi.', 'error');
+        }
+      } catch (e) {
+        showToast('Bağlantı hatası.', 'error');
+      }
+    }
+
+    function openDisable2FaModal() { openModal('modalDisable2Fa'); }
+
+    document.getElementById('formDisable2Fa')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const code = document.getElementById('disable2FaCodeInput').value.trim();
+      const btn = document.getElementById('btnSubmitDisable2Fa');
+      btn.disabled = true;
+      btn.innerText = 'KAPATILIYOR...';
+
+      try {
+        const res = await fetch('/api/storefront/v2/users/me/2fa/disable', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code }),
+        });
+        const result = await res.json();
+        if (result.success) {
+          closeModal('modalDisable2Fa');
+          document.getElementById('disable2FaCodeInput').value = '';
+          showToast('2FA başarıyla devre dışı bırakıldı.', 'success');
+          await loadTwoFaStatus();
+        } else {
+          showToast(result.message || 'Geçersiz 2FA kodu.', 'error');
+        }
+      } catch (e) {
+        showToast('Bağlantı hatası.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = '2FA\'YI KAPAT';
+      }
+    });
+
+    // Discord 2FA Enable
+    async function startDiscord2FaSetup() {
+      const btn = document.getElementById('actionDiscord2Fa')?.querySelector('button');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerText = 'AKTİFLEŞTİRİLİYOR...';
+      }
+      try {
+        const discordId = window.__currentUserDiscordId || '';
+        const res = await fetch('/api/storefront/v2/users/me/2fa/discord/enable', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ discordId }),
+        });
+        const result = await res.json();
+        const payload = result.data || result;
+
+        if (result.success || payload.success) {
+          (window.showToast?.(result.message || payload.message || 'Discord 2FA başarıyla aktifleştirildi!', 'success') || alert('Discord 2FA başarıyla aktifleştirildi!'));
+          await loadTwoFaStatus();
+          const codes = result.recoveryCodes || payload.recoveryCodes || [];
+          if (codes && codes.length > 0) displayRecoveryCodes(codes);
+        } else {
+          (window.showToast?.(result.message || payload.message || 'Discord 2FA aktifleştirilemedi.', 'error') || alert(result.message || 'Discord 2FA aktifleştirilemedi.'));
+        }
+      } catch (e) {
+        (window.showToast?.('Bağlantı hatası oluştu.', 'error') || alert('Bağlantı hatası oluştu.'));
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-brands fa-discord"></i><span>DİSCORD 2FA AKTİFLEŞTİR</span>';
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('settings-form');
+      const btnSave = document.getElementById('btn-save-settings');
+      const inputEmail = document.getElementById('input-email');
+      const inputPassword = document.getElementById('input-new-password');
+      const successBox = document.getElementById('settings-success');
+      const errorBox = document.getElementById('settings-error');
+      const errorText = document.getElementById('settings-error-text');
+      const customerId = '{{ customer.id }}';
+
+      loadDiscordStatus();
+      loadTwoFaStatus();
+
+      const params = new URLSearchParams(window.location.search);
+      const discordStatus = params.get('discord_status');
+      const discordErr = params.get('discord_error');
+      const discordUsername = params.get('discord_username');
+      const tabParam = params.get('tab');
+
+      if (discordStatus === 'connected') {
+        const uName = discordUsername ? decodeURIComponent(discordUsername) : '';
+        (window.showToast?.(uName ? `"${uName}" Discord hesabınız başarıyla bağlandı!` : 'Discord hesabınız başarıyla bağlandı!', 'success') || alert('Discord hesabınız başarıyla bağlandı!'));
+        switchSettingsTab('tab-discord');
+        loadDiscordStatus();
+        window.history.replaceState({}, '', '/profile/settings?tab=discord');
+      } else if (discordErr) {
+        let msg = decodeURIComponent(discordErr);
+        if (discordErr === 'ALREADY_LINKED_TO_ANOTHER_ACCOUNT') {
+          msg = 'Bu Discord hesabı zaten başka bir oyuncu hesabına bağlı!';
+        }
+        (window.showToast?.(msg, 'error') || alert(msg));
+        switchSettingsTab('tab-discord');
+        window.history.replaceState({}, '', '/profile/settings?tab=discord');
+      } else if (tabParam === 'discord') {
+        switchSettingsTab('tab-discord');
+      } else if (tabParam === '2fa') {
+        switchSettingsTab('tab-2fa');
+      }
+
+      form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        successBox.classList.add('hidden');
+        errorBox.classList.add('hidden');
+        btnSave.disabled = true;
+        btnSave.innerText = 'KAYDEDİLİYOR...';
+
+        const email = inputEmail.value.trim();
+        const currentPassword = document.getElementById('input-current-password')?.value.trim();
+        const password = inputPassword.value.trim();
+
+        try {
+          if (email !== '{{ customer.email }}') {
+            const res = await fetch(`/api/storefront/v2/users/${customerId}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email }),
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.message || 'E-posta güncellenemedi.');
+          }
+
+          if (password || currentPassword) {
+            if (!currentPassword || !password) throw new Error('Şifrenizi değiştirmek için hem mevcut hem de yeni şifrenizi girmelisiniz.');
+            if (password.length < 8) throw new Error('Yeni şifre en az 8 karakter olmalıdır.');
+
+            const pRes = await fetch(`/api/storefront/v2/users/${customerId}/change-password`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ currentPassword, newPassword: password }),
+            });
+            const pData = await pRes.json();
+            if (!pData.success) throw new Error(pData.message || 'Şifre güncellenemedi.');
+          }
+
+          successBox.classList.remove('hidden');
+          if (password) {
+            document.getElementById('input-current-password').value = '';
+            inputPassword.value = '';
+          }
+        } catch (err) {
+          errorText.innerText = err.message || 'Bilinmeyen bir hata oluştu.';
+          errorBox.classList.remove('hidden');
+        } finally {
+          btnSave.disabled = false;
+          btnSave.innerText = 'DEĞİŞİKLİKLERİ KAYDET';
+        }
+      });
+    });
+  </script>
+{% else %}
+  <div class="min-h-[50vh] flex items-center justify-center">
+    <div class="text-center font-medieval">
+      <h2 class="text-2xl font-black text-slate-100 mb-2 uppercase">Giriş Yapmalısınız</h2>
+      <p class="text-slate-400 font-medium mb-6">Ayarlarınızı görüntülemek için hesabınıza giriş yapmanız gerekmektedir.</p>
+      <a href="/auth" class="rpg-btn-sharp-gold px-8 py-3 rounded-sm font-bold uppercase tracking-wider">Giriş Yap</a>
+    </div>
+  </div>
+{% endif %}

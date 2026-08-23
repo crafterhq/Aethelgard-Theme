@@ -1,0 +1,188 @@
+{% layout none %}
+{% if websiteData.security.cf_turnstile.site_key %}
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+{% endif %}
+
+<div class="flex w-full min-h-screen bg-realm-bg text-slate-100 overflow-hidden">
+  <!-- LEFT SIDE: Auth Form -->
+  <div class="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 sm:p-12 lg:p-20 relative z-10">
+    <a
+      href="/auth"
+      class="absolute top-8 left-8 flex items-center gap-2 text-slate-400 hover:text-gold-bright transition-colors font-medieval font-bold text-xs uppercase tracking-widest bg-realm-card px-4 py-2 rounded-sm border border-realm-border"
+    >
+      <i class="fa-solid fa-arrow-left text-gold"></i>
+      <span>GİRİŞ SAYFASINA DÖN</span>
+    </a>
+
+    <div class="w-full max-w-md mx-auto pt-12">
+      <a href="/" class="block mb-8 text-center md:text-left">
+        {% assign auth_logo = settings.logo_light | default: settings.logo_dark | default: settings.logo %}
+        {% if auth_logo != blank %}
+          <img src="{{ auth_logo }}" alt="{{ shop.name }}" class="h-16 object-contain">
+        {% else %}
+          <div class="font-medieval font-black text-3xl text-[var(--color-gold-bright)] tracking-wider uppercase drop-shadow-md">{{ shop.name | default: 'Sunucu' }}</div>
+        {% endif %}
+      </a>
+
+      <div id="reset-container" class="animate-[fade-in_300ms_ease-out] bg-realm-surface border-2 border-realm-border rounded-sm p-8 shadow-2xl relative">
+        <h1 class="text-3xl font-medieval font-black text-slate-100 mb-2 tracking-wider uppercase drop-shadow-md">
+          YENİ ŞİFRE BELİRLE
+        </h1>
+        <p class="text-xs text-slate-400 font-medieval mb-6 leading-relaxed">
+          Hesabın için yeni bir şifre oluştur (en az 8 karakter).
+        </p>
+
+        <form id="resetForm" class="space-y-5">
+          <input type="hidden" name="token" id="resetTokenInput">
+
+          <div>
+            <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-2">Yeni Şifre</label>
+            <input
+              type="password"
+              name="new_password"
+              required
+              minlength="8"
+              placeholder="••••••••"
+              class="w-full bg-realm-bg border border-realm-border text-slate-100 text-sm rounded-sm px-4 py-3 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all font-sans placeholder-slate-600"
+            >
+          </div>
+          <div>
+            <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-2">Yeni Şifre (Tekrar)</label>
+            <input
+              type="password"
+              name="confirm_password"
+              required
+              minlength="8"
+              placeholder="••••••••"
+              class="w-full bg-realm-bg border border-realm-border text-slate-100 text-sm rounded-sm px-4 py-3 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all font-sans placeholder-slate-600"
+            >
+          </div>
+
+          {% if websiteData.security.cf_turnstile.site_key %}
+            <div class="cf-turnstile mt-2" data-sitekey="{{ websiteData.security.cf_turnstile.site_key }}"></div>
+          {% endif %}
+
+          <button
+            type="submit"
+            class="w-full rpg-btn-sharp-gold py-3.5 rounded-sm text-xs font-medieval font-bold uppercase tracking-widest flex items-center justify-center gap-2 mt-4"
+          >
+            <span>ŞİFREYİ GÜNCELLE</span>
+            <i class="fa-solid fa-check text-xs"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDE: Image/Promo -->
+  <div class="hidden lg:flex lg:w-1/2 relative bg-realm-bg overflow-hidden border-l-2 border-realm-border">
+    <img
+      src="{% if settings.auth.background %}{{ settings.auth.background }}{% elsif settings.header.banner %}{{ settings.header.banner }}{% else %}https://images.unsplash.com/photo-1627856013091-fed6e4e30025?q=80&w=2070&auto=format&fit=crop{% endif %}"
+      alt="Background"
+      class="absolute inset-0 w-full h-full object-cover filter brightness-40 contrast-125 mix-blend-overlay"
+    >
+    <div class="absolute inset-0 bg-gradient-to-t from-realm-bg via-realm-bg/60 to-transparent"></div>
+
+    <div class="relative z-10 flex flex-col justify-end p-16 h-full text-white">
+      <h2 class="text-4xl font-medieval font-black mb-4 tracking-wider uppercase leading-tight whitespace-pre-line text-gold-bright drop-shadow-lg">
+        {{ settings.auth.right_title | default: "Türkiye'nin En Büyük
+Minecraft Topluluğu" }}
+      </h2>
+      <p class="text-slate-300 font-medieval text-sm max-w-lg mb-8 leading-relaxed whitespace-pre-line">
+        {{ settings.auth.right_description | default: 'Hemen aramıza katıl, arkadaşlarınla birlikte devasa haritalarda hayatta kal, mini oyunlarda yeteneklerini göster ve efsanevi ödüller kazan!' }}
+      </p>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // Extract token from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get('token');
+  if (token) {
+    document.getElementById('resetTokenInput').value = token;
+  } else {
+    window.showToast?.('Geçersiz veya eksik token. Lütfen e-postanızdaki bağlantıyı kontrol edin.', 'error') || alert('Geçersiz veya eksik token. Lütfen e-postanızdaki bağlantıyı kontrol edin.');
+  }
+
+  // Dynamic Online Players
+  const serverIp = '{{ settings.server_ip | default: "play.crafter.com.tr" }}';
+  async function fetchAuthServerStatus() {
+    try {
+      const res = await fetch(`https://mcapi.tr/api/v1/status/${serverIp}`);
+      if (!res.ok) throw new Error('Primary API error');
+      const data = await res.json();
+      if (data.online && data.players) return data.players.online;
+    } catch (e) {
+      try {
+        const res2 = await fetch(`https://api.mcsrvstat.us/3/${serverIp}`);
+        if (!res2.ok) throw new Error('Fallback API error');
+        const data2 = await res2.json();
+        if (data2.online && data2.players) return data2.players.online;
+      } catch (e2) {}
+    }
+    return null;
+  }
+
+  fetchAuthServerStatus().then(online => {
+    const el = document.getElementById('auth-online-count');
+    if (el) {
+      el.classList.remove('animate-pulse');
+      el.innerText = online !== null ? online : '?';
+    }
+  });
+
+  // Handle Reset Password (/api/storefront/v2/auth/reset-password)
+  document.getElementById('resetForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    
+    if (!data.token) {
+      window.showToast?.('Şifre sıfırlama tokeni eksik!', 'error') || alert('Şifre sıfırlama tokeni eksik!');
+      return;
+    }
+
+    if (data.new_password !== data.confirm_password) {
+      window.showToast?.('Şifreler eşleşmiyor!', 'error') || alert('Şifreler eşleşmiyor!');
+      return;
+    }
+
+    if (data['cf-turnstile-response']) {
+      data.turnstileToken = data['cf-turnstile-response'];
+      delete data['cf-turnstile-response'];
+    }
+
+    data.password = data.new_password;
+
+    const btn = e.target.querySelector('button');
+    const originalText = btn.innerHTML;
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="animate-pulse">Güncelleniyor...</span>';
+
+    try {
+      const res = await fetch('/api/storefront/v2/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+
+      if (result.success) {
+        window.showToast?.('Şifreniz başarıyla güncellendi! Giriş yapabilirsiniz.', 'success') || alert('Şifreniz başarıyla güncellendi! Giriş yapabilirsiniz.');
+        setTimeout(() => {
+          window.location.href = '/auth';
+        }, 2000);
+      } else {
+        window.showToast?.(result.message || 'Bir hata oluştu!', 'error') || alert(result.message || 'Bir hata oluştu!');
+      }
+    } catch (err) {
+      window.showToast?.('Bağlantı hatası!', 'error') || alert('Bağlantı hatası!');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  });
+</script>

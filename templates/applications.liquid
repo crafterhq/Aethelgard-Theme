@@ -1,0 +1,183 @@
+﻿<div class="container max-w-[1400px] mx-auto px-4 mt-8 mb-24 space-y-8 min-h-[60vh]">
+  <!-- Breadcrumb -->
+  <div class="flex items-center gap-2 text-sm font-bold text-slate-400 bg-realm-surface py-3 px-6 rounded-sm border border-realm-border w-fit shadow-sm border border-realm-border">
+    <a href="/" class="hover:text-gold-bright transition-colors flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+      </svg>
+    </a>
+    <span>/</span>
+    <span class="text-slate-100">Başvurular</span>
+  </div>
+
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-black text-slate-100 tracking-tight">Başvuru Merkezi</h1>
+    <p class="text-slate-400 mt-2">
+      Mevcut pozisyonlar için başvuru yapabilir veya mevcut başvurularınızı takip edebilirsiniz.
+    </p>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="flex bg-realm-surface rounded-sm border border-realm-border p-1 w-full max-w-sm border border-realm-border shadow-sm mb-6">
+    <button
+      class="tab-btn flex-1 text-center py-2.5 rounded-sm border border-realm-border font-bold text-sm transition-all bg-realm-card text-slate-100"
+      data-target="tab-forms"
+    >
+      Mevcut Formlar
+    </button>
+    <button
+      class="tab-btn flex-1 text-center py-2.5 rounded-sm border border-realm-border font-bold text-sm transition-all text-slate-400 hover:text-slate-100"
+      data-target="tab-my-apps"
+    >
+      Başvurularım
+    </button>
+  </div>
+
+  <!-- Mevcut Formlar (Aktif Formlar) -->
+  <div id="tab-forms" class="tab-content block">
+    {% if staffForms.size == 0 %}
+      <div class="bg-realm-surface border border-realm-border rounded-sm border-2 border-realm-border p-12 text-center shadow-sm">
+        <div class="w-16 h-16 bg-realm-bg rounded-sm border border-realm-border flex items-center justify-center mx-auto mb-4 border border-realm-border">
+          <svg class="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-black text-slate-100 mb-2">Form Bulunamadı</h3>
+        <p class="text-slate-400 font-medium">Şu anda başvurabileceğiniz aktif bir form bulunmuyor.</p>
+      </div>
+    {% else %}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for form in staffForms %}
+          <a
+            href="/applications/{{ form.slug }}"
+            class="group block bg-realm-surface border border-realm-border rounded-sm border-2 border-realm-border p-6 shadow-sm hover:shadow-md hover:border-primary/30 transition-all"
+          >
+            <div class="flex items-start justify-between mb-4">
+              <h3 class="text-xl font-black text-slate-100 group-hover:text-gold-bright transition-colors line-clamp-1">
+                {{ form.title }}
+              </h3>
+              <svg
+                class="w-5 h-5 text-slate-500 group-hover:text-gold-bright transition-colors shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+              </svg>
+            </div>
+            <p class="text-sm font-medium text-slate-400 line-clamp-2 mb-6">{{ form.description }}</p>
+
+            <div class="flex items-center justify-between text-xs font-bold mt-auto">
+              <div class="flex items-center gap-3 text-slate-500">
+                <span class="flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                  </svg>
+                  {{ form.inputs.size }} Alan
+                </span>
+              </div>
+              {% if form.isActive %}
+                <span class="px-2.5 py-1 bg-green-50 text-green-600 rounded-sm border border-green-100">Aktif</span>
+              {% else %}
+                <span class="px-2.5 py-1 bg-realm-bg text-slate-400 rounded-sm border border-realm-border">Pasif</span>
+              {% endif %}
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Başvurularım -->
+  <div id="tab-my-apps" class="tab-content hidden">
+    {% if myApplications.size == 0 %}
+      <div class="bg-realm-surface border border-realm-border rounded-sm border-2 border-realm-border p-12 text-center shadow-sm">
+        <div class="w-16 h-16 bg-realm-bg rounded-sm border border-realm-border flex items-center justify-center mx-auto mb-4 border border-realm-border">
+          <svg class="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-black text-slate-100 mb-2">Başvuru Yok</h3>
+        <p class="text-slate-400 font-medium">Henüz herhangi bir forma başvuru yapmamışsınız.</p>
+      </div>
+    {% else %}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for app in myApplications %}
+          <div class="bg-realm-surface border border-realm-border rounded-sm border-2 border-realm-border p-6 shadow-sm flex flex-col h-full">
+            <h3 class="text-xl font-black text-slate-100 mb-4 line-clamp-1">{{ app.form.title }}</h3>
+
+            <div class="space-y-4 flex-1">
+              {% for value in app.values %}
+                <div>
+                  <span class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">
+                    {{- value.inputId -}}
+                  </span>
+                  <span class="text-sm font-medium text-slate-100 bg-realm-bg px-3 py-1.5 rounded-sm inline-block w-full border border-realm-border">
+                    {{- value.value -}}
+                  </span>
+                </div>
+              {% endfor %}
+            </div>
+
+            <div class="flex items-center justify-between mt-6 pt-4 border-t border-gray-50">
+              <span class="text-xs font-bold text-slate-500">{{ app.createdAt | date: '%d.%m.%Y' }}</span>
+
+              {% if app.status == 'PENDING' or app.status == 'pending' %}
+                <span class="px-2.5 py-1 bg-yellow-50 text-yellow-600 rounded-sm border border-yellow-100 text-xs font-bold"
+                  >Bekliyor</span
+                >
+              {% elsif app.status == 'APPROVED' or app.status == 'approved' %}
+                <span class="px-2.5 py-1 bg-green-50 text-green-600 rounded-sm border border-green-100 text-xs font-bold"
+                  >Onaylandı</span
+                >
+              {% elsif app.status == 'REJECTED' or app.status == 'rejected' %}
+                <span class="px-2.5 py-1 bg-red-50 text-red-600 rounded-sm border border-red-100 text-xs font-bold"
+                  >Reddedildi</span
+                >
+              {% else %}
+                <span class="px-2.5 py-1 bg-realm-bg text-slate-400 rounded-sm border border-realm-border text-xs font-bold">
+                  {{- app.status | capitalize -}}
+                </span>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const btns = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        // Reset buttons
+        btns.forEach((b) => {
+          b.classList.remove('bg-realm-card', 'text-slate-100');
+          b.classList.add('text-slate-400');
+        });
+
+        // Active button
+        btn.classList.add('bg-realm-card', 'text-slate-100');
+        btn.classList.remove('text-slate-400');
+
+        // Toggle content
+        contents.forEach((c) => {
+          c.classList.add('hidden');
+          c.classList.remove('block');
+        });
+
+        const targetId = btn.getAttribute('data-target');
+        const target = document.getElementById(targetId);
+        if (target) {
+          target.classList.remove('hidden');
+          target.classList.add('block');
+        }
+      });
+    });
+  });
+</script>

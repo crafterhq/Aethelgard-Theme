@@ -1,0 +1,200 @@
+﻿<div class="container max-w-[1400px] mx-auto px-4 mt-8 mb-24 space-y-8 min-h-[60vh] text-slate-100">
+  <!-- Breadcrumb -->
+  <div class="flex flex-wrap items-center gap-2 text-xs font-medieval font-bold text-slate-400 bg-realm-card py-2.5 px-5 rounded-sm w-fit border border-realm-border">
+    <a href="/store" class="hover:text-gold-bright transition-colors flex items-center gap-2">
+      <i class="fa-solid fa-store text-gold"></i>
+      <span>MAĞAZA</span>
+    </a>
+    <span class="text-slate-600">/</span>
+    <span class="text-slate-200">SANDIĞIM</span>
+  </div>
+
+  {% if customer %}
+    {% assign total = chestItems.size %}
+    {% assign used = 0 %}
+    {% for item in chestItems %}
+      {% if item.used %}
+        {% assign used = used | plus: 1 %}
+      {% endif %}
+    {% endfor %}
+    {% assign available = total | minus: used %}
+    
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8">
+      <!-- LEFT: Eşyalar Container -->
+      <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 h-fit shadow-2xl">
+        <div class="flex items-center justify-between mb-8 pb-5 border-b border-realm-border">
+          <h2 class="text-xl sm:text-2xl font-medieval font-black text-gold-bright flex items-center gap-3 uppercase tracking-wider drop-shadow-md">
+            <i class="fa-solid fa-box-open text-amber-500"></i>
+            <span>EŞYALARIM</span>
+          </h2>
+          <span class="bg-realm-card border border-realm-border-accent text-gold-bright font-medieval font-bold px-3 py-1 rounded-sm text-xs uppercase tracking-widest">
+            {{ total }} EŞYA
+          </span>
+        </div>
+
+        {% if total == 0 %}
+          <div id="chest-empty" class="text-center py-16">
+            <div class="w-20 h-20 bg-realm-card border border-realm-border rounded-sm flex items-center justify-center mx-auto mb-6 text-gold-bright">
+              <i class="fa-solid fa-box-archive text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-medieval font-black text-slate-100 mb-2 uppercase tracking-wider">SANDIĞINIZ BOŞ</h3>
+            <p class="text-slate-400 font-medieval text-xs max-w-md mx-auto mb-8 leading-relaxed">
+              Henüz hiç eşyanız yok. Mağazadan rütbe ve özel paketler satın alarak envanterinizi doldurmaya başlayın!
+            </p>
+            <a
+              href="/store"
+              class="rpg-btn-sharp-gold px-8 py-3.5 rounded-sm text-xs font-medieval font-bold uppercase tracking-widest inline-flex items-center gap-2 shadow-xl"
+            >
+              <i class="fa-solid fa-gem"></i>
+              <span>MAĞAZAYA GİT</span>
+            </a>
+          </div>
+        {% else %}
+          <div id="chest-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for item in chestItems %}
+              <div class="relative bg-realm-surface border border-realm-border hover:border-gold rounded-sm overflow-hidden transition-all duration-300 group flex flex-col h-full shadow-lg {% if item.used %}opacity-50 bg-realm-bg{% endif %}">
+                {% if item.used %}
+                  <div class="absolute top-3 left-3 z-10 bg-red-950/90 border border-red-800/80 text-red-300 text-[10px] font-medieval font-bold uppercase tracking-widest px-2.5 py-1 rounded-sm shadow-md">
+                    KULLANILMIŞ
+                  </div>
+                {% endif %}
+
+                <div class="w-full aspect-square bg-realm-bg flex items-center justify-center p-6 border-b border-realm-border relative">
+                  <img
+                    src="{{ item.product.image | default: 'https://via.placeholder.com/150?text=No+Image' }}"
+                    alt="{{ item.product.name }}"
+                    class="w-full h-full object-contain filter drop-shadow-md group-hover:scale-105 transition-transform duration-300 {% if item.used %}grayscale{% endif %}"
+                  >
+                </div>
+
+                <div class="p-5 flex-1 flex flex-col">
+                  <h3 class="text-base font-medieval font-bold text-slate-100 mb-2 line-clamp-2 leading-tight uppercase tracking-wider group-hover:text-gold-bright transition-colors">
+                    {{ item.product.name | default: 'Bilinmeyen Eşya' }}
+                  </h3>
+                  {% if item.product.description %}
+                    <p class="text-xs font-sans text-slate-400 line-clamp-2 mb-4 leading-relaxed">{{ item.product.description }}</p>
+                  {% endif %}
+
+                  <div class="mt-auto pt-4">
+                    {% if item.used %}
+                      <button
+                        disabled
+                        class="w-full bg-realm-card text-slate-500 font-medieval font-bold text-xs rounded-sm py-3 cursor-not-allowed border border-realm-border uppercase tracking-widest"
+                      >
+                        KULLANILMIŞ
+                      </button>
+                    {% else %}
+                      <button
+                        id="use-btn-{{ item.id }}"
+                        onclick="useItem('{{ item.id }}', this)"
+                        class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-medieval font-bold text-xs rounded-sm py-3 transition-colors shadow-lg border border-emerald-500/60 flex items-center justify-center gap-2 uppercase tracking-widest"
+                      >
+                        <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+                        <span>KULLAN</span>
+                      </button>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- RIGHT: İstatistikler Sidebar -->
+      <div class="space-y-6">
+        <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-6 sticky top-24 shadow-2xl">
+          <h2 class="text-base font-medieval font-black text-slate-100 mb-6 flex items-center gap-2 uppercase tracking-wider border-b border-realm-border pb-4">
+            <i class="fa-solid fa-chart-pie text-gold-bright"></i>
+            <span>İSTATİSTİKLER</span>
+          </h2>
+
+          <div class="space-y-4 font-medieval">
+            <!-- Toplam Eşya -->
+            <div class="bg-realm-card border border-amber-900/60 rounded-sm p-4 flex items-center justify-between shadow-inner">
+              <div>
+                <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1">TOPLAM EŞYA</p>
+                <p class="text-2xl font-black text-amber-300">{{ total }}</p>
+              </div>
+              <div class="w-11 h-11 bg-realm-bg border border-amber-800/60 rounded-sm flex items-center justify-center text-amber-400">
+                <i class="fa-solid fa-boxes-stacked text-lg"></i>
+              </div>
+            </div>
+
+            <!-- Kullanılabilir -->
+            <div class="bg-realm-card border border-emerald-900/60 rounded-sm p-4 flex items-center justify-between shadow-inner">
+              <div>
+                <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1">KULLANILABİLİR</p>
+                <p class="text-2xl font-black text-emerald-400">{{ available }}</p>
+              </div>
+              <div class="w-11 h-11 bg-realm-bg border border-emerald-800/60 rounded-sm flex items-center justify-center text-emerald-400">
+                <i class="fa-solid fa-circle-check text-lg"></i>
+              </div>
+            </div>
+
+            <!-- Kullanılmış -->
+            <div class="bg-realm-card border border-realm-border rounded-sm p-4 flex items-center justify-between shadow-inner">
+              <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">KULLANILMIŞ</p>
+                <p class="text-2xl font-black text-slate-300">{{ used }}</p>
+              </div>
+              <div class="w-11 h-11 bg-realm-bg border border-realm-border rounded-sm flex items-center justify-center text-slate-400">
+                <i class="fa-solid fa-box text-lg"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const customerId = '{{ customer.id | default: customer._id }}';
+      let useTimeouts = {};
+
+      async function useItem(itemId, btn) {
+        if (!btn.classList.contains('confirm-mode')) {
+          const ogText = btn.innerHTML;
+          btn.dataset.ogText = ogText;
+          btn.classList.add('confirm-mode', 'bg-amber-600', 'hover:bg-amber-500', 'border-amber-400');
+          btn.classList.remove('bg-emerald-700', 'hover:bg-emerald-600', 'border-emerald-500/60');
+          btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>EMİN MİSİN?</span>`;
+
+          useTimeouts[itemId] = setTimeout(() => {
+            btn.classList.remove('confirm-mode', 'bg-amber-600', 'hover:bg-amber-500', 'border-amber-400');
+            btn.classList.add('bg-emerald-700', 'hover:bg-emerald-600', 'border-emerald-500/60');
+            btn.innerHTML = btn.dataset.ogText;
+          }, 3000);
+          return;
+        }
+
+        clearTimeout(useTimeouts[itemId]);
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>KULLANILIYOR...</span>`;
+
+        try {
+          let res = await fetch(`/api/storefront/v1/chest/${customerId}/use/${itemId}`, { method: 'POST' });
+          if (!res.ok && res.status === 404) {
+            res = await fetch(`/api/storefront/v2/chest/${customerId}/use/${itemId}`, { method: 'POST' });
+          }
+          const data = await res.json();
+          if (res.ok || data.success) {
+            window.showToast?.('Eşya başarıyla kullanıldı!', 'success') || alert('Eşya başarıyla kullanıldı!');
+            setTimeout(() => location.reload(), 1500);
+          } else {
+            throw new Error(data.message || 'Kullanım hatası');
+          }
+        } catch (e) {
+          window.showToast?.(e.message, 'error') || alert(e.message || 'Bir hata oluştu!');
+          btn.disabled = false;
+          btn.classList.remove('confirm-mode', 'bg-amber-600', 'hover:bg-amber-500', 'border-amber-400');
+          btn.classList.add('bg-emerald-700', 'hover:bg-emerald-600', 'border-emerald-500/60');
+          btn.innerHTML = btn.dataset.ogText;
+        }
+      }
+    </script>
+  {% else %}
+    <script>
+      window.location.href = '/auth/sign-in?return=/chest';
+    </script>
+  {% endif %}
+</div>

@@ -1,0 +1,94 @@
+﻿<!-- STORE > SERVER -->
+<div class="container max-w-[1240px] mx-auto px-4 pt-32 pb-24 space-y-12">
+  <!-- Breadcrumb Nav -->
+  <div class="flex flex-wrap items-center gap-3 text-xs font-medieval font-bold text-slate-400 uppercase tracking-widest">
+    <a href="/" class="hover:text-gold-bright transition-colors flex items-center gap-2">
+      <i class="fa-solid fa-house text-gold"></i>
+      <span>ANASAYFA</span>
+    </a>
+    <span class="text-gold-dark">&bull;</span>
+    <a href="/store" class="hover:text-gold-bright transition-colors">MAĞAZA</a>
+    <span class="text-gold-dark">&bull;</span>
+    <span class="text-gold-bright">{{ server.name | default: 'SUNUCU' }}</span>
+  </div>
+
+  <!-- Server Banner -->
+  <div class="w-full bg-realm-bg border border-realm-border p-10 md:p-14 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center gap-8 rounded-sm">
+    {% if server.image != blank %}
+      <div class="shrink-0 relative z-10">
+        <img src="{{ server.image }}" class="w-32 h-32 md:w-40 md:h-40 object-contain rounded-sm shadow-xl bg-realm-bg p-3 border border-realm-border">
+      </div>
+    {% endif %}
+    
+    <div class="flex-grow relative z-10 text-center md:text-left">
+      <h1 class="text-3xl md:text-5xl font-medieval font-normal text-white uppercase tracking-wider mb-3 drop-shadow-md">
+        {{ server.name | default: 'SUNUCU DİYARI' }}
+      </h1>
+      
+      <div class="rpg-divider max-w-sm my-3 md:mx-0">
+        
+      </div>
+
+      <p class="text-xs md:text-sm text-slate-400 font-serif leading-relaxed max-w-2xl">
+        Aşağıdaki kategorilerden birini seçerek bu sunucuya özel rütbeleri, eşyaları ve kozmetikleri inceleyebilirsiniz.
+      </p>
+    </div>
+  </div>
+
+  <!-- Kategoriler Grid -->
+  <div>
+    <div class="flex items-center justify-between pb-4 border-b border-realm-border mb-10">
+      <h2 class="text-2xl font-medieval font-normal text-slate-100 uppercase tracking-widest">
+        KATEGORİLER
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% if categories and categories.size > 0 %}
+        {% for cat in categories %}
+          <a
+            href="/store/{{ server.slug }}/{{ cat.slug }}"
+            class="rpg-card-frame h-64 group relative flex flex-col justify-end p-6 block overflow-hidden"
+          >
+            {% if cat.image != blank %}
+              <img
+                src="{{ cat.image }}"
+                class="absolute inset-0 w-full h-full object-cover filter brightness-60 group-hover:scale-110 transition-transform duration-700"
+                alt="{{ cat.name }}"
+              >
+            {% else %}
+              <div class="absolute inset-0 bg-realm-bg"></div>
+            {% endif %}
+            
+            <div class="absolute inset-0 bg-gradient-to-t from-realm-bg via-realm-bg/60 to-transparent"></div>
+
+            <div class="relative z-10">
+              <h3 class="text-2xl font-medieval font-bold text-white uppercase tracking-wider group-hover:text-gold-bright transition-colors mb-2">
+                {{ cat.name }}
+              </h3>
+
+              {% if cat.description != blank %}
+                <p class="text-xs text-slate-300 font-sans line-clamp-2 mb-3">
+                  {{ cat.description }}
+                </p>
+              {% endif %}
+
+              <div class="pt-3 border-t border-white/10 flex items-center justify-between text-xs font-medieval text-gold-bright">
+                <span>PAKETLERİ İNCELE</span>
+                <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+              </div>
+            </div>
+
+            <div class="rpg-card-crest">
+              <i class="fa-solid fa-crown text-[8px]"></i>
+            </div>
+          </a>
+        {% endfor %}
+      {% else %}
+        <div class="col-span-1 sm:col-span-2 lg:col-span-3 py-16 text-center text-slate-400 font-medieval bg-realm-bg border border-realm-border">
+          Bu sunucuya ait alt kategori eklenmemiş.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

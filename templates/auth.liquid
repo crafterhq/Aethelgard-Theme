@@ -1,0 +1,830 @@
+{% if websiteData.security.cf_turnstile.site_key %}
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+{% endif %}
+
+<div class="flex w-full min-h-screen bg-realm-bg text-slate-100 overflow-hidden">
+  <!-- LEFT SIDE: Auth Form -->
+  <div class="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 sm:p-12 lg:p-20 relative z-10">
+    <a
+      href="/"
+      class="absolute top-8 left-8 flex items-center gap-2 text-slate-400 hover:text-gold-bright transition-colors font-medieval font-bold text-xs uppercase tracking-widest bg-realm-card px-4 py-2 rounded-sm border border-realm-border"
+    >
+      <i class="fa-solid fa-arrow-left text-gold"></i>
+      <span>ANASAYFAYA DÖN</span>
+    </a>
+
+    <div class="w-full max-w-md mx-auto pt-12">
+      <!-- Logo -->
+      <a href="/" class="block mb-8 text-center md:text-left">
+        {% assign auth_logo = settings.logo_light | default: settings.logo_dark | default: settings.logo %}
+        {% if auth_logo != blank %}
+          <img src="{{ auth_logo }}" alt="{{ shop.name }}" class="h-16 object-contain">
+        {% else %}
+          <div class="font-medieval font-black text-3xl text-[var(--color-gold-bright)] tracking-wider uppercase drop-shadow-md">
+            {{ shop.name | default: 'Sunucu' }}
+          </div>
+        {% endif %}
+      </a>
+
+      <!-- AUTH NOTIFICATION BANNER -->
+      <div id="authAlertBanner" class="hidden mb-6 p-4 rounded-sm border text-xs font-medieval font-bold flex items-start gap-3 animate-[fade-in_300ms_ease-out]">
+        <div id="authAlertIcon" class="text-base shrink-0 mt-0.5"></div>
+        <div class="flex-1">
+          <div id="authAlertTitle" class="uppercase tracking-wider font-black mb-1"></div>
+          <div id="authAlertDesc" class="font-normal font-sans text-xs opacity-90 leading-relaxed"></div>
+        </div>
+        <button type="button" onclick="document.getElementById('authAlertBanner').classList.add('hidden')" class="text-slate-400 hover:text-slate-200">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- 1. LOGIN FORM -->
+      <div
+        id="login-container"
+        class="auth-step {% if request.path contains 'sign-up' or request.path contains 'register' %}hidden{% endif %} animate-[fade-in_300ms_ease-out] bg-realm-surface border-2 border-realm-border rounded-sm p-8 shadow-2xl relative"
+      >
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-realm-card border border-realm-border-accent text-[10px] font-medieval font-bold text-amber-400 uppercase tracking-widest mb-3">
+          <i class="fa-solid fa-key"></i>
+          <span>KAPAN MAĞARASI</span>
+        </div>
+
+        <h1 class="text-3xl font-medieval font-black text-slate-100 mb-2 tracking-wider uppercase drop-shadow-md">
+          {{ settings.auth.login_title | default: 'TEKRAR HOŞ GELDİN!' }}
+        </h1>
+        <p class="text-xs text-slate-400 font-medieval mb-6 leading-relaxed">
+          {{ settings.auth.login_description | default: 'Hesabına giriş yap ve maceraya kaldığın yerden devam et.' }}
+        </p>
+
+        <!-- Discord Login Button -->
+        <button
+          type="button"
+          onclick="handleDiscordAuth('login')"
+          class="w-full mb-4 py-3 px-4 rounded-sm text-xs font-medieval font-bold uppercase tracking-widest text-white bg-[#5865F2] hover:bg-[#4752C4] transition-all flex items-center justify-center gap-2 border border-[#5865F2]/40 shadow-lg"
+        >
+          <i class="fa-brands fa-discord text-base"></i>
+          <span>DISCORD İLE GİRİŞ YAP</span>
+        </button>
+
+        <div class="relative flex py-2 items-center mb-4">
+          <div class="flex-grow border-t border-realm-border"></div>
+          <span class="flex-shrink mx-4 text-[10px] font-medieval font-bold text-slate-500 uppercase tracking-widest">VEYA</span>
+          <div class="flex-grow border-t border-realm-border"></div>
+        </div>
+
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-1.5">Kullanıcı Adı veya E-posta</label>
+            <input
+              type="text"
+              name="username"
+              required
+              placeholder="Kullanıcı adı veya e-posta"
+              class="w-full bg-realm-bg border border-realm-border text-slate-100 text-sm rounded-sm px-4 py-2.5 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all font-sans placeholder-slate-600"
+            >
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider">Şifre</label>
+              <a href="/auth/password/forgot" class="text-[11px] font-medieval text-slate-400 hover:text-gold-bright transition-colors uppercase">Şifremi Unuttum</a>
+            </div>
+            <input
+              type="password"
+              name="password"
+              required
+              placeholder="••••••••"
+              class="w-full bg-realm-bg border border-realm-border text-slate-100 text-sm rounded-sm px-4 py-2.5 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all font-sans placeholder-slate-600"
+            >
+          </div>
+
+          {% if websiteData.security.cf_turnstile.site_key %}
+            <div class="cf-turnstile mt-2" data-sitekey="{{ websiteData.security.cf_turnstile.site_key }}"></div>
+          {% endif %}
+
+          <button
+            type="submit"
+            id="loginSubmitBtn"
+            class="w-full rpg-btn-sharp-gold py-3.5 rounded-sm text-xs font-medieval font-bold uppercase tracking-widest flex items-center justify-center gap-2 mt-4"
+          >
+            <span>GİRİŞ YAP</span>
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </button>
+        </form>
+
+        <div class="rpg-divider my-6"></div>
+
+        <p class="text-center text-xs font-medieval text-slate-400">
+          Henüz hesabın yok mu?
+          <button onclick="toggleAuth('register')" class="text-gold-bright hover:underline font-bold ml-1 uppercase">HEMEN KAYIT OL</button>
+        </p>
+      </div>
+
+      <!-- 2. REGISTER FORM -->
+      <div
+        id="register-container"
+        class="auth-step {% unless request.path contains 'sign-up' or request.path contains 'register' %}hidden{% endunless %} animate-[fade-in_300ms_ease-out] bg-realm-surface border-2 border-realm-border rounded-sm p-8 shadow-2xl relative"
+      >
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-realm-card border border-realm-border-accent text-[10px] font-medieval font-bold text-emerald-400 uppercase tracking-widest mb-3">
+          <i class="fa-solid fa-user-plus"></i>
+          <span>YENİ SAVAŞÇI</span>
+        </div>
+
+        <h1 class="text-3xl font-medieval font-black text-slate-100 mb-2 tracking-wider uppercase drop-shadow-md">
+          {{ settings.auth.register_title | default: 'MACERAYA KATIL' }}
+        </h1>
+        <p class="text-xs text-slate-400 font-medieval mb-6 leading-relaxed">
+          {{ settings.auth.register_description | default: 'Aramıza katıl ve efsaneni yazmaya başla.' }}
+        </p>
+
+        <form id="registerForm" class="space-y-4">
+          <div>
+            <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-1.5">Kullanıcı Adı</label>
+            <input
+              type="text"
+              name="username"
+              required
+              placeholder="Minecraft kullanıcı adınız"
+              class="w-full bg-realm-bg border border-realm-border text-slate-100 text-sm rounded-sm px-4 py-2.5 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all font-sans placeholder-slate-600"
+            >
+          </div>
+          <div>
+            <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-1.5">E-posta Adresi</label>
+            <input
+              type="email"
+              name="email"
+              required
+              placeholder="ornek@minecraft.com"
+              class="w-full bg-realm-bg border border-realm-border text-slate-100 text-sm rounded-sm px-4 py-2.5 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all font-sans placeholder-slate-600"
+            >
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-1.5">Şifre</label>
+              <input
+                type="password"
+                name="password"
+                required
+                placeholder="••••••••"
+                class="w-full bg-realm-bg border border-realm-border text-slate-100 text-sm rounded-sm px-4 py-2.5 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all font-sans placeholder-slate-600"
+              >
+            </div>
+            <div>
+              <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-1.5">Şifre Tekrar</label>
+              <input
+                type="password"
+                name="confirm_password"
+                required
+                placeholder="••••••••"
+                class="w-full bg-realm-bg border border-realm-border text-slate-100 text-sm rounded-sm px-4 py-2.5 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all font-sans placeholder-slate-600"
+              >
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 pt-1 font-medieval text-xs text-slate-400">
+            <input type="checkbox" id="terms" required class="rounded-sm border-realm-border bg-realm-bg text-gold focus:ring-gold">
+            <label for="terms">Kuralları ve şartları kabul ediyorum.</label>
+          </div>
+
+          {% if websiteData.security.cf_turnstile.site_key %}
+            <div class="cf-turnstile mt-2" data-sitekey="{{ websiteData.security.cf_turnstile.site_key }}"></div>
+          {% endif %}
+
+          <button
+            type="submit"
+            id="registerSubmitBtn"
+            class="w-full rpg-btn-sharp-gold py-3.5 rounded-sm text-xs font-medieval font-bold uppercase tracking-widest flex items-center justify-center gap-2 mt-4"
+          >
+            <span>KAYIT OL</span>
+            <i class="fa-solid fa-user-plus text-xs"></i>
+          </button>
+        </form>
+
+        <div class="rpg-divider my-6"></div>
+
+        <p class="text-center text-xs font-medieval text-slate-400">
+          Zaten bir hesabın var mı?
+          <button onclick="toggleAuth('login')" class="text-gold-bright hover:underline font-bold ml-1 uppercase">GİRİŞ YAP</button>
+        </p>
+      </div>
+
+      <!-- 3. EMAIL OTP FORM -->
+      <div id="email-otp-container" class="auth-step hidden animate-[fade-in_300ms_ease-out] bg-realm-surface border-2 border-realm-border rounded-sm p-8 shadow-2xl relative">
+        <h1 class="text-2xl font-medieval font-black text-slate-100 mb-2 uppercase tracking-wider">E-POSTA DOĞRULAMA KODU</h1>
+        <p class="text-xs text-slate-400 font-medieval mb-4">
+          Hesabınıza erişebilmeniz için <strong id="otpMaskedEmail" class="text-gold-bright">e-posta adresinize</strong> 6 haneli kod gönderildi.
+        </p>
+
+        <div class="mb-5 p-3 rounded-sm bg-amber-950/60 border border-amber-800/80 text-amber-300 text-xs font-medieval flex items-start gap-2.5">
+          <i class="fa-solid fa-circle-info text-amber-400 mt-0.5"></i>
+          <span>E-posta gelen kutunuzda görünmüyorsa lütfen <strong>Spam (Gereksiz)</strong> klasörünüzü kontrol ediniz.</span>
+        </div>
+
+        <form id="emailOtpForm" class="space-y-4">
+          <div>
+            <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-1.5">6 Haneli Kod</label>
+            <input
+              type="text"
+              id="otpCodeInput"
+              required
+              maxlength="6"
+              placeholder="123456"
+              class="w-full text-center tracking-[0.4em] font-mono text-2xl font-black bg-realm-bg border border-realm-border text-slate-100 rounded-sm px-4 py-3 outline-none focus:border-gold"
+            >
+          </div>
+
+          <button
+            type="submit"
+            id="otpSubmitBtn"
+            class="w-full rpg-btn-sharp-gold py-3.5 rounded-sm text-xs font-medieval font-bold uppercase tracking-widest flex items-center justify-center gap-2"
+          >
+            <span>DOĞRULA VE GİRİŞ YAP</span>
+          </button>
+        </form>
+
+        <div class="flex items-center justify-between mt-6 pt-4 border-t border-realm-border text-xs font-medieval">
+          <button type="button" id="resendOtpBtn" onclick="resendEmailOtp()" class="text-gold-bright hover:underline flex items-center gap-1.5 uppercase">
+            <i class="fa-solid fa-rotate-right"></i>
+            <span>Kodu Tekrar Gönder</span>
+          </button>
+          <button type="button" onclick="switchAuthStep('login-container')" class="text-slate-400 hover:text-slate-200 uppercase">GİRİŞE DÖN</button>
+        </div>
+      </div>
+
+      <!-- 4. TEMP EMAIL UPDATE -->
+      <div id="temp-email-container" class="auth-step hidden animate-[fade-in_300ms_ease-out] bg-realm-surface border-2 border-realm-border rounded-sm p-8 shadow-2xl relative">
+        <h1 class="text-2xl font-medieval font-black text-slate-100 mb-2 uppercase tracking-wider">E-POSTA ADRESİNİ TANIMLA</h1>
+        <p class="text-xs text-slate-400 font-medieval mb-6">
+          Hesabınız oyundan oluşturulduğu için geçerli bir e-posta adresi tanımlamanız gerekmektedir.
+        </p>
+
+        <form id="tempEmailForm" class="space-y-4">
+          <div>
+            <label class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider mb-1.5">Yeni E-Posta Adresiniz</label>
+            <input
+              type="email"
+              id="tempEmailInput"
+              required
+              placeholder="adiniz@example.com"
+              class="w-full bg-realm-bg border border-realm-border text-slate-100 text-sm rounded-sm px-4 py-2.5 outline-none focus:border-gold"
+            >
+          </div>
+
+          <button
+            type="submit"
+            id="tempEmailSubmitBtn"
+            class="w-full rpg-btn-sharp-gold py-3.5 rounded-sm text-xs font-medieval font-bold uppercase tracking-widest flex items-center justify-center gap-2"
+          >
+            <span>DEVAM ET VE KOD GÖNDER</span>
+          </button>
+        </form>
+
+        <div class="text-center mt-6">
+          <button type="button" onclick="switchAuthStep('login-container')" class="text-xs font-medieval text-slate-400 hover:text-slate-200 uppercase">GİRİŞE DÖN</button>
+        </div>
+      </div>
+
+      <!-- 5. 2FA VERIFICATION -->
+      <div id="twofa-container" class="auth-step hidden animate-[fade-in_300ms_ease-out] bg-realm-surface border-2 border-realm-border rounded-sm p-8 shadow-2xl relative">
+        <h1 class="text-2xl font-medieval font-black text-slate-100 mb-2 uppercase tracking-wider">İKİ AŞAMALI DOĞRULAMA (2FA)</h1>
+        <p class="text-xs text-slate-400 font-medieval mb-4">Lütfen 2FA doğrulama kodunuzu giriniz.</p>
+
+        <div id="twofaMethodsContainer" class="flex flex-wrap gap-2 mb-4"></div>
+
+        <form id="twofaForm" class="space-y-4">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label id="twofaInputLabel" class="block text-xs font-medieval font-bold text-slate-300 uppercase tracking-wider">6 Haneli Doğrulama Kodu</label>
+              <button type="button" id="twofaEmailSendBtn" onclick="sendTwoFaEmailCode()" class="text-xs font-medieval text-gold-bright hover:underline hidden uppercase">Kodu E-Postama Gönder</button>
+            </div>
+            <input
+              type="text"
+              id="twofaCodeInput"
+              required
+              maxlength="10"
+              placeholder="123456"
+              class="w-full text-center tracking-[0.3em] font-mono text-2xl font-black bg-realm-bg border border-realm-border text-slate-100 rounded-sm px-4 py-3 outline-none focus:border-gold"
+            >
+          </div>
+
+          <button
+            type="submit"
+            id="twofaSubmitBtn"
+            class="w-full rpg-btn-sharp-gold py-3.5 rounded-sm text-xs font-medieval font-bold uppercase tracking-widest flex items-center justify-center gap-2"
+          >
+            <span>DOĞRULA VE GİRİŞ YAP</span>
+          </button>
+        </form>
+
+        <div class="text-center mt-6">
+          <button type="button" onclick="switchAuthStep('login-container')" class="text-xs font-medieval text-slate-400 hover:text-slate-200 uppercase">GİRİŞE DÖN</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT SIDE: Art Display -->
+  <div class="hidden lg:flex lg:w-1/2 relative bg-realm-surface border-l-2 border-realm-border items-center justify-center p-12 overflow-hidden">
+    <div class="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-luminosity" style="background-image: url('{% if settings.auth.background %}{{ settings.auth.background }}{% else %}https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1968&auto=format&fit=crop{% endif %}');"></div>
+    <div class="relative z-10 max-w-lg text-center space-y-6">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-sm bg-realm-card border border-realm-border-accent text-xs font-medieval font-bold text-gold uppercase tracking-widest">
+        <i class="fa-solid fa-shield-halved text-amber-500"></i>
+        <span>DİYAR KAPILARI AÇIK</span>
+      </div>
+      <h2 class="text-4xl font-medieval font-black text-slate-100 uppercase tracking-wider drop-shadow-lg">
+        {{ settings.auth.right_title | default: "Aethelgard Krallığı'na
+Adımını At" | newline_to_br }}
+      </h2>
+      <p class="text-sm font-medieval text-slate-400 leading-relaxed">
+        {{ settings.auth.right_description | default: 'Loncanı kur, zindanları fethet ve krallığın en güçlü savaşçısı ol.' }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentAuthTokens = {
+    emailToken: null,
+    tempToken: null,
+    maskedEmail: null,
+    twoFaMethods: [],
+    currentTwoFaMethod: 'authenticator',
+  };
+
+  function showAlert(title, message, type = 'error') {
+    const banner = document.getElementById('authAlertBanner');
+    const titleEl = document.getElementById('authAlertTitle');
+    const descEl = document.getElementById('authAlertDesc');
+    const iconEl = document.getElementById('authAlertIcon');
+
+    if (banner && titleEl && descEl && iconEl) {
+      if (type === 'success') {
+        banner.className = 'mb-6 p-4 rounded-sm border bg-emerald-950/80 border-emerald-700 text-emerald-200 text-xs font-medieval font-bold flex items-start gap-3 shadow-lg animate-[fade-in_300ms_ease-out]';
+        iconEl.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>';
+      } else if (type === 'warning' || type === 'info') {
+        banner.className = 'mb-6 p-4 rounded-sm border bg-amber-950/80 border-amber-700 text-amber-200 text-xs font-medieval font-bold flex items-start gap-3 shadow-lg animate-[fade-in_300ms_ease-out]';
+        iconEl.innerHTML = '<i class="fa-solid fa-circle-info text-amber-400 text-base"></i>';
+      } else {
+        banner.className = 'mb-6 p-4 rounded-sm border bg-red-950/90 border-red-800 text-red-200 text-xs font-medieval font-bold flex items-start gap-3 shadow-lg animate-[fade-in_300ms_ease-out]';
+        iconEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-400 text-base"></i>';
+      }
+
+      titleEl.innerText = title;
+      descEl.innerText = message;
+      banner.classList.remove('hidden');
+    }
+
+    if (window.showToast) {
+      window.showToast(message || title, type);
+    }
+  }
+
+  function switchAuthStep(stepId) {
+    document.querySelectorAll('.auth-step').forEach((el) => el.classList.add('hidden'));
+    const target = document.getElementById(stepId);
+    if (target) target.classList.remove('hidden');
+  }
+
+  function toggleAuth(type) {
+    switchAuthStep(type === 'register' ? 'register-container' : 'login-container');
+    const newPath = type === 'register' ? '/auth/sign-up' : '/auth/sign-in';
+    window.history.pushState({}, '', newPath);
+  }
+
+  function handleSuccessfulLogin(res) {
+    const payload = res.data || res;
+    if (payload.accessToken || res.accessToken) {
+      try {
+        localStorage.setItem('accessToken', payload.accessToken || res.accessToken);
+        if (payload.refreshToken || res.refreshToken) {
+          localStorage.setItem('refreshToken', payload.refreshToken || res.refreshToken);
+        }
+        if (payload.user || res.user) {
+          localStorage.setItem('user', JSON.stringify(payload.user || res.user));
+        }
+      } catch (e) {}
+    }
+
+    showAlert('Giriş Başarılı', payload.message || res.message || 'Giriş başarılı! Yönlendiriliyorsunuz...', 'success');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const returnUrl = urlParams.get('return') || '/';
+    setTimeout(() => {
+      window.location.href = returnUrl;
+    }, 600);
+  }
+
+  // Discord OAuth
+  async function handleDiscordAuth(action = 'login') {
+    try {
+      const redirectUri = window.location.origin + '/auth/sign-in';
+      const res = await fetch(`/api/storefront/v2/auth/discord?action=${action}&redirectUri=${encodeURIComponent(redirectUri)}`);
+      const data = await res.json();
+      if (data.success && data.data?.oauthUrl) window.location.href = data.data.oauthUrl;
+      else if (data.oauthUrl) window.location.href = data.oauthUrl;
+      else showAlert('Discord Hatası', data.message || 'Discord giriş bağlantısı alınamadı!', 'error');
+    } catch (e) {
+      showAlert('Bağlantı Hatası', 'Discord servisine bağlanılamadı!', 'error');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const accessToken = params.get('accessToken');
+    const refreshToken = params.get('refreshToken');
+    const discordError = params.get('discord_error');
+    const discordUsername = params.get('discord_username');
+    const generalError = params.get('error');
+
+    if (accessToken) {
+      handleSuccessfulLogin({ accessToken, refreshToken, message: 'Discord ile giriş başarılı!' });
+      return;
+    }
+
+    if (discordError === 'NOT_LINKED') {
+      const uName = discordUsername ? decodeURIComponent(discordUsername) : 'Discord';
+      showAlert(
+        'Discord Hesabı Eşleşmedi',
+        `"${uName}" Discord hesabınız ile eşleşen bir oyuncu hesabı bulunamadı. Lütfen önce standart kullanıcı adı ve şifrenizle giriş yapıp Profil > Ayarlar bölümünden Discord hesabınızı bağlayınız.`,
+        'error'
+      );
+    } else if (discordError === 'ALREADY_LINKED_TO_ANOTHER_ACCOUNT') {
+      showAlert('Discord Bağlantı Hatası', 'Bu Discord hesabı zaten bu sitedeki başka bir oyuncu hesabına bağlı.', 'error');
+    } else if (discordError === 'USER_BANNED') {
+      showAlert('Hesap Yasaklandı', 'Hesabınız sunucu kuralları gereği yasaklanmıştır.', 'error');
+    } else if (discordError) {
+      showAlert('Discord Hatası', decodeURIComponent(discordError), 'error');
+    } else if (generalError) {
+      showAlert('Giriş Hatası', decodeURIComponent(generalError), 'error');
+    }
+  });
+
+  // Login Submit
+  document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    if (data['cf-turnstile-response']) {
+      data.turnstileToken = data['cf-turnstile-response'];
+      delete data['cf-turnstile-response'];
+    }
+
+    const btn = document.getElementById('loginSubmitBtn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="animate-pulse">KONTROL EDİLİYOR...</span>';
+
+    try {
+      const res = await fetch('/api/storefront/v2/auth/signin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+
+      if (result.accessToken || result.data?.accessToken) {
+        handleSuccessfulLogin(result);
+        return;
+      }
+
+      if (result.requires2FA || result.data?.requires2FA) {
+        const payload = result.data || result;
+        currentAuthTokens.tempToken = payload.tempToken;
+        currentAuthTokens.twoFaMethods = payload.methods || ['authenticator'];
+        currentAuthTokens.currentTwoFaMethod = payload.primaryMethod || payload.methods?.[0] || 'authenticator';
+        currentAuthTokens.maskedEmail = payload.maskedEmail || '';
+        renderTwoFaMethodPicker();
+        switchAuthStep('twofa-container');
+        document.getElementById('twofaCodeInput').focus();
+        showAlert('2FA Doğrulaması', payload.message || 'İki aşamalı doğrulama kodunuzu giriniz.', 'info');
+        return;
+      }
+
+      if ((result.requiresEmailVerification || result.data?.requiresEmailVerification) && !result.isTempEmail && !result.data?.isTempEmail) {
+        const payload = result.data || result;
+        currentAuthTokens.emailToken = payload.emailToken;
+        currentAuthTokens.maskedEmail = payload.maskedEmail || '';
+        document.getElementById('otpMaskedEmail').innerText = payload.maskedEmail || 'e-posta adresinize';
+        switchAuthStep('email-otp-container');
+        document.getElementById('otpCodeInput').focus();
+        showAlert('E-Posta Doğrulama', payload.message || 'Lütfen e-posta doğrulama kodunuzu giriniz.', 'info');
+        return;
+      }
+
+      if ((result.requiresEmailVerification || result.data?.requiresEmailVerification) && (result.isTempEmail || result.data?.isTempEmail)) {
+        const payload = result.data || result;
+        currentAuthTokens.tempToken = payload.tempToken;
+        switchAuthStep('temp-email-container');
+        document.getElementById('tempEmailInput').focus();
+        showAlert('E-Posta Güncelleme', payload.message || 'Lütfen geçerli bir e-posta adresi giriniz.', 'info');
+        return;
+      }
+
+      showAlert('Giriş Başarısız', result.message || 'Kullanıcı adı veya şifre hatalı!', 'error');
+    } catch (err) {
+      showAlert('Bağlantı Hatası', 'Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  });
+
+  // Register Submit
+  document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    if (data['cf-turnstile-response']) {
+      data.turnstileToken = data['cf-turnstile-response'];
+      delete data['cf-turnstile-response'];
+    }
+
+    if (data.password !== data.confirm_password) {
+      showAlert('Şifre Uyuşmazlığı', 'Girdiğiniz şifreler birbiriyle eşleşmiyor!', 'error');
+      return;
+    }
+
+    const btn = document.getElementById('registerSubmitBtn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="animate-pulse">KAYIT EDİLİYOR...</span>';
+
+    try {
+      const res = await fetch('/api/storefront/v2/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      if (result.success || res.ok) {
+        showAlert('Kayıt Başarılı', 'Hesabınız başarıyla oluşturuldu! Şimdi giriş yapabilirsiniz.', 'success');
+        toggleAuth('login');
+        const loginUserInput = document.querySelector('#loginForm input[name="username"]');
+        if (loginUserInput) loginUserInput.value = data.username;
+      } else {
+        showAlert('Kayıt Başarısız', result.message || 'Kayıt işlemi başarısız!', 'error');
+      }
+    } catch (err) {
+      showAlert('Bağlantı Hatası', 'Sunucuya bağlanılamadı!', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  });
+
+  // Email OTP
+  document.getElementById('emailOtpForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const code = document.getElementById('otpCodeInput').value.trim();
+    if (!code || !currentAuthTokens.emailToken) return;
+
+    const btn = document.getElementById('otpSubmitBtn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="animate-pulse">DOĞRULANIYOR...</span>';
+
+    try {
+      const res = await fetch('/api/storefront/v2/auth/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emailToken: currentAuthTokens.emailToken, code: code }),
+      });
+      const result = await res.json();
+      if (result.accessToken || (result.success && result.accessToken) || result.data?.accessToken) {
+        handleSuccessfulLogin(result.data || result);
+      } else {
+        showAlert('Doğrulama Hatası', result.message || result.data?.message || 'Geçersiz doğrulama kodu!', 'error');
+      }
+    } catch (err) {
+      showAlert('Bağlantı Hatası', 'Doğrulama sırasında hata oluştu!', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  });
+
+  async function resendEmailOtp() {
+    if (!currentAuthTokens.emailToken) return;
+    const btn = document.getElementById('resendOtpBtn');
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('/api/storefront/v2/auth/resend-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emailToken: currentAuthTokens.emailToken }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showAlert('Kod Gönderildi', 'Doğrulama kodu tekrar e-posta adresinize gönderildi.', 'success');
+        let countdown = 60;
+        const interval = setInterval(() => {
+          btn.innerText = `TEKRAR GÖNDER (${countdown}S)`;
+          countdown--;
+          if (countdown < 0) {
+            clearInterval(interval);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i><span>Kodu Tekrar Gönder</span>';
+          }
+        }, 1000);
+      } else {
+        showAlert('Kod Gönderilemedi', data.message || 'Kod gönderilemedi.', 'error');
+        btn.disabled = false;
+      }
+    } catch (e) {
+      showAlert('Bağlantı Hatası', 'Kod gönderilemedi!', 'error');
+      btn.disabled = false;
+    }
+  }
+
+  // Temp Email
+  document.getElementById('tempEmailForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('tempEmailInput').value.trim();
+    if (!email || !currentAuthTokens.tempToken) return;
+
+    const btn = document.getElementById('tempEmailSubmitBtn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="animate-pulse">GÜNCELLENİYOR...</span>';
+
+    try {
+      const res = await fetch('/api/storefront/v2/auth/update-temp-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tempToken: currentAuthTokens.tempToken, email: email }),
+      });
+      const result = await res.json();
+      const payload = result.data || result;
+      if (result.success || payload.emailToken) {
+        currentAuthTokens.emailToken = payload.emailToken;
+        currentAuthTokens.maskedEmail = email;
+        document.getElementById('otpMaskedEmail').innerText = email;
+        switchAuthStep('email-otp-container');
+        showAlert('E-Posta Güncellendi', result.message || 'Doğrulama kodu e-postanıza gönderildi.', 'success');
+      } else {
+        showAlert('Güncelleme Başarısız', result.message || 'E-posta güncellenemedi.', 'error');
+      }
+    } catch (err) {
+      showAlert('Bağlantı Hatası', 'E-posta güncellenemedi!', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  });
+
+  // 2FA Picker
+  function renderTwoFaMethodPicker() {
+    const container = document.getElementById('twofaMethodsContainer');
+    const emailSendBtn = document.getElementById('twofaEmailSendBtn');
+    const inputLabel = document.getElementById('twofaInputLabel');
+    if (!container) return;
+
+    container.innerHTML = '';
+    const methods = currentAuthTokens.twoFaMethods;
+
+    methods.forEach((method) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      const isActive = currentAuthTokens.currentTwoFaMethod === method;
+      btn.className = `px-3 py-1.5 rounded-sm text-xs font-medieval font-bold uppercase tracking-wider border transition-all ${
+        isActive
+          ? 'bg-gold/20 text-gold-bright border-gold shadow-md'
+          : 'bg-realm-card text-slate-400 border-realm-border hover:text-slate-200'
+      }`;
+
+      let label = 'Authenticator';
+      if (method === 'email') label = 'E-Posta';
+      else if (method === 'discord') label = 'Discord';
+      else if (method === 'recovery_code') label = 'Kurtarma Kodu';
+
+      btn.innerText = label;
+      btn.onclick = () => {
+        currentAuthTokens.currentTwoFaMethod = method;
+        renderTwoFaMethodPicker();
+      };
+      container.appendChild(btn);
+    });
+
+    if (!methods.includes('recovery_code')) {
+      const recBtn = document.createElement('button');
+      recBtn.type = 'button';
+      const isRecActive = currentAuthTokens.currentTwoFaMethod === 'recovery_code';
+      recBtn.className = `px-3 py-1.5 rounded-sm text-xs font-medieval font-bold uppercase tracking-wider border transition-all ${
+        isRecActive
+          ? 'bg-gold/20 text-gold-bright border-gold shadow-md'
+          : 'bg-realm-card text-slate-400 border-realm-border hover:text-slate-200'
+      }`;
+      recBtn.innerText = 'Kurtarma Kodu';
+      recBtn.onclick = () => {
+        currentAuthTokens.currentTwoFaMethod = 'recovery_code';
+        renderTwoFaMethodPicker();
+      };
+      container.appendChild(recBtn);
+    }
+
+    if (currentAuthTokens.currentTwoFaMethod === 'discord') {
+      if (emailSendBtn) {
+        emailSendBtn.classList.remove('hidden');
+        emailSendBtn.innerText = 'Kodu Discord DM\'den Tekrar Gönder';
+        emailSendBtn.onclick = sendTwoFaDiscordCode;
+      }
+      if (inputLabel) inputLabel.innerText = '6 Haneli Discord Güvenlik Kodu';
+      const desc = document.getElementById('twofaDescription');
+      if (desc) desc.innerHTML = `Discord hesabınıza (${currentAuthTokens.discordUsername ? '<strong>@' + currentAuthTokens.discordUsername + '</strong>' : 'Discord'}) 6 haneli bir giriş kodu gönderdik. DM kutunuzu kontrol edin.`;
+    } else if (currentAuthTokens.currentTwoFaMethod === 'email') {
+      if (emailSendBtn) {
+        emailSendBtn.classList.remove('hidden');
+        emailSendBtn.innerText = 'Kodu E-Postama Gönder';
+        emailSendBtn.onclick = sendTwoFaEmailCode;
+      }
+      if (inputLabel) inputLabel.innerText = '6 Haneli E-Posta Kodu';
+    } else if (currentAuthTokens.currentTwoFaMethod === 'recovery_code') {
+      if (emailSendBtn) emailSendBtn.classList.add('hidden');
+      if (inputLabel) inputLabel.innerText = '8 Haneli Kurtarma Kodu';
+    } else {
+      if (emailSendBtn) emailSendBtn.classList.add('hidden');
+      if (inputLabel) inputLabel.innerText = '6 Haneli Authenticator Kodu';
+    }
+  }
+
+  async function sendTwoFaDiscordCode() {
+    if (!currentAuthTokens.tempToken) return;
+    const btn = document.getElementById('twofaEmailSendBtn');
+    btn.disabled = true;
+    btn.innerText = 'Kod gönderiliyor...';
+    try {
+      const res = await fetch('/api/storefront/v2/auth/2fa/send-discord-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tempToken: currentAuthTokens.tempToken }),
+      });
+      const data = await res.json();
+      if (data.success) showAlert('Kod Gönderildi', data.message || 'Güvenlik kodu Discord DM kutunuza gönderildi.', 'success');
+      else showAlert('Kod Gönderilemedi', data.message || 'Kod gönderilemedi.', 'error');
+    } catch (e) {
+      showAlert('Bağlantı Hatası', 'Bağlantı hatası!', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerText = 'Kodu Discord DM\'den Tekrar Gönder';
+    }
+  }
+
+  async function sendTwoFaEmailCode() {
+    if (!currentAuthTokens.tempToken) return;
+    const btn = document.getElementById('twofaEmailSendBtn');
+    btn.disabled = true;
+    btn.innerText = 'Kod gönderiliyor...';
+
+    try {
+      const res = await fetch('/api/storefront/v2/auth/2fa/send-email-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tempToken: currentAuthTokens.tempToken }),
+      });
+      const data = await res.json();
+      if (data.success) showAlert('Kod Gönderildi', data.message || '2FA kodu e-postanıza gönderildi.', 'success');
+      else showAlert('Kod Gönderilemedi', data.message || 'Kod gönderilemedi.', 'error');
+    } catch (e) {
+      showAlert('Bağlantı Hatası', 'Bağlantı hatası!', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerText = 'Kodu E-Postama Gönder';
+    }
+  }
+
+  document.getElementById('twofaForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const code = document.getElementById('twofaCodeInput').value.trim();
+    if (!code || !currentAuthTokens.tempToken) return;
+
+    const btn = document.getElementById('twofaSubmitBtn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="animate-pulse">DOĞRULANIYOR...</span>';
+
+    try {
+      const res = await fetch('/api/storefront/v2/auth/2fa/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tempToken: currentAuthTokens.tempToken,
+          method: currentAuthTokens.currentTwoFaMethod,
+          code: code,
+        }),
+      });
+      const result = await res.json();
+      if (result.accessToken || (result.success && result.accessToken) || result.data?.accessToken) {
+        handleSuccessfulLogin(result.data || result);
+      } else {
+        showAlert('Doğrulama Hatası', result.message || result.data?.message || 'Doğrulama kodu hatalı!', 'error');
+      }
+    } catch (err) {
+      showAlert('Doğrulama Hatası', '2FA doğrulama hatası!', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  });
+</script>

@@ -1,0 +1,656 @@
+[
+  {
+    "name": "Genel Ayarlar",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo_light",
+        "label": "Site Logosu (Karanlık Zeminler İçin)",
+        "info": "Hero alanı ve şeffaf menü gibi koyu renkli zeminlerde kullanılacak açık renkli logo.",
+        "default": "https://avatars.githubusercontent.com/u/3840546?s=280&v=4"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_dark",
+        "label": "Site Logosu (Aydınlık Zeminler İçin)",
+        "info": "Beyaz menü ve footer gibi açık renkli zeminlerde kullanılacak koyu renkli logo.",
+        "default": "https://avatars.githubusercontent.com/u/3840546?s=280&v=4"
+      },
+      {
+        "type": "number",
+        "id": "logo_width",
+        "label": "Menü Logo Genişliği (px)",
+        "default": 160
+      },
+      {
+        "type": "number",
+        "id": "hero_logo_width",
+        "label": "Hero Afiş Logo Genişliği (px)",
+        "default": 224
+      },
+      {
+        "type": "checkbox",
+        "id": "hero_logo_shake",
+        "label": "Hero Logosu Sallanma Efekti",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "server_ip",
+        "label": "Sunucu IP Adresi",
+        "placeholder": "play.sunucu.com.tr",
+        "info": "Tıklanınca kopyalanacak olan ana sunucu adresi.",
+        "default": "mc.hypixel.net"
+      }
+    ]
+  },
+  {
+    "name": "Renkler & Tema",
+    "settings": [
+      {
+        "type": "color",
+        "id": "colors.gold",
+        "label": "Altın Rengi (Ana Aksent)",
+        "info": "Düğmeler, başlıklar ve çerçevelerde kullanılan ana altın rengi.",
+        "default": "#d4af37"
+      },
+      {
+        "type": "color",
+        "id": "colors.gold_bright",
+        "label": "Parlak Altın Vurgu Rengi",
+        "info": "Hover durumları, aktif menüler ve parlak metin efektleri için.",
+        "default": "#f5d061"
+      },
+      {
+        "type": "color",
+        "id": "colors.gold_dark",
+        "label": "Koyu Altın / Gradient Rengi",
+        "info": "Metalik buton gölgeleri ve koyu ton geçişleri için.",
+        "default": "#8a6d1c"
+      },
+      {
+        "type": "color",
+        "id": "colors.dark_bg",
+        "label": "Ana Koyu Arkaplan Rengi",
+        "info": "Sitenin genel koyu arka plan rengi.",
+        "default": "#0c0907"
+      },
+      {
+        "type": "color",
+        "id": "colors.surface",
+        "label": "Yüzey / Panel Rengi",
+        "info": "Paneller, duyuru şeritleri ve podyum zeminleri için ara ton.",
+        "default": "#14100c"
+      },
+      {
+        "type": "color",
+        "id": "colors.card_bg",
+        "label": "Kart Arkaplan Rengi",
+        "info": "İçerik kartları, kutular ve açılır menüler için zemin rengi.",
+        "default": "#191410"
+      },
+      {
+        "type": "color",
+        "id": "colors.card_hover",
+        "label": "Kart Hover / Vurgu Rengi",
+        "info": "Kartların üzerine gelindiğindeki arka plan rengi.",
+        "default": "#221b15"
+      },
+      {
+        "type": "color",
+        "id": "colors.border",
+        "label": "Çizgi & Sınır Rengi",
+        "info": "Kartlar ve bölümleri ayıran ana sınır çizgisi rengi.",
+        "default": "#3d301d"
+      },
+      {
+        "type": "color",
+        "id": "colors.border_accent",
+        "label": "Vurgulu Çerçeve Rengi",
+        "info": "Büyük panolar ve başlık altı ayraçları için belirgin çerçeve rengi.",
+        "default": "#4a3821"
+      },
+      {
+        "type": "color",
+        "id": "colors.text_primary",
+        "label": "Birincil Metin Rengi",
+        "info": "Ana gövde ve başlık metinlerinin rengi.",
+        "default": "#f8fafc"
+      },
+      {
+        "type": "color",
+        "id": "colors.text_muted",
+        "label": "İkincil / Soluk Metin Rengi",
+        "info": "Alt açıklamalar, tarihler ve ikincil etiketler için.",
+        "default": "#94a3b8"
+      }
+    ]
+  },
+  {
+    "name": "Üst Kısım (Header)",
+    "settings": [
+      {
+        "id": "nav_links",
+        "type": "array",
+        "label": "Üst Menü Linkleri",
+        "item_schema": [
+          {
+            "id": "title",
+            "type": "text",
+            "label": "Link Başlığı",
+            "default": "Anasayfa"
+          },
+          {
+            "id": "url",
+            "type": "url",
+            "label": "URL Adresi",
+            "default": "/"
+          },
+          {
+            "id": "new_tab",
+            "type": "checkbox",
+            "label": "Yeni sekmede açılsın mı?"
+          }
+        ]
+      },
+      {
+        "type": "image_picker",
+        "id": "header.banner",
+        "label": "Header Arkaplan Görseli",
+        "info": "Sayfanın en üstünde yer alan büyük banner görseli."
+      },
+      {
+        "id": "header.promo_texts",
+        "type": "array",
+        "label": "Kayan Promosyon Duyuruları",
+        "item_schema": [
+          {
+            "id": "text",
+            "type": "text",
+            "label": "Duyuru Metni",
+            "default": "🎉 YENİ SEZON BAŞLADI!"
+          },
+          {
+            "id": "bg_color",
+            "type": "color",
+            "label": "Arkaplan Rengi (Örn: #ffffff)"
+          },
+          {
+            "id": "text_color",
+            "type": "color",
+            "label": "Yazı Rengi (Örn: #000000)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Ana Sayfa (İçerik)",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "hero.background_image",
+        "label": "Hero Arka Plan Görseli",
+        "info": "Ana sayfanın hero (karşılama) bölümünün arka plan resmi. Boş bırakılırsa header banner veya varsayılan görsel kullanılır."
+      },
+      {
+        "type": "text",
+        "id": "home.hero_title",
+        "label": "Hero Başlığı",
+        "default": "BU BÜYÜLÜ DÜNYADA KENDİ EFSANENİ YAZ"
+      },
+      {
+        "type": "textarea",
+        "id": "home.hero_description",
+        "label": "Hero Açıklama Metni",
+        "default": "Bu büyülü dünyada unutulmaz bir macera seni bekliyor. Loncanı kur, ticaretini geliştir ve krallığın en güçlü oyuncuları arasında yerini al."
+      },
+      {
+        "type": "text",
+        "id": "home.hero_btn1_text",
+        "label": "Birinci Buton Metni (Sol)",
+        "default": "DISCORD'A KATIL"
+      },
+      {
+        "type": "url",
+        "id": "home.hero_btn1_url",
+        "label": "Birinci Buton Linki (Discord)",
+        "default": "https://discord.gg"
+      },
+      {
+        "type": "text",
+        "id": "home.hero_btn2_text",
+        "label": "İkinci Buton Metni (Sağ)",
+        "default": "MAĞAZAYI KEŞFET"
+      },
+      {
+        "type": "url",
+        "id": "home.hero_btn2_url",
+        "label": "İkinci Buton Linki (Mağaza)",
+        "default": "/store"
+      },
+      {
+        "type": "text",
+        "id": "home.news_title",
+        "label": "Haberler & Duyurular Bölüm Başlığı",
+        "default": "SON GELİŞMELER & DUYURULAR"
+      },
+      {
+        "id": "home.slider",
+        "type": "array",
+        "label": "Ana Sayfa Slider",
+        "item_schema": [
+          {
+            "id": "image",
+            "type": "image_picker",
+            "label": "Slider Görseli"
+          },
+          {
+            "id": "badge",
+            "type": "text",
+            "label": "Rozet Metni",
+            "default": "ÖNE ÇIKAN DUYURU"
+          },
+          {
+            "id": "title",
+            "type": "text",
+            "label": "Başlık"
+          },
+          {
+            "id": "description",
+            "type": "text",
+            "label": "Açıklama Metni"
+          },
+          {
+            "id": "button_text",
+            "type": "text",
+            "label": "Buton Yazısı",
+            "default": "İncele"
+          },
+          {
+            "id": "button_url",
+            "type": "url",
+            "label": "Buton Linki",
+            "default": "/"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "home.slide_fallback_title",
+        "label": "Slider Boş Durum Başlığı",
+        "default": "Aethelgard Güncellemeleri ve Etkinlikler"
+      },
+      {
+        "type": "textarea",
+        "id": "home.slide_fallback_desc",
+        "label": "Slider Boş Durum Açıklaması",
+        "default": "Sunucuya eklenen yeni sistemler, dengelemeler ve özel etkinlik detayları burada."
+      },
+      {
+        "type": "category_picker",
+        "id": "home.featured_category",
+        "label": "Öne Çıkan Ürünler Kategorisi",
+        "info": "Ana sayfada listelenecek vitrin ürünlerinin bulunduğu kategori."
+      },
+      {
+        "type": "text",
+        "id": "discord.guild_id",
+        "label": "Discord Sunucu ID (Widget İçin)",
+        "info": "Ana sayfa hero ve sayaçlar için gerekli Discord Sunucu ID.",
+        "placeholder": "Örn: 123456789012345678",
+        "default": "1256991995147190272"
+      },
+      {
+        "type": "checkbox",
+        "id": "home.show_marquee",
+        "label": "Kayan Duyuru Bandı Gösterilsin mi?",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "home.show_recent_signups",
+        "label": "Diyara Son Katılan 3D Savaşçılar Şeridi Gösterilsin mi?",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "home.recent_signups_title",
+        "label": "Son Katılan Savaşçılar Bölüm Başlığı",
+        "default": "DİYARA SON KATILAN SAVAŞÇILAR"
+      },
+      {
+        "type": "checkbox",
+        "id": "home.show_stats_board",
+        "label": "Diyar İstatistik Panosu Gösterilsin mi?",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "home.stats_title",
+        "label": "İstatistik Panosu Ana Başlığı",
+        "default": "AETHELGARD İSTATİSTİKLERİ VE DESTEKÇİLERİMİZ"
+      },
+      {
+        "type": "text",
+        "id": "home.stats_card_1_title",
+        "label": "1. İstatistik Kartı Başlığı (Sol)",
+        "default": "TOP DESTEKÇİLER"
+      },
+      {
+        "type": "text",
+        "id": "home.stats_card_2_title",
+        "label": "2. İstatistik Kartı Başlığı (Orta)",
+        "default": "SON SATIN ALIMLAR"
+      },
+      {
+        "type": "text",
+        "id": "home.stats_card_3_title",
+        "label": "3. İstatistik Kartı Başlığı (Sağ)",
+        "default": "YENİ KATILANLAR"
+      },
+      {
+        "type": "checkbox",
+        "id": "home.show_quick_links",
+        "label": "Hızlı Erişim & Rehber Bölümü Gösterilsin mi?",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "home.quick_links_title",
+        "label": "Hızlı Erişim & Rehber Başlığı",
+        "default": "HIZLI ERİŞİM VE REHBER"
+      },
+      {
+        "type": "checkbox",
+        "id": "home.show_featured_products",
+        "label": "Öne Çıkan Ürünler Vitrini Gösterilsin mi?",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "home.featured_products_title",
+        "label": "Öne Çıkan Ürünler Başlığı",
+        "default": "EFSANEVİ HAZİNELER & EKİPMANLAR"
+      },
+      {
+        "type": "text",
+        "id": "home.cta_badge",
+        "label": "Alt Çağrı (CTA) Rozet Metni",
+        "default": "KRALLIK MACERASI"
+      },
+      {
+        "type": "text",
+        "id": "home.cta_title",
+        "label": "Alt Çağrı (CTA) Başlığı",
+        "default": "BU BÜYÜLÜ DÜNYADA YERİNİ AL"
+      },
+      {
+        "type": "textarea",
+        "id": "home.cta_description",
+        "label": "Alt Çağrı (CTA) Açıklaması",
+        "default": "Gelişmiş ekonomi, zorlu zindanlar ve devasa lonca savaşlarıyla dolu sunucumuza hemen katıl, klanınla birlikte zirveye oyna."
+      },
+      {
+        "type": "text",
+        "id": "home.cta_btn1_text",
+        "label": "Alt Çağrı (CTA) 1. Buton Metni",
+        "default": "DISCORD TOPLULUĞUMUZA KATILIN"
+      },
+      {
+        "type": "text",
+        "id": "home.cta_btn2_text",
+        "label": "Alt Çağrı (CTA) 2. Buton Metni",
+        "default": "MACERAYA İLK ADIM"
+      },
+      {
+        "type": "url",
+        "id": "home.cta_btn2_url",
+        "label": "Alt Çağrı (CTA) 2. Buton Linki",
+        "default": "/help"
+      }
+    ]
+  },
+  {
+    "name": "Alt Kısım (Footer)",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "footer.background_image",
+        "label": "Footer Arka Plan Görseli",
+        "info": "Footer bölümünün arka plan resmi. Boş bırakılırsa varsayılan görsel kullanılır."
+      },
+      {
+        "type": "image_picker",
+        "id": "footer.logo",
+        "label": "Footer Logosu",
+        "info": "Footer alanında gösterilecek özel logo. Boş bırakılırsa aydınlık zemin logosu kullanılır."
+      },
+      {
+        "type": "number",
+        "id": "footer.logo_width",
+        "label": "Footer Logo Genişliği (px)",
+        "default": 192
+      },
+      {
+        "type": "textarea",
+        "id": "footer.about",
+        "label": "Hakkımızda Metni",
+        "default": "Türkiye'nin en gelişmiş Minecraft sunucu ağı. Bize katıl ve maceraya başla!"
+      },
+      {
+        "type": "text",
+        "id": "footer.contact_email",
+        "label": "İletişim E-Posta Adresi",
+        "info": "Footer iletişim bölümünde gösterilecek e-posta adresi.",
+        "placeholder": "info@sunucu.com.tr"
+      },
+      {
+        "type": "text",
+        "id": "footer.contact_phone",
+        "label": "İletişim Telefon Numarası",
+        "info": "Footer iletişim bölümünde gösterilecek telefon numarası.",
+        "placeholder": "+90 555 123 45 67"
+      },
+      {
+        "type": "text",
+        "id": "footer.contact_address",
+        "label": "İletişim Açık Adresi",
+        "info": "Footer iletişim bölümünde gösterilecek fiziksel adres.",
+        "placeholder": "İstanbul, Türkiye"
+      },
+      {
+        "id": "footer.quick_links",
+        "type": "array",
+        "label": "Hızlı Bağlantılar Menüsü",
+        "item_schema": [
+          {
+            "id": "title",
+            "type": "text",
+            "label": "Link Başlığı"
+          },
+          {
+            "id": "url",
+            "type": "url",
+            "label": "URL"
+          }
+        ]
+      },
+      {
+        "id": "footer.support_links",
+        "type": "array",
+        "label": "Destek Linkleri Menüsü",
+        "item_schema": [
+          {
+            "id": "title",
+            "type": "text",
+            "label": "Link Başlığı"
+          },
+          {
+            "id": "url",
+            "type": "url",
+            "label": "URL"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "footer.copyright",
+        "label": "Copyright (Telif Hakkı) Metni",
+        "default": "© 2026 Tüm hakları saklıdır."
+      }
+    ]
+  },
+  {
+    "name": "Sosyal Medya Linkleri",
+    "settings": [
+      {
+        "type": "text",
+        "id": "discord_url",
+        "label": "Discord Linki"
+      },
+      {
+        "type": "text",
+        "id": "instagram_url",
+        "label": "Instagram Linki"
+      },
+      {
+        "type": "text",
+        "id": "tiktok_url",
+        "label": "TikTok Linki"
+      },
+      {
+        "type": "text",
+        "id": "youtube_url",
+        "label": "YouTube Linki"
+      },
+      {
+        "type": "text",
+        "id": "twitter_url",
+        "label": "X / Twitter Linki"
+      },
+      {
+        "type": "text",
+        "id": "forum_url",
+        "label": "Forum Linki"
+      }
+    ]
+  },
+  {
+    "name": "Mağaza Ayarları",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "store.banner_image",
+        "label": "Mağaza Banner Görseli"
+      },
+      {
+        "type": "text",
+        "id": "store.banner_subtitle",
+        "label": "Mağaza Banner Alt Başlığı",
+        "default": "Hoş Geldiniz"
+      },
+      {
+        "type": "text",
+        "id": "store.banner_title",
+        "label": "Mağaza Banner Başlığı",
+        "default": "Mağazaya Hoş Geldiniz!"
+      },
+      {
+        "type": "text",
+        "id": "store.banner_description",
+        "label": "Mağaza Banner Açıklaması",
+        "default": "Sunucumuza destek olmak ve harika avantajlar elde etmek için kategorilerden birini seçin."
+      }
+    ]
+  },
+  {
+    "name": "Giriş / Kayıt (Auth)",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "auth.background",
+        "label": "Sağ Taraf Arkaplan Görseli"
+      },
+      {
+        "type": "text",
+        "id": "auth.right_title",
+        "label": "Sağ Taraf Başlık",
+        "default": "Türkiye'nin En Büyük\nMinecraft Topluluğu"
+      },
+      {
+        "type": "textarea",
+        "id": "auth.right_description",
+        "label": "Sağ Taraf Açıklama",
+        "default": "Hemen aramıza katıl, arkadaşlarınla birlikte devasa haritalarda hayatta kal, mini oyunlarda yeteneklerini göster ve efsanevi ödüller kazan!"
+      },
+      {
+        "type": "text",
+        "id": "auth.login_title",
+        "label": "Giriş Yap Başlığı",
+        "default": "Tekrar Hoş Geldin!"
+      },
+      {
+        "type": "text",
+        "id": "auth.login_description",
+        "label": "Giriş Yap Açıklaması",
+        "default": "Hesabına giriş yap ve maceraya kaldığın yerden devam et."
+      },
+      {
+        "type": "text",
+        "id": "auth.register_title",
+        "label": "Kayıt Ol Başlığı",
+        "default": "Maceraya Katıl!"
+      },
+      {
+        "type": "text",
+        "id": "auth.register_description",
+        "label": "Kayıt Ol Açıklaması",
+        "default": "Hemen ücretsiz bir hesap oluştur ve binlerce oyuncu arasına katıl."
+      }
+    ]
+  },
+  {
+    "name": "Bakım Modu",
+    "settings": [
+      {
+        "type": "text",
+        "id": "maintenance.title",
+        "label": "Bakım Başlığı",
+        "default": "Bakım Çalışması"
+      },
+      {
+        "type": "textarea",
+        "id": "maintenance.description",
+        "label": "Bakım Açıklaması",
+        "default": "Şu anda sistemlerimizde planlı bir bakım çalışması yürütülmektedir. Çok yakında geri döneceğiz. Anlayışınız için teşekkür ederiz."
+      },
+      {
+        "type": "text",
+        "id": "maintenance.footer_text",
+        "label": "Bakım Alt Bilgisi (İsteğe Bağlı)",
+        "default": "Yetkiniz varsa giriş yapıp görüntüleyebilirsiniz."
+      }
+    ]
+  },
+  {
+    "name": "Entegrasyonlar",
+    "settings": [
+      {
+        "type": "text",
+        "id": "integrations.google_analytics_id",
+        "label": "Google Analytics Measurement ID",
+        "placeholder": "G-XXXXXXXXXX",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "integrations.tawk_to_id",
+        "label": "Tawk.to Property/Widget ID",
+        "info": "Tawk.to panelinizden alınan Property ID ve Widget ID. Örnek: 602d59ce918aa261273fddd4/1euoidjte",
+        "placeholder": "602d59ce918aa261273fddd4/1euoidjte",
+        "default": ""
+      }
+    ]
+  }
+]

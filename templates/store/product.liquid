@@ -1,0 +1,274 @@
+﻿<!-- STORE > PRODUCT -->
+<div class="container max-w-[1240px] mx-auto px-4 pt-32 pb-24 space-y-12">
+  <!-- Breadcrumb -->
+  <div class="flex flex-wrap items-center gap-3 text-xs font-medieval font-bold text-slate-400 uppercase tracking-widest">
+    <a href="/" class="hover:text-gold-bright transition-colors flex items-center gap-2">
+      <i class="fa-solid fa-house text-gold"></i>
+      <span>ANASAYFA</span>
+    </a>
+    <span class="text-gold-dark">&bull;</span>
+    <a href="/store" class="hover:text-gold-bright transition-colors">MAĞAZA</a>
+    <span class="text-gold-dark">&bull;</span>
+    <a href="/store/{{ server.slug }}" class="hover:text-gold-bright transition-colors">
+      {{ server.name | default: 'SUNUCU' }}
+    </a>
+    <span class="text-gold-dark">&bull;</span>
+    <span class="text-gold-bright">{{ product.name }}</span>
+  </div>
+
+  <!-- Product Section Container -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+    <!-- SOL: Görsel Galerisi -->
+    <div class="lg:col-span-7 flex flex-col gap-4">
+      <div class="flex flex-col md:flex-row gap-6">
+        <!-- Dikey Küçük Resimler -->
+        {% if product.images and product.images.size > 1 %}
+          <div class="flex md:flex-col gap-3 shrink-0 order-2 md:order-1 overflow-x-auto md:overflow-y-auto max-h-[500px] hide-scrollbar">
+            {% for img in product.images %}
+              <button
+                onclick="setProductImage('{{ img }}', {{ forloop.index0 }})"
+                class="thumb-btn w-16 h-16 md:w-20 md:h-20 shrink-0 bg-realm-bg border {% if forloop.first %}border-gold{% else %}border-realm-border{% endif %} hover:border-gold p-2 transition-all duration-300 focus:outline-none"
+              >
+                <img src="{{ img }}" alt="Thumbnail {{ forloop.index }}" class="w-full h-full object-contain filter drop-shadow">
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <!-- Ana Büyük Ürün Çerçevesi -->
+        <div class="w-full aspect-square bg-realm-bg border border-realm-border p-10 flex items-center justify-center relative overflow-hidden order-1 md:order-2 group shadow-2xl">
+          {% if product.discountValue and product.discountValue > 0 %}
+            <div class="absolute top-4 left-4 z-10">
+              <span class="bg-red-950 text-red-200 border border-red-800 text-[10px] font-medieval font-bold uppercase tracking-widest px-3 py-1 shadow-md">
+                -{{ product.discountValue -}}
+                {%- if product.discountType == 'percentage' %}%{% else %}₺{% endif %} İNDİRİM
+              </span>
+            </div>
+          {% endif %}
+
+          {% if product.images and product.images.size > 0 %}
+            <img
+              id="mainProductImage"
+              src="{{ product.images[0] }}"
+              alt="{{ product.name }}"
+              class="w-full h-full object-contain filter drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-700 ease-out"
+            >
+          {% elsif product.image != blank %}
+            <img
+              id="mainProductImage"
+              src="{{ product.image }}"
+              alt="{{ product.name }}"
+              class="w-full h-full object-contain filter drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-700 ease-out"
+            >
+          {% else %}
+            <i class="fa-solid fa-shield-halved text-8xl text-slate-800"></i>
+          {% endif %}
+
+          <!-- Nokta Göstergeleri (Image Pagination Dots) -->
+          {% if product.images and product.images.size > 1 %}
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 bg-realm-bg/85 backdrop-blur-md px-3 py-1.5 rounded-full border border-realm-border">
+              {% for img in product.images %}
+                <button
+                  onclick="setProductImage('{{ img }}', {{ forloop.index0 }})"
+                  class="gallery-dot transition-all duration-300 rounded-full {% if forloop.first %}bg-gold w-5 h-2{% else %}bg-slate-600 hover:bg-slate-400 w-2 h-2{% endif %}"
+                  title="Resim {{ forloop.index }}"
+                ></button>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- SAĞ: Ürün İsmi, Fiyat, Sepete Ekle ve Detaylar -->
+    <div class="lg:col-span-5 flex flex-col justify-start space-y-6">
+      <!-- Başlık & Fiyat -->
+      <div>
+        <h1 class="text-4xl md:text-5xl font-medieval font-normal text-slate-100 mb-3 tracking-wide leading-tight">
+          {{ product.name }}
+        </h1>
+
+        <div class="text-3xl font-medieval font-bold text-gold-bright">
+          {% if product.discountValue and product.discountValue > 0 %}
+            <span class="text-xl text-slate-500 line-through mr-3">₺{{ product.price }}</span>
+            <span>
+              {% if product.discountType == 'percentage' %}
+                ₺{{ product.price | times: product.discountValue | divided_by: 100 | minus: product.price | abs }}
+              {% else %}
+                ₺{{ product.price | minus: product.discountValue }}
+              {% endif %}
+            </span>
+          {% else %}
+            <span>₺{{ product.price }}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Miktar & Sepete Ekle Aksiyon Satırı -->
+      <div class="flex items-center gap-4 pt-2">
+        <div class="flex items-center border border-white/30 bg-realm-bg text-white">
+          <input
+            id="productQty"
+            type="number"
+            value="1"
+            min="1"
+            max="99"
+            class="w-12 py-3 text-center bg-transparent text-sm font-bold text-white focus:outline-none"
+          >
+          <div class="flex flex-col border-l border-white/20">
+            <button
+              onclick="document.getElementById('productQty').stepUp()"
+              class="px-2 py-1 text-slate-400 hover:text-white transition-colors"
+            >
+              <i class="fa-solid fa-chevron-up text-[9px]"></i>
+            </button>
+            <button
+              onclick="document.getElementById('productQty').stepDown()"
+              class="px-2 py-1 text-slate-400 hover:text-white transition-colors"
+            >
+              <i class="fa-solid fa-chevron-down text-[9px]"></i>
+            </button>
+          </div>
+        </div>
+
+        <button
+          data-product="{{ product | json | escape }}"
+          onclick="const qty = parseInt(document.getElementById('productQty').value || 1); const p = JSON.parse(this.dataset.product); p.quantity = qty; window.addToCart(p);"
+          class="rpg-btn border-white/60 hover:border-gold px-8 py-3.5 text-xs tracking-[0.2em]"
+        >
+          SEPETE EKLE
+        </button>
+      </div>
+
+      <!-- Ayırıcı Çizgi -->
+      <div class="rpg-divider"></div>
+
+      <!-- Metadata Bilgileri (SKU, Kategori, Etiketler) -->
+      <div class="space-y-2 text-xs font-medieval text-slate-400">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-slate-300">SKU:</span>
+          <span class="text-slate-400">{{ product.id | default: '001' }}</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-slate-300">Kategori:</span>
+          <a href="/store/{{ server.slug }}/{{ category.slug }}" class="text-gold-bright hover:underline">
+            {{ category.name | default: 'Paketler' }}
+          </a>
+        </div>
+
+        {% if product.tags and product.tags.size > 0 %}
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-slate-300">Etiketler:</span>
+            <span class="text-slate-400">{{ product.tags | join: ', ' }}</span>
+          </div>
+        {% endif %}
+
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-slate-300">Stok:</span>
+          {% if product.stock <= 0 %}
+            <span class="text-emerald-400 font-bold">SINIRSIZ</span>
+          {% else %}
+            <span class="text-amber-400 font-bold">{{ product.stock }} ADET</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alt Sekme Alanı -->
+  <div class="pt-8 border-t border-realm-border">
+    <!-- Tab Navigasyon Başlıkları -->
+    <div class="flex items-center gap-8 border-b border-realm-border pb-4 mb-6">
+      <button
+        onclick="switchTab('desc')"
+        id="tabBtnDesc"
+        class="text-sm font-medieval font-bold text-gold-bright border-b-2 border-gold pb-4 -mb-[18px] uppercase tracking-wider transition-all"
+      >
+        AÇIKLAMA
+      </button>
+
+      <button
+        onclick="switchTab('info')"
+        id="tabBtnInfo"
+        class="text-sm font-medieval font-bold text-slate-400 border-b-2 border-transparent pb-4 -mb-[18px] uppercase tracking-wider hover:text-slate-200 transition-all"
+      >
+        EK BİLGİLER
+      </button>
+    </div>
+
+    <!-- Tab 1: Açıklama İçeriği -->
+    <div id="tabContentDesc">
+      {% assign prodDesc = product.description %}
+      {% if prodDesc and prodDesc != blank %}
+        <div class="prose prose-invert max-w-none text-slate-300 font-serif leading-relaxed text-sm">
+          {{ prodDesc | lexical_html }}
+        </div>
+      {% else %}
+        <p class="text-sm text-slate-400 font-medieval italic">Bu ürün için henüz detaylı açıklama eklenmemiş.</p>
+      {% endif %}
+    </div>
+
+    <!-- Tab 2: Ek Bilgiler İçeriği (Additional Information Content) -->
+    <div id="tabContentInfo" class="hidden">
+      <div class="bg-realm-bg border border-realm-border p-6 rounded-sm text-xs font-medieval text-slate-300 space-y-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div><strong class="text-gold-bright">Sunucu:</strong> {{ server.name | default: 'Minecraft Server' }}</div>
+          <div><strong class="text-gold-bright">Teslimat Türü:</strong> Otomatik Oyun İçi Komut</div>
+          <div><strong class="text-gold-bright">Destek:</strong> Discord Destek Talebi (Ticket)</div>
+          <div><strong class="text-gold-bright">Ödeme Altyapısı:</strong> %100 3D Secure Güvenli Ödeme</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setProductImage(src, index) {
+    const mainImg = document.getElementById('mainProductImage');
+    if (mainImg) mainImg.src = src;
+
+    // Küçük resim vurgularını güncelle
+    document.querySelectorAll('.thumb-btn').forEach((btn, i) => {
+      if (i === index) {
+        btn.classList.add('border-gold');
+        btn.classList.remove('border-realm-border');
+      } else {
+        btn.classList.remove('border-gold');
+        btn.classList.add('border-realm-border');
+      }
+    });
+
+    // Nokta göstergelerini güncelle
+    document.querySelectorAll('.gallery-dot').forEach((dot, i) => {
+      if (i === index) {
+        dot.className = 'gallery-dot transition-all duration-300 rounded-full bg-gold w-5 h-2';
+      } else {
+        dot.className = 'gallery-dot transition-all duration-300 rounded-full bg-slate-600 hover:bg-slate-400 w-2 h-2';
+      }
+    });
+  }
+
+  function switchTab(tab) {
+    const descContent = document.getElementById('tabContentDesc');
+    const infoContent = document.getElementById('tabContentInfo');
+    const descBtn = document.getElementById('tabBtnDesc');
+    const infoBtn = document.getElementById('tabBtnInfo');
+
+    if (tab === 'desc') {
+      descContent.classList.remove('hidden');
+      infoContent.classList.add('hidden');
+      descBtn.className =
+        'text-sm font-medieval font-bold text-gold-bright border-b-2 border-gold pb-4 -mb-[18px] uppercase tracking-wider transition-all';
+      infoBtn.className =
+        'text-sm font-medieval font-bold text-slate-400 border-b-2 border-transparent pb-4 -mb-[18px] uppercase tracking-wider hover:text-slate-200 transition-all';
+    } else {
+      descContent.classList.add('hidden');
+      infoContent.classList.remove('hidden');
+      infoBtn.className =
+        'text-sm font-medieval font-bold text-gold-bright border-b-2 border-gold pb-4 -mb-[18px] uppercase tracking-wider transition-all';
+      descBtn.className =
+        'text-sm font-medieval font-bold text-slate-400 border-b-2 border-transparent pb-4 -mb-[18px] uppercase tracking-wider hover:text-slate-200 transition-all';
+    }
+  }
+</script>

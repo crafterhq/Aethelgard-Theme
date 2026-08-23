@@ -1,0 +1,537 @@
+﻿{% assign displayUser = profileUser %}
+{% if profileUser.statusCode or profileUser == blank %}
+  {% assign displayUser = customer %}
+{% endif %}
+
+{% assign isOwnProfile = false %}
+{% if displayUser.username == customer.username %}
+  {% assign isOwnProfile = true %}
+{% endif %}
+
+{% if displayUser.username %}
+  <div class="container max-w-[1350px] mx-auto px-4 sm:px-6 py-8 sm:py-12 min-h-[60vh] text-slate-100">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Sol Kolon: Profil Bilgileri ve Navigasyon -->
+      <div class="lg:col-span-4 space-y-6">
+        <!-- Profil Kartı -->
+        <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-8 shadow-2xl relative overflow-hidden flex flex-col items-center text-center">
+          <div class="relative w-28 h-28 mb-5">
+            <div class="absolute inset-0 bg-gold/20 rounded-full blur-xl animate-pulse"></div>
+            <img
+              src="https://mc-heads.net/avatar/{{ displayUser.username }}/128"
+              alt="{{ displayUser.username }}"
+              class="relative w-full h-full object-cover rounded-sm border-2 border-gold shadow-xl"
+            >
+          </div>
+
+          {% if displayUser.role %}
+            <div
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm text-[10px] font-medieval font-bold uppercase tracking-widest mb-4 border"
+              style="background-color: {{ displayUser.role.color }}15; color: {{ displayUser.role.color }}; border-color: {{ displayUser.role.color }}40;"
+            >
+              <i class="fa-solid fa-shield-halved text-xs"></i>
+              <span>{{ displayUser.role.name }}</span>
+            </div>
+          {% endif %}
+
+          <h1 class="text-2xl font-medieval font-black text-gold-bright mb-2 uppercase tracking-wider drop-shadow-md">
+            {{ displayUser.username }}
+          </h1>
+
+          <div class="flex items-center justify-center gap-4 text-xs font-medieval text-slate-400 mt-1">
+            <div class="flex items-center gap-1.5 bg-realm-card px-3 py-1 rounded-sm border border-realm-border">
+              <i class="fa-solid fa-calendar-days text-amber-500"></i>
+              <span>Kayıt: {{ displayUser.createdAt | date: '%d.%m.%Y' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- İstatistikler -->
+        <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-6 shadow-2xl">
+          <h3 class="text-sm font-medieval font-bold text-slate-200 mb-4 uppercase tracking-wider border-b border-realm-border pb-3 flex items-center gap-2">
+            <i class="fa-solid fa-chart-simple text-gold-bright"></i>
+            <span>İSTATİSTİKLER</span>
+          </h3>
+          <div class="space-y-3 font-medieval">
+            <div class="flex items-center justify-between p-3.5 rounded-sm bg-realm-card border border-emerald-900/60 shadow-inner">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-sm bg-realm-bg border border-emerald-800/60 text-emerald-400 flex items-center justify-center">
+                  <i class="fa-solid fa-coins"></i>
+                </div>
+                <div>
+                  <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">BAKİYE</div>
+                  <div class="text-base font-black text-emerald-400">{{ displayUser.balance | default: 0 }} ₺</div>
+                </div>
+              </div>
+            </div>
+            
+            {% if isOwnProfile %}
+            <div class="flex items-center justify-between p-3.5 rounded-sm bg-realm-card border border-amber-900/60 shadow-inner">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-sm bg-realm-bg border border-amber-800/60 text-amber-400 flex items-center justify-center">
+                  <i class="fa-solid fa-box-open"></i>
+                </div>
+                <div>
+                  <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">EŞYALAR</div>
+                  <div class="text-base font-black text-amber-300">{{ displayUser.chest.size | default: 0 }}</div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Navigasyon (Tab Butonları) -->
+        <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-6 shadow-2xl">
+          <h3 class="text-sm font-medieval font-bold text-slate-200 mb-4 uppercase tracking-wider border-b border-realm-border pb-3 flex items-center gap-2">
+            <i class="fa-solid fa-compass text-gold-bright"></i>
+            <span>MENÜ</span>
+          </h3>
+          <div class="space-y-2 flex flex-col font-medieval text-xs">
+            <button
+              class="tab-btn w-full flex items-center gap-3 p-3.5 rounded-sm font-bold transition-all text-left bg-realm-card text-gold-bright border border-gold/60"
+              data-target="tab-wall"
+            >
+              <i class="fa-solid fa-scroll text-amber-400"></i>
+              <span>PROFİL DUVARI</span>
+            </button>
+            
+            {% if isOwnProfile %}
+            <button
+              class="tab-btn w-full flex items-center gap-3 p-3.5 rounded-sm font-bold transition-all text-left text-slate-400 hover:bg-realm-card hover:text-slate-200 border border-transparent"
+              data-target="tab-inventory"
+            >
+              <i class="fa-solid fa-boxes-stacked text-slate-400"></i>
+              <span>ENVANTERİM</span>
+            </button>
+            <a
+              href="/profile/settings"
+              class="w-full flex items-center gap-3 p-3.5 rounded-sm font-bold transition-all text-left text-slate-400 hover:bg-realm-card hover:text-slate-200 border border-transparent"
+            >
+              <i class="fa-solid fa-gear text-slate-400"></i>
+              <span>AYARLAR</span>
+            </a>
+            <a
+              href="/profile/settings?tab=discord"
+              class="w-full flex items-center gap-3 p-3.5 rounded-sm font-bold transition-all text-left text-slate-400 hover:bg-realm-card hover:text-slate-200 border border-transparent"
+            >
+              <i class="fa-brands fa-discord text-slate-400"></i>
+              <span>DISCORD</span>
+            </a>
+            <a
+              href="/profile/settings?tab=2fa"
+              class="w-full flex items-center gap-3 p-3.5 rounded-sm font-bold transition-all text-left text-slate-400 hover:bg-realm-card hover:text-slate-200 border border-transparent"
+            >
+              <i class="fa-solid fa-shield-halved text-slate-400"></i>
+              <span>2FA GÜVENLİK</span>
+            </a>
+            {% if customer.role.permissions and customer.role.permissions.size > 0 %}
+              <a
+                href="https://app.crafter.net.tr/cms/auth?websiteId={{ customer.websiteId }}&accessToken={{ customer.access_token }}&refreshToken={{ customer.refresh_token }}"
+                target="_blank"
+                class="w-full flex items-center gap-3 p-3.5 rounded-sm font-bold transition-all text-left bg-amber-950/40 text-gold-bright hover:bg-amber-900/60 border border-gold/60 shadow-md"
+              >
+                <i class="fa-solid fa-crown text-amber-400"></i>
+                <span>YÖNETİM PANELİ</span>
+              </a>
+            {% endif %}
+            <a
+              href="#" onclick="logoutAccount(); return false;"
+              class="w-full flex items-center gap-3 p-3.5 rounded-sm font-bold transition-all text-left text-red-400 hover:bg-red-950/40 border border-transparent"
+            >
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <span>ÇIKIŞ YAP</span>
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Sağ Kolon: Tab İçerikleri -->
+      <div class="lg:col-span-8">
+        <!-- DUVAR TABI -->
+        <div id="tab-wall" class="tab-content block bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 shadow-2xl">
+          <h2 class="text-xl font-medieval font-black text-slate-100 mb-6 flex items-center gap-3 uppercase tracking-wider border-b border-realm-border pb-4">
+            <i class="fa-solid fa-scroll text-gold-bright"></i>
+            <span>PROFİL DUVARI</span>
+          </h2>
+
+          <!-- Mesaj Gönderme Kutusu -->
+          {% if customer %}
+          <div class="flex gap-4 mb-8">
+            <div class="w-10 h-10 rounded-sm bg-realm-bg border border-realm-border shrink-0 overflow-hidden">
+              <img src="https://mc-heads.net/avatar/{{ customer.username }}/48" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1">
+              <textarea
+                id="wall-message-input"
+                placeholder="Duvarınıza bir şeyler yazın..."
+                class="w-full min-h-[90px] p-4 bg-realm-bg border border-realm-border rounded-sm focus:outline-none focus:border-gold transition-all resize-none font-sans text-xs text-slate-100 placeholder-slate-600"
+              ></textarea>
+              <div class="flex justify-end mt-3">
+                <button
+                  id="btn-send-message"
+                  class="rpg-btn-sharp-gold px-6 py-2.5 rounded-sm font-medieval font-bold text-xs uppercase tracking-widest disabled:opacity-50"
+                >
+                  GÖNDER
+                </button>
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <div class="bg-realm-card rounded-sm p-6 border border-realm-border text-center mb-8">
+            <p class="text-slate-400 font-medieval text-xs mb-3">Mesaj gönderebilmek için giriş yapmalısınız.</p>
+            <a href="/auth" class="rpg-btn-sharp-gold px-6 py-2 rounded-sm text-xs font-medieval font-bold uppercase inline-block">GİRİŞ YAP</a>
+          </div>
+          {% endif %}
+
+          <!-- Duvar Mesajları Listesi -->
+          <div id="wall-messages-list" class="space-y-4">
+            <div class="py-12 text-center text-slate-500 font-medieval text-xs bg-realm-bg rounded-sm border border-realm-border border-dashed uppercase tracking-widest">
+              MESAJLAR YÜKLENİYOR...
+            </div>
+          </div>
+        </div>
+
+        <!-- ENVANTER TABI -->
+        <div
+          id="tab-inventory"
+          class="tab-content hidden bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 shadow-2xl"
+        >
+          <h2 class="text-xl font-medieval font-black text-slate-100 mb-6 flex items-center gap-3 uppercase tracking-wider border-b border-realm-border pb-4">
+            <i class="fa-solid fa-boxes-stacked text-gold-bright"></i>
+            <span>ENVANTERİM</span>
+          </h2>
+
+          {% if customer.chest.size > 0 %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {% for item in customer.chest %}
+                {% unless item.used %}
+                  <div class="p-4 rounded-sm border border-realm-border bg-realm-bg hover:border-gold transition-all flex flex-col items-center text-center group">
+                    <div class="w-14 h-14 bg-realm-card rounded-sm border border-realm-border flex items-center justify-center text-amber-400 text-xl mb-3 group-hover:scale-105 transition-transform">
+                      <i class="fa-solid fa-gift"></i>
+                    </div>
+                    <div class="font-medieval font-bold text-slate-100 text-xs line-clamp-2 mb-1 group-hover:text-gold-bright transition-colors">{{ item.product.name }}</div>
+                    <div class="text-[10px] font-medieval text-slate-500 mt-auto">{{ item.createdAt | date: '%d.%m.%Y' }}</div>
+                  </div>
+                {% endunless %}
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="py-12 text-center text-slate-500 font-medieval text-xs bg-realm-bg rounded-sm border border-realm-border border-dashed uppercase tracking-widest">
+              ENVANTERİNİZDE HİÇ EŞYA BULUNMUYOR.
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    {% if isOwnProfile %}
+      window.SERVER_WALL_MESSAGES = {{ wallMessages | json }};
+    {% else %}
+      window.SERVER_WALL_MESSAGES = [];
+    {% endif %}
+    const isOwnProfile = {{ isOwnProfile | json }};
+    const targetUserId = '{{ displayUser.id }}';
+    const targetUsername = '{{ displayUser.username }}';
+    const currentUsername = '{{ customer.username }}';
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const discordStatus = urlParams.get('discord_status');
+      const discordErr = urlParams.get('discord_error');
+      if (discordStatus === 'connected') {
+        showToast('Discord hesabınız başarıyla bağlandı!', 'success');
+        window.history.replaceState({}, '', '/profile');
+      } else if (discordErr) {
+        showToast(decodeURIComponent(discordErr), 'error');
+        window.history.replaceState({}, '', '/profile');
+      }
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach((b) => {
+            b.classList.remove('bg-realm-card', 'text-gold-bright', 'border-gold/60');
+            b.classList.add('text-slate-400', 'border-transparent');
+          });
+
+          btn.classList.add('bg-realm-card', 'text-gold-bright', 'border-gold/60');
+          btn.classList.remove('text-slate-400', 'border-transparent');
+
+          tabContents.forEach((c) => c.classList.add('hidden'));
+          tabContents.forEach((c) => c.classList.remove('block'));
+
+          const target = document.getElementById(btn.getAttribute('data-target'));
+          if (target) {
+            target.classList.remove('hidden');
+            target.classList.add('block');
+          }
+        });
+      });
+
+      // Duvar Mesajları Logic
+      const wallContainer = document.getElementById('wall-messages-list');
+      const wallInput = document.getElementById('wall-message-input');
+      const btnSend = document.getElementById('btn-send-message');
+
+      function formatTimeAgo(dateStr) {
+        const date = new Date(dateStr);
+        const seconds = Math.floor((new Date() - date) / 1000);
+        let interval = seconds / 31536000;
+        if (interval > 1) return Math.floor(interval) + ' yıl önce';
+        interval = seconds / 2592000;
+        if (interval > 1) return Math.floor(interval) + ' ay önce';
+        interval = seconds / 86400;
+        if (interval > 1) return Math.floor(interval) + ' gün önce';
+        interval = seconds / 3600;
+        if (interval > 1) return Math.floor(interval) + ' saat önce';
+        interval = seconds / 60;
+        if (interval > 1) return Math.floor(interval) + ' dakika önce';
+        return 'az önce';
+      }
+
+      function renderWallMessages(messages = window.SERVER_WALL_MESSAGES) {
+        if (!targetUserId) return;
+        if (!Array.isArray(messages)) messages = [];
+        
+        try {
+          wallContainer.innerHTML = '';
+          if (messages.length === 0) {
+            wallContainer.innerHTML = `
+              <div class="py-12 text-center text-slate-500 font-medieval text-xs bg-realm-bg rounded-sm border border-realm-border border-dashed uppercase tracking-widest">
+                HENÜZ DUVARINIZDA MESAJ BULUNMUYOR.
+              </div>
+            `;
+            return;
+          }
+
+          messages.forEach((msg) => {
+            const isStaff = msg.sender.role && msg.sender.role.name;
+            const hasReplies = msg.replies && msg.replies.length > 0;
+            
+            let repliesHtml = '';
+            if (hasReplies) {
+              repliesHtml += `
+                <div class="mt-2">
+                  <button class="toggle-replies-btn text-xs font-medieval font-bold text-slate-400 hover:text-gold-bright transition-colors flex items-center gap-1 uppercase" data-id="${msg.id}">
+                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                    <span>YANITLARI GÖSTER (${msg.replies.length})</span>
+                  </button>
+                  
+                  <div id="replies-${msg.id}" class="hidden mt-3 ml-6 pl-4 border-l-2 border-realm-border space-y-3">
+                    ${msg.replies.map(reply => {
+                      const replyStaff = reply.sender.role && reply.sender.role.name;
+                      return `
+                        <div class="flex items-start gap-3 bg-realm-bg p-3 rounded-sm border border-realm-border">
+                          <div class="w-7 h-7 bg-realm-card rounded-sm border border-realm-border overflow-hidden shrink-0">
+                            <img src="https://mc-heads.net/avatar/${reply.sender.username}/32" class="w-full h-full object-cover">
+                          </div>
+                          <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1 flex-wrap font-medieval">
+                              <span class="font-bold text-gold-bright text-xs">${reply.sender.username}</span>
+                              ${
+                                replyStaff
+                                  ? `<span class="px-1.5 py-0.5 rounded-sm text-[9px] font-bold border uppercase tracking-wider" style="color: ${reply.sender.role.color}; border-color: ${reply.sender.role.color}40; background-color: ${reply.sender.role.color}15;">${reply.sender.role.name}</span>`
+                                  : ''
+                              }
+                              <span class="text-[10px] text-slate-500 ml-auto">${formatTimeAgo(reply.createdAt)}</span>
+                            </div>
+                            <p class="text-xs font-sans text-slate-300">${reply.content}</p>
+                          </div>
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+                </div>
+              `;
+            }
+
+            let replyInputHtml = '';
+            if (currentUsername) {
+              replyInputHtml = `
+                <div id="reply-form-${msg.id}" class="hidden mt-3 ml-6 flex gap-3">
+                  <div class="w-7 h-7 bg-realm-bg rounded-sm border border-realm-border overflow-hidden shrink-0">
+                    <img src="https://mc-heads.net/avatar/${currentUsername}/32" class="w-full h-full object-cover">
+                  </div>
+                  <div class="flex-1">
+                    <textarea id="reply-input-${msg.id}" placeholder="Yanıtınızı yazın..." class="w-full min-h-[50px] p-3 text-xs bg-realm-bg border border-realm-border rounded-sm focus:outline-none focus:border-gold transition-all resize-none font-sans text-slate-100 placeholder-slate-600"></textarea>
+                    <div class="flex justify-end gap-2 mt-2 font-medieval">
+                      <button class="cancel-reply-btn px-3 py-1 bg-realm-card hover:bg-realm-card text-slate-400 font-bold rounded-sm text-[11px] uppercase border border-realm-border" data-id="${msg.id}">İPTAL</button>
+                      <button class="send-reply-btn px-3 py-1 rpg-btn-sharp-gold rounded-sm font-bold text-[11px] uppercase" data-id="${msg.id}">YANITLA</button>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }
+
+            const html = `
+              <div class="p-4 sm:p-5 rounded-sm bg-realm-card border border-realm-border">
+                <div class="flex items-start gap-4">
+                  <div class="w-9 h-9 bg-realm-bg rounded-sm border border-realm-border overflow-hidden shrink-0">
+                    <img src="https://mc-heads.net/avatar/${msg.sender.username}/40" class="w-full h-full object-cover">
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1 flex-wrap font-medieval">
+                      <span class="font-bold text-gold-bright text-sm">${msg.sender.username}</span>
+                      ${
+                        isStaff
+                          ? `<span class="px-2 py-0.5 rounded-sm text-[10px] font-bold border uppercase tracking-wider" style="color: ${msg.sender.role.color}; border-color: ${msg.sender.role.color}40; background-color: ${msg.sender.role.color}15;">${msg.sender.role.name}</span>`
+                          : ''
+                      }
+                      <span class="text-xs text-slate-500 ml-auto">${formatTimeAgo(msg.createdAt)}</span>
+                    </div>
+                    <p class="text-xs font-sans text-slate-300 mb-3 leading-relaxed">${msg.content}</p>
+                    
+                    ${currentUsername ? `
+                      <button class="reply-btn text-xs font-medieval font-bold text-slate-400 hover:text-gold-bright transition-colors flex items-center gap-1 uppercase" data-id="${msg.id}">
+                        <i class="fa-solid fa-reply text-[10px]"></i>
+                        <span>YANITLA</span>
+                      </button>
+                    ` : ''}
+                    
+                    ${repliesHtml}
+                    ${replyInputHtml}
+                  </div>
+                </div>
+              </div>
+            `;
+            wallContainer.insertAdjacentHTML('beforeend', html);
+          });
+        } catch (err) {
+          console.error(err);
+          wallContainer.innerHTML =
+            '<div class="py-12 text-center text-red-400 font-medieval text-xs bg-red-950/40 rounded-sm border border-red-900/60 uppercase">MESAJLAR YÜKLENEMEDİ.</div>';
+        }
+      }
+
+      async function fetchWallMessages() {
+        if (!targetUserId) return;
+        try {
+          const res = await fetch(`/api/storefront/v2/users/${targetUserId}/wall`);
+          const data = await res.json();
+          const messages = data.data || data || [];
+          renderWallMessages(messages);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      if (btnSend) {
+        btnSend.addEventListener('click', async () => {
+          const content = wallInput.value.trim();
+          if (!content) return;
+
+          btnSend.disabled = true;
+          btnSend.innerText = 'GÖNDERİLİYOR...';
+
+          try {
+            await fetch(`/api/storefront/v2/users/${targetUserId}/wall`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ content }),
+            });
+            wallInput.value = '';
+            fetchWallMessages();
+          } catch (err) {
+            console.error(err);
+            window.showToast?.('Mesaj gönderilirken hata oluştu.', 'error') || alert('Mesaj gönderilirken hata oluştu.');
+          } finally {
+            btnSend.disabled = false;
+            btnSend.innerText = 'GÖNDER';
+          }
+        });
+      }
+
+      wallContainer.addEventListener('click', async (e) => {
+        const target = e.target.closest('button');
+        if (!target) return;
+
+        const msgId = target.getAttribute('data-id');
+        
+        if (target.classList.contains('toggle-replies-btn')) {
+          const repliesDiv = document.getElementById(`replies-${msgId}`);
+          if (repliesDiv) {
+            if (repliesDiv.classList.contains('hidden')) {
+              repliesDiv.classList.remove('hidden');
+              target.innerHTML = `<i class="fa-solid fa-chevron-up text-[10px]"></i> <span>YANITLARI GİZLE</span>`;
+            } else {
+              repliesDiv.classList.add('hidden');
+              const replyCount = repliesDiv.children.length;
+              target.innerHTML = `<i class="fa-solid fa-chevron-down text-[10px]"></i> <span>YANITLARI GÖSTER (${replyCount})</span>`;
+            }
+          }
+        }
+
+        if (target.classList.contains('reply-btn')) {
+          document.querySelectorAll('[id^="reply-form-"]').forEach(f => f.classList.add('hidden'));
+          
+          const replyForm = document.getElementById(`reply-form-${msgId}`);
+          if (replyForm) {
+            replyForm.classList.remove('hidden');
+            const input = document.getElementById(`reply-input-${msgId}`);
+            if(input) input.focus();
+          }
+        }
+
+        if (target.classList.contains('cancel-reply-btn')) {
+          const replyForm = document.getElementById(`reply-form-${msgId}`);
+          if (replyForm) {
+            replyForm.classList.add('hidden');
+            document.getElementById(`reply-input-${msgId}`).value = '';
+          }
+        }
+
+        if (target.classList.contains('send-reply-btn')) {
+          const input = document.getElementById(`reply-input-${msgId}`);
+          const content = input.value.trim();
+          if (!content) return;
+
+          target.disabled = true;
+          target.innerText = '...';
+
+          try {
+            await fetch(`/api/storefront/v2/users/${targetUserId}/wall/${msgId}/reply`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ content }),
+            });
+            input.value = '';
+            fetchWallMessages();
+          } catch (err) {
+            console.error(err);
+            window.showToast?.('Yanıt gönderilemedi.', 'error') || alert('Yanıt gönderilemedi.');
+          } finally {
+            target.disabled = false;
+            target.innerText = 'YANITLA';
+          }
+        }
+      });
+
+      if (isOwnProfile && Array.isArray(window.SERVER_WALL_MESSAGES) && window.SERVER_WALL_MESSAGES.length >= 0) {
+        renderWallMessages();
+      } else {
+        wallContainer.innerHTML = '<div class="py-12 text-center text-slate-500 font-medieval text-xs bg-realm-bg rounded-sm border border-realm-border border-dashed uppercase tracking-widest">MESAJLAR YÜKLENİYOR...</div>';
+        fetchWallMessages();
+      }
+    });
+  </script>
+{% else %}
+  <div class="min-h-[50vh] flex items-center justify-center text-slate-100">
+    <div class="text-center bg-realm-surface border-2 border-realm-border rounded-sm p-12 shadow-2xl max-w-md">
+      <h2 class="text-2xl font-medieval font-black text-slate-100 mb-2 uppercase tracking-wider">GİRİŞ YAPMALISINIZ</h2>
+      <p class="text-slate-400 font-medieval text-xs mb-6">
+        Profilinizi görüntülemek için hesabınıza giriş yapmanız gerekmektedir.
+      </p>
+      <a
+        href="/auth"
+        class="rpg-btn-sharp-gold px-8 py-3 rounded-sm font-medieval font-bold text-xs uppercase tracking-widest inline-block shadow-xl"
+      >
+        GİRİŞ YAP
+      </a>
+    </div>
+  </div>
+{% endif %}
