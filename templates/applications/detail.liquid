@@ -1,4 +1,4 @@
-﻿<div class="container max-w-[1400px] mx-auto px-4 mt-8 mb-24 space-y-8 min-h-[60vh]">
+<div class="container max-w-[1400px] mx-auto px-4 mt-8 mb-24 space-y-8 min-h-[60vh]">
   <!-- Breadcrumb -->
   <div class="flex items-center gap-2 text-sm font-bold text-slate-400 bg-realm-surface py-3 px-6 rounded-sm border border-realm-border w-fit shadow-sm border border-realm-border">
     <a href="/" class="hover:text-gold-bright transition-colors flex items-center gap-2">
@@ -236,24 +236,12 @@
       `;
 
       try {
-        const res = await fetch(`/api/storefront/staff-forms/${formId}/apply`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ values })
-        });
-        
-        const data = await res.json();
-        
-        if (res.ok && !data.error) {
-          boxSuccess.classList.remove('hidden');
-          boxSuccess.classList.add('flex');
-        } else {
-          boxError.classList.remove('hidden');
-          textError.innerText = data.message || data.error || 'Başvuru gönderilirken bir hata oluştu.';
-        }
+        await window.crafter.staffForms.apply(formId, values);
+        boxSuccess.classList.remove('hidden');
+        boxSuccess.classList.add('flex');
       } catch (err) {
         boxError.classList.remove('hidden');
-        textError.innerText = 'Sunucuyla bağlantı kurulamadı.';
+        textError.innerText = err.message || 'Başvuru gönderilirken bir hata oluştu.';
       } finally {
         btnSubmit.disabled = false;
         btnSubmit.innerHTML = `

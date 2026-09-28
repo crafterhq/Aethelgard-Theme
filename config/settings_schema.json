@@ -50,65 +50,72 @@
       {
         "type": "color",
         "id": "colors.gold",
-        "label": "Altın Rengi (Ana Aksent)",
-        "info": "Düğmeler, başlıklar ve çerçevelerde kullanılan ana altın rengi.",
-        "default": "#d4af37"
+        "label": "Ana Tema Rengi (Kırmızı Vurgu)",
+        "info": "Düğmeler, ana başlıklar, parıltılar ve çerçevelerde kullanılan temel kırmızı aksan rengi.",
+        "default": "#dc2626"
       },
       {
         "type": "color",
         "id": "colors.gold_bright",
-        "label": "Parlak Altın Vurgu Rengi",
-        "info": "Hover durumları, aktif menüler ve parlak metin efektleri için.",
-        "default": "#f5d061"
+        "label": "Parlak Kırmızı Vurgu Rengi",
+        "info": "Hover durumları, aktif menüler ve parlak metin efektleri için canlı kırmızı.",
+        "default": "#ef4444"
       },
       {
         "type": "color",
         "id": "colors.gold_dark",
-        "label": "Koyu Altın / Gradient Rengi",
-        "info": "Metalik buton gölgeleri ve koyu ton geçişleri için.",
-        "default": "#8a6d1c"
+        "label": "Koyu Kırmızı / Gradient Rengi",
+        "info": "Metalik buton gölgeleri ve koyu ton geçişleri için derin kırmızı.",
+        "default": "#991b1b"
+      },
+      {
+        "type": "color",
+        "id": "colors.gold_glow",
+        "label": "Vurgu Işıma (Glow) Rengi",
+        "info": "Kartlar, butonlar ve başlıkların çevresindeki neon parıltı rengi.",
+        "default": "#dc2626"
       },
       {
         "type": "color",
         "id": "colors.dark_bg",
         "label": "Ana Koyu Arkaplan Rengi",
-        "info": "Sitenin genel koyu arka plan rengi.",
-        "default": "#0c0907"
+        "info": "Sitenin genel koyu arka plan zemin rengi.",
+        "default": "#0c0606"
       },
       {
         "type": "color",
         "id": "colors.surface",
-        "label": "Yüzey / Panel Rengi",
+        "label": "Panel & Yüzey Rengi",
         "info": "Paneller, duyuru şeritleri ve podyum zeminleri için ara ton.",
-        "default": "#14100c"
+        "default": "#140a0a"
       },
       {
         "type": "color",
         "id": "colors.card_bg",
         "label": "Kart Arkaplan Rengi",
         "info": "İçerik kartları, kutular ve açılır menüler için zemin rengi.",
-        "default": "#191410"
+        "default": "#1a0d0d"
       },
       {
         "type": "color",
         "id": "colors.card_hover",
         "label": "Kart Hover / Vurgu Rengi",
         "info": "Kartların üzerine gelindiğindeki arka plan rengi.",
-        "default": "#221b15"
+        "default": "#241212"
       },
       {
         "type": "color",
         "id": "colors.border",
         "label": "Çizgi & Sınır Rengi",
         "info": "Kartlar ve bölümleri ayıran ana sınır çizgisi rengi.",
-        "default": "#3d301d"
+        "default": "#3f1717"
       },
       {
         "type": "color",
         "id": "colors.border_accent",
         "label": "Vurgulu Çerçeve Rengi",
         "info": "Büyük panolar ve başlık altı ayraçları için belirgin çerçeve rengi.",
-        "default": "#4a3821"
+        "default": "#5e1e1e"
       },
       {
         "type": "color",
@@ -123,6 +130,160 @@
         "label": "İkincil / Soluk Metin Rengi",
         "info": "Alt açıklamalar, tarihler ve ikincil etiketler için.",
         "default": "#94a3b8"
+      },
+      {
+        "type": "color",
+        "id": "colors.text_gold",
+        "label": "Vurgulu Kırmızı Metin Rengi",
+        "info": "Özel gotik başlıklar, fiyatlar ve parlayan kelimeler için vurgulu metin rengi.",
+        "default": "#ef4444"
+      },
+      {
+        "type": "color",
+        "id": "colors.navbar_bg",
+        "label": "Navbar (Üst Menü) Arkaplan Rengi",
+        "info": "Sabit üst navigasyon çubuğunun arkaplan rengi.",
+        "default": "#140a0a"
+      },
+      {
+        "type": "color",
+        "id": "colors.navbar_border",
+        "label": "Navbar Çerçeve Rengi",
+        "info": "Üst menünün etrafındaki parlayan çerçeve çizgisi.",
+        "default": "#5e1e1e"
+      },
+      {
+        "type": "color",
+        "id": "colors.navbar_text",
+        "label": "Navbar Link Yazı Rengi",
+        "info": "Üst menüdeki bağlantıların varsayılan metin rengi.",
+        "default": "#cbd5e1"
+      },
+      {
+        "type": "color",
+        "id": "colors.navbar_text_active",
+        "label": "Navbar Aktif / Hover Link Rengi",
+        "info": "Aktif menü bağlantısı ve fareyle üzerine gelindiğindeki link rengi.",
+        "default": "#ef4444"
+      },
+      {
+        "type": "color",
+        "id": "colors.btn_primary_bg",
+        "label": "Birincil Buton Arkaplan Rengi",
+        "info": "Giriş yap, IP kopyala, satın al gibi ana butonların dolgu rengi.",
+        "default": "#dc2626"
+      },
+      {
+        "type": "color",
+        "id": "colors.btn_primary_text",
+        "label": "Birincil Buton Metin Rengi",
+        "info": "Ana butonların içerisindeki metin rengi.",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "colors.btn_secondary_bg",
+        "label": "İkincil Buton Arkaplan Rengi",
+        "info": "Çerçeveli veya ikincil butonların zemin rengi.",
+        "default": "#1a0d0d"
+      },
+      {
+        "type": "color",
+        "id": "colors.btn_secondary_border",
+        "label": "İkincil Buton Kenarlık Rengi",
+        "info": "İkincil butonların kenar çerçevesi.",
+        "default": "#7f1d1d"
+      },
+      {
+        "type": "color",
+        "id": "colors.btn_secondary_text",
+        "label": "İkincil Buton Metin Rengi",
+        "info": "İkincil butonların metin rengi.",
+        "default": "#fca5a5"
+      },
+      {
+        "type": "color",
+        "id": "colors.marquee_bg",
+        "label": "Kayan Duyuru Bandı Arkaplan Rengi",
+        "info": "Ana sayfadaki kayan duyuru şeridinin arka planı.",
+        "default": "#170a0a"
+      },
+      {
+        "type": "color",
+        "id": "colors.marquee_border",
+        "label": "Kayan Duyuru Bandı Kenarlık Rengi",
+        "info": "Kayan duyuru şeridinin alt ve üst kenarlık rengi.",
+        "default": "#5e1e1e"
+      },
+      {
+        "type": "color",
+        "id": "colors.marquee_text",
+        "label": "Kayan Duyuru Metin Rengi",
+        "info": "Kayan şeritteki duyuruların varsayılan metin rengi.",
+        "default": "#fca5a5"
+      },
+      {
+        "type": "color",
+        "id": "colors.footer_bg",
+        "label": "Footer Arkaplan Rengi",
+        "info": "Sayfa altındaki footer alanının koyu zemin rengi.",
+        "default": "#090404"
+      },
+      {
+        "type": "color",
+        "id": "colors.footer_border",
+        "label": "Footer Üst Kenarlık Rengi",
+        "info": "Footer'ı içerikten ayıran üst kenarlık çizgisi.",
+        "default": "#3f1717"
+      },
+      {
+        "type": "color",
+        "id": "colors.footer_title",
+        "label": "Footer Sütun Başlığı Rengi",
+        "info": "Footer içerisindeki bölüm başlıklarının rengi.",
+        "default": "#ef4444"
+      },
+      {
+        "type": "color",
+        "id": "colors.footer_text",
+        "label": "Footer Metin & Bağlantı Rengi",
+        "info": "Footer altındaki açıklama ve bağlantıların rengi.",
+        "default": "#94a3b8"
+      },
+      {
+        "type": "color",
+        "id": "colors.badge_bg",
+        "label": "Rozet & Etiket Arkaplan Rengi",
+        "info": "İndirim etiketleri ve duyuru rozetleri için zemin rengi.",
+        "default": "#7f1d1d"
+      },
+      {
+        "type": "color",
+        "id": "colors.badge_text",
+        "label": "Rozet & Etiket Yazı Rengi",
+        "info": "Rozetlerin içindeki metin rengi.",
+        "default": "#fee2e2"
+      },
+      {
+        "type": "color",
+        "id": "colors.badge_border",
+        "label": "Rozet Kenarlık Rengi",
+        "info": "Rozet ve etiketlerin kenar çizgisi rengi.",
+        "default": "#dc2626"
+      },
+      {
+        "type": "color",
+        "id": "colors.preloader_bg",
+        "label": "Yükleme Ekranı Arkaplan Rengi",
+        "info": "Sayfa açılırken çıkan kılıçlı yükleme ekranının zemin rengi.",
+        "default": "#0c0606"
+      },
+      {
+        "type": "color",
+        "id": "colors.preloader_bar",
+        "label": "Yükleme Çubuğu Rengi",
+        "info": "Yükleme çubuğunun dolgu rengi.",
+        "default": "#ef4444"
       }
     ]
   },

@@ -3,81 +3,151 @@
   <head>
     <meta charset="UTF-8">
     <script>
-      // CRITICAL INSTANT PRELOADER CHECK & PREVIEW IFRAME DETECTION
-      const isThemePreview = window.location.search.includes('preview_theme_id') || 
-                             window.location.search.includes('preview_ts') || 
-                             (window.self !== window.top);
+      // Global Toast Notification System - Always Available
+      window.showToast = function(message, type = 'info') {
+        try {
+          let container = document.getElementById('toast-container');
+          if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            container.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999999] flex flex-col items-center gap-2 pointer-events-none w-[92%] max-w-md';
+            (document.body || document.documentElement).appendChild(container);
+          }
 
-      if (isThemePreview) {
-        document.documentElement.classList.add('is-theme-preview');
-      } else if (sessionStorage.getItem('rpg_progress') || !sessionStorage.getItem('rpg_initial_visited')) {
-        document.documentElement.classList.add('rpg-is-preloading');
-      }
+          const toast = document.createElement('div');
+          let styleClasses = 'bg-realm-card border-realm-border text-slate-200 shadow-xl';
+          let iconHtml = '<i class="fa-solid fa-circle-info text-blue-400 text-base"></i>';
+
+          if (type === 'success') {
+            styleClasses = 'bg-[#1a0808] border-[var(--color-gold)] text-[var(--color-gold-bright)] shadow-[0_0_25px_var(--color-gold-glow)]';
+            iconHtml = '<i class="fa-solid fa-circle-check text-[var(--color-gold-bright)] text-base"></i>';
+          } else if (type === 'error') {
+            styleClasses = 'bg-red-950/95 border-red-700 text-red-200 shadow-[0_0_25px_rgba(220,38,38,0.4)]';
+            iconHtml = '<i class="fa-solid fa-triangle-exclamation text-red-400 text-base"></i>';
+          } else if (type === 'warning') {
+            styleClasses = 'bg-rose-950/95 border-rose-700 text-rose-200 shadow-[0_0_25px_rgba(244,63,94,0.35)]';
+            iconHtml = '<i class="fa-solid fa-triangle-exclamation text-rose-400 text-base"></i>';
+          }
+
+          toast.className = `pointer-events-auto px-5 py-3.5 rounded-sm shadow-2xl text-xs font-medieval font-bold transform transition-all duration-300 translate-y-6 opacity-0 flex items-center gap-3 border backdrop-blur-md w-full ${styleClasses}`;
+          toast.innerHTML = `${iconHtml} <span class="leading-snug flex-1">${message}</span>`;
+          container.appendChild(toast);
+
+          requestAnimationFrame(() => {
+            toast.classList.remove('translate-y-6', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+          });
+
+          setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-6', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+          }, 4000);
+        } catch(e) {
+          console.error('Toast error:', e);
+        }
+        return true;
+      };
+
+      // Global Minecraft Skin Fallback Handler (Default Steve)
+      window.addEventListener('error', function(e) {
+        const img = e.target;
+        if (img && img.tagName === 'IMG') {
+          const src = img.src || '';
+          if (src.includes('mc-heads.net') || src.includes('mcheads.org') || src.includes('mc-heads')) {
+            if (!img.dataset.hasFallenBack) {
+              img.dataset.hasFallenBack = 'true';
+              if (src.includes('api.mcheads.org')) {
+                img.src = 'https://api.mcheads.org/avatar/steve/left/160';
+              } else {
+                const sizeMatch = src.match(/\/(\d+)(\.png)?$/);
+                const size = sizeMatch ? sizeMatch[1] : '48';
+                img.src = `https://mc-heads.net/avatar/MHF_Steve/${size}`;
+              }
+            }
+          }
+        }
+      }, true);
     </script>
     <style>
-      /* Zero Page Flash Critical Rules */
-      html.rpg-is-preloading:not(.is-theme-preview) body {
-        overflow: hidden !important;
+      /* Hero Section Full Screen Alignment & No Separation */
+      #MainContent:has(.hero-grand-medieval),
+      #MainContent:has(#hero-section),
+      .template-index #MainContent,
+      body.page-home #MainContent {
+        padding-top: 0 !important;
       }
-      html.rpg-is-preloading:not(.is-theme-preview) #rpg-page-preloader,
-      #rpg-page-preloader:not(.preloader-hidden):not(.is-theme-preview) {
-        position: fixed !important;
-        inset: 0 !important;
-        z-index: 999999 !important;
-        display: flex !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        pointer-events: auto !important;
-        background-color: #090705 !important;
-        transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s !important;
-      }
-      html.rpg-is-preloading:not(.is-theme-preview) #rpg-preloader-curtain,
-      #rpg-page-preloader:not(.preloader-hidden):not(.is-theme-preview) #rpg-preloader-curtain {
-        transform: translateY(0%) !important;
-        transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1) !important;
-      }
-      #rpg-preloader-content {
-        transition: transform 0.5s ease-out, opacity 0.5s ease-out !important;
-        transform: scale(1) !important;
-        opacity: 1 !important;
-      }
-      html:not(.rpg-is-preloading) #rpg-page-preloader.preloader-hidden,
-      html.is-theme-preview #rpg-page-preloader {
-        display: none !important;
+
+      /* Non-blocking Preloader Styles */
+      #rpg-page-preloader.preloader-hidden {
         opacity: 0 !important;
         visibility: hidden !important;
         pointer-events: none !important;
+        transition: opacity 0.4s ease, visibility 0.4s ease !important;
       }
-      html:not(.rpg-is-preloading) #rpg-page-preloader.preloader-hidden #rpg-preloader-curtain {
-        transform: translateY(-100%) !important;
-      }
-      html:not(.rpg-is-preloading) #rpg-page-preloader.preloader-hidden #rpg-preloader-content {
-        transform: scale(1.06) !important;
-        opacity: 0 !important;
+      #rpg-page-preloader {
+        transition: opacity 0.4s ease, visibility 0.4s ease !important;
       }
 
       /* Dynamic Theme Root Design Tokens (Settings Schema Synchronization) */
       :root {
-        --color-gold: {{ settings.colors.gold | default: '#d4af37' }};
-        --color-gold-bright: {{ settings.colors.gold_bright | default: '#f5d061' }};
-        --color-gold-dark: {{ settings.colors.gold_dark | default: '#8a6d1c' }};
-        --color-gold-glow: rgba(212, 175, 55, 0.45);
+        --color-gold: {{ settings.colors.gold | default: settings.color_gold | default: '#dc2626' }};
+        --color-gold-bright: {{ settings.colors.gold_bright | default: settings.color_gold_bright | default: '#ef4444' }};
+        --color-gold-dark: {{ settings.colors.gold_dark | default: settings.color_gold_dark | default: '#991b1b' }};
+        --color-gold-glow: {{ settings.colors.gold_glow | default: settings.color_gold_glow | default: 'rgba(220, 38, 38, 0.45)' }};
         
-        --color-realm-bg: {{ settings.colors.dark_bg | default: '#0c0907' }};
-        --color-realm-surface: {{ settings.colors.surface | default: '#14100c' }};
-        --color-realm-card: {{ settings.colors.card_bg | default: '#191410' }};
-        --color-realm-card-hover: {{ settings.colors.card_hover | default: '#221b15' }};
-        --color-realm-border: {{ settings.colors.border | default: '#3d301d' }};
-        --color-realm-border-accent: {{ settings.colors.border_accent | default: '#4a3821' }};
+        --color-realm-bg: {{ settings.colors.dark_bg | default: settings.color_dark_bg | default: '#0c0606' }};
+        --color-realm-surface: {{ settings.colors.surface | default: settings.color_surface | default: '#140a0a' }};
+        --color-realm-card: {{ settings.colors.card_bg | default: settings.color_card_bg | default: '#1a0d0d' }};
+        --color-realm-card-hover: {{ settings.colors.card_hover | default: settings.color_card_hover | default: '#241212' }};
+        --color-realm-border: {{ settings.colors.border | default: settings.color_border | default: '#3f1717' }};
+        --color-realm-border-accent: {{ settings.colors.border_accent | default: settings.color_border_accent | default: '#5e1e1e' }};
         
-        --color-text-primary: {{ settings.colors.text_primary | default: '#f8fafc' }};
-        --color-text-muted: {{ settings.colors.text_muted | default: '#94a3b8' }};
-        --color-text-gold: {{ settings.colors.gold_bright | default: '#f5d061' }};
+        --color-text-primary: {{ settings.colors.text_primary | default: settings.color_text_primary | default: '#f8fafc' }};
+        --color-text-muted: {{ settings.colors.text_muted | default: settings.color_text_muted | default: '#94a3b8' }};
+        --color-text-gold: {{ settings.colors.text_gold | default: settings.color_text_gold | default: settings.colors.gold_bright | default: '#ef4444' }};
+
+        /* Navbar Tokens */
+        --color-navbar-bg: {{ settings.colors.navbar_bg | default: settings.color_navbar_bg | default: settings.colors.surface | default: '#140a0a' }};
+        --color-navbar-border: {{ settings.colors.navbar_border | default: settings.color_navbar_border | default: settings.colors.border_accent | default: '#5e1e1e' }};
+        --color-navbar-text: {{ settings.colors.navbar_text | default: settings.color_navbar_text | default: '#cbd5e1' }};
+        --color-navbar-text-active: {{ settings.colors.navbar_text_active | default: settings.color_navbar_text_active | default: settings.colors.gold_bright | default: '#ef4444' }};
+
+        /* Button Tokens */
+        --color-btn-primary-bg: {{ settings.colors.btn_primary_bg | default: settings.color_btn_primary_bg | default: settings.colors.gold | default: '#dc2626' }};
+        --color-btn-primary-text: {{ settings.colors.btn_primary_text | default: settings.color_btn_primary_text | default: '#ffffff' }};
+        --color-btn-secondary-bg: {{ settings.colors.btn_secondary_bg | default: settings.color_btn_secondary_bg | default: settings.colors.card_bg | default: '#1a0d0d' }};
+        --color-btn-secondary-border: {{ settings.colors.btn_secondary_border | default: settings.color_btn_secondary_border | default: settings.colors.gold_dark | default: '#7f1d1d' }};
+        --color-btn-secondary-text: {{ settings.colors.btn_secondary_text | default: settings.color_btn_secondary_text | default: '#fca5a5' }};
+
+        /* Marquee Tokens */
+        --color-marquee-bg: {{ settings.colors.marquee_bg | default: settings.color_marquee_bg | default: '#170a0a' }};
+        --color-marquee-border: {{ settings.colors.marquee_border | default: settings.color_marquee_border | default: settings.colors.border_accent | default: '#5e1e1e' }};
+        --color-marquee-text: {{ settings.colors.marquee_text | default: settings.color_marquee_text | default: '#fca5a5' }};
+
+        /* Footer Tokens */
+        --color-footer-bg: {{ settings.colors.footer_bg | default: settings.color_footer_bg | default: '#090404' }};
+        --color-footer-border: {{ settings.colors.footer_border | default: settings.color_footer_border | default: settings.colors.border | default: '#3f1717' }};
+        --color-footer-title: {{ settings.colors.footer_title | default: settings.color_footer_title | default: settings.colors.gold_bright | default: '#ef4444' }};
+        --color-footer-text: {{ settings.colors.footer_text | default: settings.color_footer_text | default: settings.colors.text_muted | default: '#94a3b8' }};
+
+        /* Badge Tokens */
+        --color-badge-bg: {{ settings.colors.badge_bg | default: settings.color_badge_bg | default: '#7f1d1d' }};
+        --color-badge-text: {{ settings.colors.badge_text | default: settings.color_badge_text | default: '#fee2e2' }};
+        --color-badge-border: {{ settings.colors.badge_border | default: settings.color_badge_border | default: settings.colors.gold | default: '#dc2626' }};
+
+        /* Preloader Tokens */
+        --color-preloader-bg: {{ settings.colors.preloader_bg | default: settings.color_preloader_bg | default: settings.colors.dark_bg | default: '#0c0606' }};
+        --color-preloader-bar: {{ settings.colors.preloader_bar | default: settings.color_preloader_bar | default: settings.colors.gold_bright | default: '#ef4444' }};
       }
 
       body {
         background-color: var(--color-realm-bg) !important;
         color: var(--color-text-primary) !important;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        color: var(--color-text-primary, #f8fafc);
       }
 
       #nprogress .bar {
@@ -90,6 +160,167 @@
       #nprogress .spinner {
         display: none !important;
       }
+
+      .rpg-floating-nav {
+        background: rgba(18, 8, 8, 0.85) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(220, 38, 38, 0.28) !important;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+      .rpg-floating-nav.nav-scrolled {
+        background: rgba(12, 5, 5, 0.96) !important;
+        border-color: rgba(220, 38, 38, 0.45) !important;
+        box-shadow: 0 16px 45px rgba(0, 0, 0, 0.95), 0 0 20px rgba(220, 38, 38, 0.12) !important;
+      }
+
+      .rpg-flourish-divider {
+        position: relative;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent 0%, var(--color-footer-border) 20%, var(--color-gold) 50%, var(--color-footer-border) 80%, transparent 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .rpg-flourish-diamond {
+        width: 10px;
+        height: 10px;
+        background: var(--color-gold);
+        transform: rotate(45deg);
+        box-shadow: 0 0 10px var(--color-gold-glow);
+      }
+
+      /* RPG CORE COMPONENTS & BUTTONS (Always inlined to guarantee immediate red theme rendering) */
+      .rpg-btn-sharp-gold {
+        background: linear-gradient(135deg, var(--color-gold-bright, #ef4444) 0%, var(--color-gold, #dc2626) 50%, var(--color-gold-dark, #991b1b) 100%) !important;
+        color: var(--color-btn-primary-text, #ffffff) !important;
+        font-family: 'Cinzel', serif !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.08em !important;
+        border: 1px solid #fca5a5 !important;
+        border-radius: 3px !important;
+        box-shadow: 0 6px 20px var(--color-gold-glow, rgba(220, 38, 38, 0.45)), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+        transition: all 0.25s ease !important;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7) !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .rpg-btn-sharp-gold:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(220, 38, 38, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+        filter: brightness(1.15) !important;
+      }
+
+      .rpg-btn-sharp-outline {
+        background: rgba(24, 10, 10, 0.85) !important;
+        color: #ffffff !important;
+        font-family: 'Cinzel', serif !important;
+        font-weight: 700 !important;
+        border: 1.5px solid var(--color-gold-bright, #ef4444) !important;
+        border-radius: 3px !important;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8), inset 0 0 14px rgba(220, 38, 38, 0.18) !important;
+        transition: all 0.25s ease !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+      }
+      .rpg-btn-sharp-outline:hover {
+        background: linear-gradient(135deg, rgba(45, 16, 16, 0.95) 0%, rgba(26, 10, 10, 0.95) 100%) !important;
+        border-color: #fca5a5 !important;
+        color: #ffffff !important;
+        box-shadow: 0 6px 24px var(--color-gold-glow, rgba(220, 38, 38, 0.5)), inset 0 0 18px rgba(220, 38, 38, 0.3) !important;
+        transform: translateY(-2px);
+      }
+
+      /* Global Icon Visibility & Color Guarantees (Prevents any black/invisible icons) */
+      .rpg-btn-sharp-outline i,
+      .rpg-btn-sharp-outline svg {
+        color: var(--color-gold-bright, #ef4444) !important;
+        fill: currentColor !important;
+        transition: color 0.25s ease;
+      }
+      .rpg-btn-sharp-outline:hover i,
+      .rpg-btn-sharp-outline:hover svg {
+        color: #ffffff !important;
+      }
+      .rpg-btn-sharp-gold i,
+      .rpg-btn-sharp-gold svg {
+        color: #ffffff !important;
+        fill: currentColor !important;
+      }
+
+      .text-gold-bright,
+      .text-gold,
+      .text-primary {
+        color: var(--color-gold-bright, #ef4444) !important;
+      }
+
+      .text-gold-glow {
+        color: var(--color-gold-bright, #ef4444) !important;
+        text-shadow: 0 0 20px var(--color-gold-glow, rgba(220, 38, 38, 0.45)), 0 2px 4px rgba(0, 0, 0, 0.95) !important;
+      }
+
+      .text-gold-gradient {
+        background: linear-gradient(135deg, #ffffff 0%, #fca5a5 35%, var(--color-gold-bright, #ef4444) 70%, var(--color-gold, #dc2626) 100%) !important;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+      }
+
+      .rpg-sharp-plaque {
+        background: linear-gradient(135deg, rgba(24, 10, 10, 0.97) 0%, rgba(36, 14, 14, 0.97) 50%, rgba(24, 10, 10, 0.97) 100%) !important;
+        border: 2px solid var(--color-gold-bright, #ef4444) !important;
+        border-radius: 4px !important;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.95), 0 0 30px var(--color-gold-glow, rgba(220, 38, 38, 0.45)), inset 0 0 25px rgba(0, 0, 0, 0.9) !important;
+        backdrop-filter: blur(12px) !important;
+      }
+      .rpg-sharp-plaque p {
+        color: #fecdd3 !important;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 1) !important;
+      }
+
+      .rpg-sharp-card {
+        background-color: var(--color-realm-surface, #140a0a) !important;
+        border: 1px solid var(--color-realm-border, #3f1717) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+      .rpg-sharp-card:hover {
+        border-color: var(--color-gold, #dc2626) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 20px var(--color-gold-glow, rgba(220, 38, 38, 0.45)) !important;
+        transform: translateY(-3px);
+      }
+
+      .rpg-grand-board {
+        background: linear-gradient(180deg, var(--color-realm-card, #1a0d0d) 0%, var(--color-realm-bg, #0c0606) 100%) !important;
+        border: 2px solid var(--color-realm-border-accent, #5e1e1e) !important;
+        position: relative !important;
+        border-radius: 6px !important;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(220, 38, 38, 0.25), inset 0 0 40px rgba(0, 0, 0, 0.9) !important;
+        padding: 48px 24px 28px 24px !important;
+      }
+
+      .rpg-grand-board-inner {
+        background: radial-gradient(circle at 50% 50%, rgba(35, 12, 12, 0.6) 0%, rgba(12, 6, 6, 0.95) 100%) !important;
+        border: 1px solid rgba(220, 38, 38, 0.25) !important;
+        border-radius: 4px !important;
+      }
+
+      .rpg-board-title-badge {
+        position: absolute !important;
+        top: -22px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        background: linear-gradient(180deg, #240c0c 0%, var(--color-realm-bg, #0c0606) 100%) !important;
+        border: 2px solid var(--color-gold, #dc2626) !important;
+        border-radius: 4px !important;
+        padding: 8px 42px !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.95), 0 0 15px var(--color-gold-glow, rgba(220, 38, 38, 0.45)) !important;
+      }
+
       @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -113,6 +344,17 @@
                 bright: 'var(--color-gold-bright)',
                 dark: 'var(--color-gold-dark)',
                 glow: 'var(--color-gold-glow)',
+                50: '#fef2f2',
+                100: '#fee2e2',
+                200: '#fecaca',
+                300: '#fca5a5',
+                400: '#f87171',
+                500: '#ef4444',
+                600: '#dc2626',
+                700: '#b91c1c',
+                800: '#991b1b',
+                900: '#7f1d1d',
+                950: '#450a0a',
               },
               realm: {
                 bg: 'var(--color-realm-bg)',
@@ -135,8 +377,8 @@
       };
     </script>
 
-    <!-- Theme CSS -->
-    <link rel="stylesheet" href="{{ 'assets/style.css' | asset_url }}">
+    <!-- Theme CSS (with cache buster) -->
+    <link rel="stylesheet" href="{{ 'assets/style.css' | asset_url }}?v={{ 'now' | date: '%s%N' }}">
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -144,6 +386,12 @@
     <!-- NProgress -->
     <link rel="stylesheet" href="https://unpkg.com/nprogress@0.2.0/nprogress.css">
     <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
+
+    <!-- Crafter CMS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@crafter-cms/sdk@1.0.1/dist/crafter.min.js"></script>
+    <script>
+      window.crafter = new Crafter();
+    </script>
 
     {% if settings.integrations.google_analytics_id != blank %}
       <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -179,13 +427,13 @@
           class="relative w-52 h-52 mb-2 flex items-center justify-center pointer-events-none"
           style="-webkit-mask-image: radial-gradient(circle at center, #000 40%, transparent 85%); mask-image: radial-gradient(circle at center, #000 40%, transparent 85%);"
         >
-          <!-- Background Gold Aura Shadow -->
-          <div class="absolute inset-6 rounded-full bg-gradient-to-r from-amber-500/35 via-yellow-400/45 to-amber-500/35 blur-3xl animate-pulse"></div>
+          <!-- Background Crimson Aura Shadow -->
+          <div class="absolute inset-6 rounded-full bg-gradient-to-r from-red-600/35 via-rose-500/45 to-red-600/35 blur-3xl animate-pulse"></div>
 
           <img
             src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExazU1dXYzbGtoNzR4dTJ2Z3R5emJvenM2ZGF0ZHJqcXdsanVlYnh1cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/eLfmhEKnLIEp1joioO/giphy.gif"
             alt="Diyar Yükleniyor"
-            class="relative z-10 w-full h-full object-contain mix-blend-screen filter contrast-150 brightness-110 drop-shadow-[0_0_35px_rgba(245,208,97,0.95)]"
+            class="relative z-10 w-full h-full object-contain mix-blend-screen filter contrast-150 brightness-110 drop-shadow-[0_0_35px_rgba(239,68,68,0.95)]"
           >
         </div>
 
@@ -194,39 +442,49 @@
           DİYAR YÜKLENİYOR...
         </div>
 
-        <!-- Glowing Gold Progress Bar Container -->
+        <!-- Glowing Red Progress Bar Container -->
         <div class="w-64 sm:w-72 h-3 bg-realm-card border-2 border-[var(--color-gold)] rounded-sm overflow-hidden p-0.5 shadow-2xl">
-          <div id="rpg-progress-bar-fill" class="h-full bg-gradient-to-r from-[var(--color-gold-dark)] via-[var(--color-gold-bright)] to-[#ffe596] rounded-sm shadow-[0_0_15px_var(--color-gold)] transition-all duration-300 ease-out" style="width: 0%;"></div>
+          <div id="rpg-progress-bar-fill" class="h-full bg-gradient-to-r from-[var(--color-gold-dark)] via-[var(--color-gold-bright)] to-[var(--color-preloader-bar)] rounded-sm shadow-[0_0_15px_var(--color-gold)] transition-all duration-300 ease-out" style="width: 0%;"></div>
         </div>
       </div>
     </div>
 
     {% unless template == 'auth' or template contains 'auth/' or template == 'errors/maintenance' %}
-      <!-- FLOATING CENTERED GOLD FRAME NAVBAR -->
+      <!-- REVISED GOTHIC GLASS NAVBAR -->
       <header
         id="site-navbar"
-        class="fixed top-4 left-1/2 -translate-x-1/2 w-[94%] max-w-[1240px] z-50 transition-all duration-500 ease-in-out rpg-floating-nav rounded-sm px-6 py-3 flex items-center justify-between text-slate-100"
+        class="fixed top-3 left-1/2 -translate-x-1/2 w-[95%] max-w-[1280px] z-50 transition-all duration-300 rounded-sm px-4 sm:px-6 py-2.5 flex items-center justify-between text-slate-100 rpg-floating-nav"
       >
-        <!-- Mobile Menu Toggle -->
-        <button class="md:hidden flex items-center p-2 rounded-sm bg-realm-card border border-realm-border text-gold-bright hover:bg-realm-hover transition-all" onclick="toggleMobileMenu()">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
-        </button>
-
-        <!-- Logo -->
-        <a href="/" class="flex items-center gap-3 hover:scale-105 transition-transform duration-300">
-          {% assign default_logo = 'https://avatars.githubusercontent.com/u/3840546?s=280&v=4' %}
-          <img
-            src="{{ settings.logo_light | default: settings.logo_dark | default: settings.logo | default: default_logo }}"
-            alt="{{ shop.name }}"
-            class="object-contain filter drop-shadow-[0_4px_10px_rgba(212,175,55,0.4)]"
-            style="width: {{ settings.logo_width | default: 150 }}px; max-height: 48px;"
+        <!-- Left: Mobile Toggle & Brand Logo -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Mobile Menu Toggle -->
+          <button
+            class="md:hidden flex items-center justify-center w-9 h-9 rounded-sm bg-black/40 border border-red-900/40 text-slate-300 hover:text-white hover:border-red-500/60 transition-all"
+            onclick="toggleMobileMenu()"
+            aria-label="Menüyü Aç"
           >
-        </a>
+            <i class="fa-solid fa-bars text-sm text-red-400"></i>
+          </button>
 
-        <!-- Center Navigation Links -->
-        <nav class="hidden md:flex items-center gap-8 font-medieval tracking-widest uppercase text-xs">
+          <!-- Logo Only (No Server Name Text) -->
+          <a href="/" class="flex items-center group">
+            {% if settings.logo_light != blank or settings.logo_dark != blank or settings.logo != blank %}
+              <img
+                src="{{ settings.logo_light | default: settings.logo_dark | default: settings.logo }}"
+                alt="{{ shop.name }}"
+                class="object-contain filter drop-shadow-[0_2px_8px_rgba(220,38,38,0.4)] group-hover:scale-105 transition-transform duration-300"
+                style="width: {{ settings.logo_width | default: 140 }}px; max-height: 42px;"
+              >
+            {% else %}
+              <div class="w-10 h-10 rounded-sm bg-red-950/80 border border-red-700/60 flex items-center justify-center text-red-400 shadow-sm group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-shield-halved text-base text-red-400"></i>
+              </div>
+            {% endif %}
+          </a>
+        </div>
+
+        <!-- Center: Modern Gothic Navigation Links -->
+        <nav class="hidden md:flex items-center gap-1 lg:gap-1.5 font-medieval tracking-wider uppercase text-xs">
           {% if settings.nav_links != blank %}
             {% for link in settings.nav_links %}
               {% assign is_active = false %}
@@ -237,95 +495,115 @@
               {% endif %}
               <a
                 href="{{ link.url }}"
-                class="font-bold transition-all relative group py-1.5 {% if is_active %}text-[var(--color-gold-bright)] drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]{% else %}text-slate-300 hover:text-[var(--color-gold-bright)]{% endif %}"
+                class="px-3.5 py-1.5 rounded-sm font-bold transition-all relative flex items-center gap-2 {% if is_active %}text-white bg-red-950/60 border border-red-700/60 shadow-[0_0_12px_rgba(220,38,38,0.3)]{% else %}text-slate-300 hover:text-white hover:bg-white/[0.05] border border-transparent{% endif %}"
                 {% if link.new_tab %}target="_blank"{% endif %}
               >
-                {{ link.title }}
-                <span class="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-[var(--color-gold)] via-[var(--color-gold-bright)] to-[var(--color-gold)] transition-transform origin-left {% if is_active %}scale-x-100 shadow-[0_0_8px_var(--color-gold)]{% else %}scale-x-0 group-hover:scale-x-100{% endif %}"></span>
+                <span>{{ link.title }}</span>
               </a>
             {% endfor %}
           {% else %}
-            <a href="/" class="font-bold transition-all relative group py-1.5 {% if request.path == '/' or request.path == blank %}text-[var(--color-gold-bright)] drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]{% else %}text-slate-300 hover:text-[var(--color-gold-bright)]{% endif %}">
+            <a href="/" class="px-3.5 py-1.5 rounded-sm font-bold transition-all flex items-center gap-2 {% if request.path == '/' or request.path == blank %}text-white bg-red-950/60 border border-red-700/60 shadow-[0_0_12px_rgba(220,38,38,0.3)]{% else %}text-slate-300 hover:text-white hover:bg-white/[0.05] border border-transparent{% endif %}">
+              <i class="fa-solid fa-house text-[11px] text-red-400"></i>
               <span>ANASAYFA</span>
-              <span class="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-[var(--color-gold)] via-[var(--color-gold-bright)] to-[var(--color-gold)] transition-transform origin-left {% if request.path == '/' or request.path == blank %}scale-x-100{% else %}scale-x-0 group-hover:scale-x-100{% endif %}"></span>
             </a>
-            <a href="/store" class="font-bold transition-all relative group py-1.5 {% if request.path contains '/store' %}text-[var(--color-gold-bright)] drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]{% else %}text-slate-300 hover:text-[var(--color-gold-bright)]{% endif %}">
+            <a href="/store" class="px-3.5 py-1.5 rounded-sm font-bold transition-all flex items-center gap-2 {% if request.path contains '/store' %}text-white bg-red-950/60 border border-red-700/60 shadow-[0_0_12px_rgba(220,38,38,0.3)]{% else %}text-slate-300 hover:text-white hover:bg-white/[0.05] border border-transparent{% endif %}">
+              <i class="fa-solid fa-store text-[11px] text-red-400"></i>
               <span>MAĞAZA</span>
-              <span class="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-[var(--color-gold)] via-[var(--color-gold-bright)] to-[var(--color-gold)] transition-transform origin-left {% if request.path contains '/store' %}scale-x-100{% else %}scale-x-0 group-hover:scale-x-100{% endif %}"></span>
             </a>
-            <a href="/forum" class="font-bold transition-all relative group py-1.5 {% if request.path contains '/forum' %}text-[var(--color-gold-bright)] drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]{% else %}text-slate-300 hover:text-[var(--color-gold-bright)]{% endif %}">
+            <a href="/forum" class="px-3.5 py-1.5 rounded-sm font-bold transition-all flex items-center gap-2 {% if request.path contains '/forum' %}text-white bg-red-950/60 border border-red-700/60 shadow-[0_0_12px_rgba(220,38,38,0.3)]{% else %}text-slate-300 hover:text-white hover:bg-white/[0.05] border border-transparent{% endif %}">
+              <i class="fa-solid fa-comments text-[11px] text-red-400"></i>
               <span>FORUM</span>
-              <span class="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-[var(--color-gold)] via-[var(--color-gold-bright)] to-[var(--color-gold)] transition-transform origin-left {% if request.path contains '/forum' %}scale-x-100{% else %}scale-x-0 group-hover:scale-x-100{% endif %}"></span>
             </a>
-            <a href="/help" class="font-bold transition-all relative group py-1.5 {% if request.path contains '/help' or request.path contains '/yardim' %}text-[var(--color-gold-bright)] drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]{% else %}text-slate-300 hover:text-[var(--color-gold-bright)]{% endif %}">
+            <a href="/help" class="px-3.5 py-1.5 rounded-sm font-bold transition-all flex items-center gap-2 {% if request.path contains '/help' or request.path contains '/yardim' %}text-white bg-red-950/60 border border-red-700/60 shadow-[0_0_12px_rgba(220,38,38,0.3)]{% else %}text-slate-300 hover:text-white hover:bg-white/[0.05] border border-transparent{% endif %}">
+              <i class="fa-solid fa-circle-question text-[11px] text-red-400"></i>
               <span>YARDIM</span>
-              <span class="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-[var(--color-gold)] via-[var(--color-gold-bright)] to-[var(--color-gold)] transition-transform origin-left {% if request.path contains '/help' or request.path contains '/yardim' %}scale-x-100{% else %}scale-x-0 group-hover:scale-x-100{% endif %}"></span>
             </a>
           {% endif %}
         </nav>
 
-        <!-- Right: CTA Button & Cart -->
-        <div class="flex items-center gap-3">
+        <!-- Right: Cart & User Account -->
+        <div class="flex items-center gap-2 sm:gap-3">
           <!-- Cart Button -->
           <a
             href="/cart"
             id="nav-cart-btn"
-            class="relative w-10 h-10 transition-all flex items-center justify-center bg-realm-card hover:bg-realm-hover border border-[var(--color-gold)]/50 hover:border-[var(--color-gold-bright)] rounded-sm text-[var(--color-gold-bright)] shadow-md"
-            title="Envanter / Sepet"
+            class="relative w-9 h-9 sm:w-10 sm:h-10 transition-all flex items-center justify-center bg-black/40 hover:bg-red-950/40 border border-red-900/40 hover:border-red-500/60 rounded-sm text-slate-200 hover:text-white shadow-md group"
+            title="Alışveriş Sepeti"
           >
-            <i class="fa-solid fa-sack-dollar text-sm"></i>
-            <span class="header-cart-badge hidden absolute -top-1.5 -right-1.5 w-5 h-5 bg-gradient-to-r from-red-600 to-amber-600 text-white text-[10px] font-black rounded-full flex items-center justify-center border border-amber-300 shadow-md">0</span>
+            <i class="fa-solid fa-bag-shopping text-sm text-red-400 group-hover:scale-110 transition-transform"></i>
+            <span class="header-cart-badge hidden absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center border border-red-400 shadow-[0_0_8px_rgba(220,38,38,0.6)]">0</span>
           </a>
 
           {% if customer %}
             <!-- Desktop Profile Menu -->
-            <div class="relative group hidden md:block py-2">
-              <a href="/profile" class="flex items-center gap-2.5 bg-realm-card px-3.5 py-1.5 rounded-sm border border-realm-border hover:border-[var(--color-gold)]/50 transition-all">
-                <img src="https://mc-heads.net/avatar/{{ customer.username }}/32" class="w-7 h-7 rounded-sm border border-[var(--color-gold)]/40" alt="">
-                <span class="text-slate-100 font-medieval font-bold text-xs">{{ customer.username }}</span>
-                <span id="nav-credit" class="flex items-center gap-1 px-2 py-0.5 bg-[var(--color-gold)]/20 text-[var(--color-gold-bright)] rounded-sm text-[11px] font-bold border border-[var(--color-gold)]/30">
-                  <i class="fa-solid fa-coins text-[10px]"></i> {{ customer.balance | default: '0' }} ₺
+            <div class="relative group hidden md:block">
+              <a href="/profile" class="flex items-center gap-2.5 bg-black/40 hover:bg-red-950/30 px-3 py-1.5 rounded-sm border border-red-900/40 hover:border-red-700/60 transition-all cursor-pointer">
+                <img src="https://mc-heads.net/avatar/{{ customer.username }}/32" class="w-7 h-7 rounded-sm border border-red-800/60 shadow-sm" alt="{{ customer.username }}">
+                <span class="text-white font-medieval font-bold text-xs max-w-[100px] truncate">{{ customer.username }}</span>
+                <span id="nav-credit" class="flex items-center gap-1 px-2 py-0.5 bg-red-950/80 text-red-300 rounded-sm text-[11px] font-bold border border-red-800/50">
+                  <i class="fa-solid fa-coins text-[10px] text-red-400"></i> {{ customer.balance | default: '0' }} ₺
                 </span>
+                <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 group-hover:text-white transition-transform group-hover:rotate-180 duration-200"></i>
               </a>
 
-              <!-- Dropdown -->
-              <div class="absolute right-0 top-[100%] w-64 bg-realm-surface rounded-sm shadow-2xl border border-realm-border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 text-slate-200 z-[100] mt-2">
-                <div class="p-3.5 border-b border-realm-border bg-realm-card rounded-t-sm flex items-center gap-3">
-                  <img src="https://mc-heads.net/avatar/{{ customer.username }}/48" class="w-10 h-10 rounded-sm border border-[var(--color-gold)]/40" alt="">
-                  <div class="overflow-hidden">
-                    <div class="font-medieval font-bold text-[var(--color-gold-bright)] text-sm truncate">{{ customer.username }}</div>
-                    <div class="text-[11px] text-slate-400 truncate">{{ customer.email }}</div>
+              <!-- Dropdown Menu -->
+              <div class="absolute right-0 top-full pt-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[100]">
+                <div class="bg-[#140808] rounded-sm shadow-[0_15px_40px_rgba(0,0,0,0.95)] border border-red-900/50 overflow-hidden text-slate-200">
+                  <!-- User Header -->
+                  <div class="p-3.5 border-b border-red-900/40 bg-black/40 flex items-center gap-3">
+                    <img src="https://mc-heads.net/avatar/{{ customer.username }}/48" class="w-10 h-10 rounded-sm border border-red-700/60 shadow" alt="">
+                    <div class="overflow-hidden min-w-0">
+                      <div class="font-medieval font-bold text-white text-sm truncate">{{ customer.username }}</div>
+                      <div class="text-[11px] text-slate-400 truncate">{{ customer.email }}</div>
+                    </div>
                   </div>
-                </div>
-                <div class="p-2 grid grid-cols-2 gap-1.5">
-                  <a href="/wallet" class="p-2.5 rounded-sm bg-realm-card hover:bg-realm-hover text-center border border-realm-border text-xs font-medieval font-bold flex flex-col items-center gap-1"><i class="fa-solid fa-coins text-amber-400"></i> Kredi Yükle</a>
-                  <a href="/chest" class="p-2.5 rounded-sm bg-realm-card hover:bg-realm-hover text-center border border-realm-border text-xs font-medieval font-bold flex flex-col items-center gap-1"><i class="fa-solid fa-box-open text-amber-500"></i> Sandık</a>
-                  <a href="/profile" class="p-2.5 rounded-sm bg-realm-card hover:bg-realm-hover text-center border border-realm-border text-xs font-medieval font-bold flex flex-col items-center gap-1"><i class="fa-solid fa-user-shield text-amber-400"></i> Profil</a>
-                  <a href="/profile/settings" class="p-2.5 rounded-sm bg-realm-card hover:bg-realm-hover text-center border border-realm-border text-xs font-medieval font-bold flex flex-col items-center gap-1"><i class="fa-solid fa-gear text-slate-400"></i> Ayarlar</a>
-                  
-                  {% if customer.role.permissions and customer.role.permissions.size > 0 %}
-                    <a
-                      href="https://app.crafter.net.tr/cms/auth?websiteId={{ customer.websiteId }}&accessToken={{ customer.access_token }}&refreshToken={{ customer.refresh_token }}"
-                      target="_blank"
-                      class="col-span-2 p-2.5 rounded-sm bg-gradient-to-r from-amber-950/80 via-amber-900/60 to-amber-950/80 hover:from-amber-900 hover:to-amber-900 text-[var(--color-gold-bright)] text-center border border-[var(--color-gold)]/70 text-xs font-medieval font-bold flex items-center justify-center gap-2 transition-all shadow-md uppercase tracking-wider"
-                    >
-                      <i class="fa-solid fa-crown text-amber-400"></i>
-                      <span>YÖNETİM PANELİ</span>
+
+                  <!-- Grid Links -->
+                  <div class="p-2 grid grid-cols-2 gap-1.5">
+                    <a href="/wallet" class="p-2.5 rounded-sm bg-black/30 hover:bg-red-950/40 text-center border border-red-950/60 text-xs font-medieval font-bold flex flex-col items-center gap-1.5 transition-colors text-slate-300 hover:text-white">
+                      <i class="fa-solid fa-coins text-red-400"></i> Kredi Yükle
                     </a>
-                  {% endif %}
-                </div>
-                <div class="p-2 border-t border-realm-border">
-                  <button onclick="logoutAccount()" class="w-full py-2 rounded-sm text-red-400 hover:bg-red-950/40 text-xs font-medieval font-bold flex items-center justify-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap</button>
+                    <a href="/chest" class="p-2.5 rounded-sm bg-black/30 hover:bg-red-950/40 text-center border border-red-950/60 text-xs font-medieval font-bold flex flex-col items-center gap-1.5 transition-colors text-slate-300 hover:text-white">
+                      <i class="fa-solid fa-box-open text-red-400"></i> Sandık
+                    </a>
+                    <a href="/profile" class="p-2.5 rounded-sm bg-black/30 hover:bg-red-950/40 text-center border border-red-950/60 text-xs font-medieval font-bold flex flex-col items-center gap-1.5 transition-colors text-slate-300 hover:text-white">
+                      <i class="fa-solid fa-user-shield text-red-400"></i> Profil
+                    </a>
+                    <a href="/profile/settings" class="p-2.5 rounded-sm bg-black/30 hover:bg-red-950/40 text-center border border-red-950/60 text-xs font-medieval font-bold flex flex-col items-center gap-1.5 transition-colors text-slate-300 hover:text-white">
+                      <i class="fa-solid fa-gear text-slate-400"></i> Ayarlar
+                    </a>
+                    
+                    {% if customer.role.permissions and customer.role.permissions.size > 0 %}
+                      <a
+                        href="https://app.crafter.net.tr/cms/auth?websiteId={{ customer.websiteId }}"
+                        data-website-id="{{ customer.websiteId }}"
+                        target="_blank"
+                        onclick="return window.openCmsPanel('{{ customer.websiteId }}', event);"
+                        class="cms-admin-link col-span-2 p-2 rounded-sm bg-gradient-to-r from-red-950 via-red-900/60 to-red-950 hover:from-red-900 hover:to-red-800 text-white text-center border border-red-700/60 text-xs font-medieval font-bold flex items-center justify-center gap-2 transition-all shadow-md uppercase tracking-wider"
+                      >
+                        <i class="fa-solid fa-crown text-amber-400"></i>
+                        <span>YÖNETİM PANELİ</span>
+                      </a>
+                    {% endif %}
+                  </div>
+
+                  <!-- Logout -->
+                  <div class="p-2 border-t border-red-900/40 bg-black/20">
+                    <button onclick="logoutAccount()" class="w-full py-2 rounded-sm text-red-400 hover:bg-red-950/50 hover:text-red-300 text-xs font-medieval font-bold flex items-center justify-center gap-2 transition-colors">
+                      <i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           {% else %}
+            <!-- Guest Login Button -->
             <a
               href="/auth/sign-in"
-              class="rpg-btn-sharp-gold px-5 py-2.5 rounded-sm text-xs font-medieval uppercase tracking-wider flex items-center gap-2 shadow-lg"
+              class="rpg-btn-sharp-gold h-9 sm:h-10 px-4 sm:px-5 rounded-sm text-xs font-medieval font-bold uppercase tracking-wider flex items-center gap-2 shadow-lg"
             >
               <i class="fa-solid fa-user-shield text-xs"></i>
-              GİRİŞ YAP
+              <span>GİRİŞ YAP</span>
             </a>
           {% endif %}
         </div>
@@ -333,24 +611,88 @@
 
       <!-- Mobile Menu Overlay & Drawer -->
       <div id="mobile-menu-overlay" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleMobileMenu()"></div>
-      <div id="mobile-menu-sidebar" class="fixed inset-y-0 left-0 z-[70] w-[85%] max-w-sm bg-realm-surface border-r border-realm-border transform -translate-x-full transition-transform duration-300 flex flex-col">
-        <div class="flex items-center justify-between p-5 border-b border-realm-border bg-realm-card">
-          <img src="{{ settings.logo_dark | default: settings.logo_light | default: default_logo }}" alt="{{ shop.name }}" class="object-contain max-h-10">
-          <button onclick="toggleMobileMenu()" class="text-slate-400 p-2 rounded-sm bg-realm-bg border border-realm-border"><i class="fa-solid fa-xmark"></i></button>
+      <div id="mobile-menu-sidebar" class="fixed inset-y-0 left-0 z-[70] w-[85%] max-w-sm bg-[#100707] border-r border-red-900/40 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl overflow-y-auto">
+        <!-- Drawer Header -->
+        <div class="flex items-center justify-between p-4 border-b border-red-900/40 bg-black/40">
+          <a href="/" class="flex items-center">
+            {% if settings.logo_dark != blank or settings.logo_light != blank or settings.logo != blank %}
+              <img src="{{ settings.logo_dark | default: settings.logo_light | default: settings.logo }}" alt="{{ shop.name }}" class="object-contain max-h-9">
+            {% else %}
+              <div class="w-9 h-9 rounded-sm bg-red-950/80 border border-red-700/60 flex items-center justify-center text-red-400 shadow-sm">
+                <i class="fa-solid fa-shield-halved text-red-400 text-sm"></i>
+              </div>
+            {% endif %}
+          </a>
+          <button onclick="toggleMobileMenu()" class="text-slate-400 hover:text-white p-2 rounded-sm bg-black/40 border border-red-900/40 transition-colors">
+            <i class="fa-solid fa-xmark text-sm text-red-400"></i>
+          </button>
         </div>
-        <div class="flex flex-col p-4 font-medieval font-bold text-slate-300 gap-2">
-          <a href="/" class="p-3 rounded-sm bg-realm-card border border-realm-border text-[var(--color-gold-bright)]">ANASAYFA</a>
-          <a href="/store" class="p-3 rounded-sm hover:bg-realm-card">MAĞAZA</a>
-          <a href="/forum" class="p-3 rounded-sm hover:bg-realm-card">FORUM</a>
-          <a href="/help" class="p-3 rounded-sm hover:bg-realm-card">YARDIM</a>
+
+        <!-- If Customer Logged In (Mobile Card) -->
+        {% if customer %}
+          <div class="p-4 border-b border-red-900/30 bg-black/20">
+            <div class="flex items-center gap-3 mb-3">
+              <img src="https://mc-heads.net/avatar/{{ customer.username }}/40" class="w-10 h-10 rounded-sm border border-red-700/60" alt="">
+              <div class="min-w-0 flex-1">
+                <div class="font-medieval font-bold text-white text-sm truncate">{{ customer.username }}</div>
+                <div class="text-[11px] text-red-400 font-bold flex items-center gap-1">
+                  <i class="fa-solid fa-coins text-[10px]"></i> {{ customer.balance | default: '0' }} ₺ Bakiye
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-xs font-medieval font-bold">
+              <a href="/wallet" class="p-2 rounded-sm bg-black/40 border border-red-950 text-center text-slate-300 hover:text-white flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-coins text-red-400"></i> Kredi Yükle
+              </a>
+              <a href="/chest" class="p-2 rounded-sm bg-black/40 border border-red-950 text-center text-slate-300 hover:text-white flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-box-open text-red-400"></i> Sandık
+              </a>
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Navigation Links -->
+        <div class="flex flex-col p-4 font-medieval font-bold text-slate-300 gap-1.5 flex-1">
+          <a href="/" class="p-3 rounded-sm flex items-center gap-3 {% if request.path == '/' or request.path == blank %}bg-red-950/60 border border-red-700/60 text-white{% else %}hover:bg-white/[0.04] text-slate-300{% endif %} transition-colors">
+            <i class="fa-solid fa-house text-xs text-red-400 w-4"></i>
+            <span>ANASAYFA</span>
+          </a>
+          <a href="/store" class="p-3 rounded-sm flex items-center gap-3 {% if request.path contains '/store' %}bg-red-950/60 border border-red-700/60 text-white{% else %}hover:bg-white/[0.04] text-slate-300{% endif %} transition-colors">
+            <i class="fa-solid fa-store text-xs text-red-400 w-4"></i>
+            <span>MAĞAZA</span>
+          </a>
+          <a href="/forum" class="p-3 rounded-sm flex items-center gap-3 {% if request.path contains '/forum' %}bg-red-950/60 border border-red-700/60 text-white{% else %}hover:bg-white/[0.04] text-slate-300{% endif %} transition-colors">
+            <i class="fa-solid fa-comments text-xs text-red-400 w-4"></i>
+            <span>FORUM</span>
+          </a>
+          <a href="/help" class="p-3 rounded-sm flex items-center gap-3 {% if request.path contains '/help' or request.path contains '/yardim' %}bg-red-950/60 border border-red-700/60 text-white{% else %}hover:bg-white/[0.04] text-slate-300{% endif %} transition-colors">
+            <i class="fa-solid fa-circle-question text-xs text-red-400 w-4"></i>
+            <span>YARDIM</span>
+          </a>
+
           {% if customer and customer.role.permissions and customer.role.permissions.size > 0 %}
             <a
-              href="https://app.crafter.net.tr/cms/auth?websiteId={{ customer.websiteId }}&accessToken={{ customer.access_token }}&refreshToken={{ customer.refresh_token }}"
+              href="https://app.crafter.net.tr/cms/auth?websiteId={{ customer.websiteId }}"
+              data-website-id="{{ customer.websiteId }}"
               target="_blank"
-              class="p-3 rounded-sm bg-amber-950/60 border border-[var(--color-gold)]/70 text-[var(--color-gold-bright)] flex items-center gap-2 uppercase tracking-wider text-xs"
+              onclick="return window.openCmsPanel('{{ customer.websiteId }}', event);"
+              class="cms-admin-link p-3 rounded-sm bg-gradient-to-r from-red-950 via-red-900/60 to-red-950 text-white border border-red-700/60 flex items-center gap-2.5 uppercase tracking-wider text-xs mt-2 shadow-md"
             >
-              <i class="fa-solid fa-crown text-amber-400"></i>
+              <i class="fa-solid fa-crown text-amber-400 w-4"></i>
               <span>YÖNETİM PANELİ</span>
+            </a>
+          {% endif %}
+        </div>
+
+        <!-- Drawer Footer Actions -->
+        <div class="p-4 border-t border-red-900/40 bg-black/40">
+          {% if customer %}
+            <button onclick="logoutAccount()" class="w-full py-2.5 rounded-sm bg-red-950/50 hover:bg-red-950 text-red-400 hover:text-red-300 text-xs font-medieval font-bold flex items-center justify-center gap-2 transition-colors border border-red-900/50">
+              <i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap
+            </button>
+          {% else %}
+            <a href="/auth/sign-in" class="rpg-btn-sharp-gold w-full py-2.5 rounded-sm text-xs font-medieval uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg">
+              <i class="fa-solid fa-user-shield text-xs"></i> GİRİŞ YAP
             </a>
           {% endif %}
         </div>
@@ -365,11 +707,10 @@
       function updateNavOnScroll() {
         const nav = document.getElementById('site-navbar');
         if (!nav) return;
-        if (window.scrollY > 30) {
-          nav.classList.add('bg-realm-surface', 'border-[var(--color-gold)]', 'shadow-[0_15px_35px_rgba(0,0,0,0.95)]', 'backdrop-blur-md');
-          nav.classList.remove('bg-transparent');
+        if (window.scrollY > 20) {
+          nav.classList.add('nav-scrolled');
         } else {
-          nav.classList.remove('bg-realm-surface', 'border-[var(--color-gold)]', 'shadow-[0_15px_35px_rgba(0,0,0,0.95)]', 'backdrop-blur-md');
+          nav.classList.remove('nav-scrolled');
         }
       }
 
@@ -390,47 +731,6 @@
           sidebar.classList.add('-translate-x-full');
         }
       }
-
-      // Global Toast Notification Logic
-      window.showToast = function(message, type = 'info') {
-        let container = document.getElementById('toast-container');
-        if (!container) {
-          container = document.createElement('div');
-          container.id = 'toast-container';
-          container.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-[999999] flex flex-col items-center gap-2 pointer-events-none';
-          document.body.appendChild(container);
-        }
-
-        const toast = document.createElement('div');
-        let styleClasses = 'bg-realm-card border-realm-border text-slate-200';
-        let iconHtml = '<i class="fa-solid fa-circle-info text-blue-400 text-base"></i>';
-
-        if (type === 'success') {
-          styleClasses = 'bg-realm-card border-[var(--color-gold)] text-[var(--color-gold-bright)] shadow-[0_0_20px_rgba(212,175,55,0.25)]';
-          iconHtml = '<i class="fa-solid fa-circle-check text-amber-400 text-base"></i>';
-        } else if (type === 'error') {
-          styleClasses = 'bg-red-950/95 border-red-800 text-red-200 shadow-[0_0_20px_rgba(220,38,38,0.3)]';
-          iconHtml = '<i class="fa-solid fa-triangle-exclamation text-red-400 text-base"></i>';
-        } else if (type === 'warning') {
-          styleClasses = 'bg-amber-950/95 border-amber-800 text-amber-200 shadow-[0_0_20px_rgba(245,158,11,0.25)]';
-          iconHtml = '<i class="fa-solid fa-triangle-exclamation text-amber-400 text-base"></i>';
-        }
-
-        toast.className = `pointer-events-auto px-5 py-3 rounded-sm shadow-2xl text-xs font-medieval font-bold transform transition-all duration-300 translate-y-6 opacity-0 flex items-center gap-3 border backdrop-blur-md max-w-md ${styleClasses}`;
-        toast.innerHTML = `${iconHtml} <span>${message}</span>`;
-        container.appendChild(toast);
-
-        requestAnimationFrame(() => {
-          toast.classList.remove('translate-y-6', 'opacity-0');
-          toast.classList.add('translate-y-0', 'opacity-100');
-        });
-
-        setTimeout(() => {
-          toast.classList.remove('translate-y-0', 'opacity-100');
-          toast.classList.add('translate-y-6', 'opacity-0');
-          setTimeout(() => toast.remove(), 300);
-        }, 4000);
-      };
 
       function copyIp(ip) {
         navigator.clipboard.writeText(ip);
@@ -499,21 +799,22 @@
     </script>
 
     <!-- MAIN CONTENT -->
-    <main id="MainContent" class="flex-grow w-full relative z-10 {% if template == 'auth' or template contains 'auth/' %}h-screen flex{% elsif template == 'errors/maintenance' %}flex items-center justify-center min-h-screen{% elsif template == 'index' or request.path == '/' %}{% else %}pt-28 md:pt-32{% endif %}">
+    <main id="MainContent" class="flex-grow w-full relative z-10 {% if template == 'auth' or template contains 'auth/' %}h-screen flex{% elsif template == 'errors/maintenance' %}flex items-center justify-center min-h-screen{% elsif template contains 'index' or template == 'home' or template == blank or request.path == '/' or request.path == '' or request.path == nil %}{% else %}pt-28 md:pt-32{% endif %}">
       {{ content_for_layout }}
     </main>
 
     {% unless template == 'auth' or template contains 'auth/' or template == 'errors/maintenance' %}
       <!-- FOOTER -->
       <footer
-        class="mt-24 border-t border-realm-border bg-cover bg-center pt-20 pb-10 relative z-10 overflow-hidden"
-        style="background-image: url('{% if settings.footer.background_image != blank %}{{ settings.footer.background_image }}{% else %}https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=2000&auto=format&fit=crop{% endif %}');"
+        class="mt-24 border-t bg-cover bg-center pt-20 pb-10 relative z-10 overflow-hidden"
+        style="border-color: var(--color-footer-border); background-color: var(--color-footer-bg); background-image: url('{% if settings.footer.background_image != blank %}{{ settings.footer.background_image }}{% else %}https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=2000&auto=format&fit=crop{% endif %}');"
       >
-        <!-- Dark Mystical Overlay -->
-        <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-realm-bg)] via-[var(--color-realm-bg)]/95 to-[var(--color-realm-bg)]/80"></div>
+        <!-- Medieval Crimson Atmosphere Overlay -->
+        <div class="absolute inset-0 pointer-events-none" style="background-color: var(--color-footer-bg); opacity: 0.82;"></div>
+        <div class="absolute inset-0 pointer-events-none bg-gradient-to-t from-[var(--color-footer-bg)] via-[var(--color-footer-bg)]/50 to-transparent"></div>
 
         <div class="container max-w-[1240px] mx-auto px-4 relative z-10">
-          <!-- Gold Flourish Top Divider -->
+          <!-- Crimson Flourish Top Divider -->
           <div class="rpg-flourish-divider mb-12">
             <div class="rpg-flourish-diamond"></div>
           </div>
@@ -521,13 +822,19 @@
           <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
             <!-- Col 1: About / Logo -->
             <div class="md:col-span-1">
-              {% assign default_logo = 'https://avatars.githubusercontent.com/u/3840546?s=280&v=4' %}
-              <img
-                src="{{ settings.footer.logo | default: settings.logo_dark | default: settings.logo_light | default: default_logo }}"
-                alt="{{ shop.name }}"
-                class="mb-4 object-contain filter drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]"
-                style="max-height: 48px; width: {{ settings.footer.logo_width | default: 192 }}px;"
-              >
+              {% if settings.footer.logo != blank or settings.logo_dark != blank or settings.logo_light != blank or settings.logo != blank %}
+                <img
+                  src="{{ settings.footer.logo | default: settings.logo_dark | default: settings.logo_light | default: settings.logo }}"
+                  alt="{{ shop.name }}"
+                  class="mb-4 object-contain filter drop-shadow-[0_2px_10px_var(--color-gold-glow)]"
+                  style="max-height: 48px; width: {{ settings.footer.logo_width | default: 192 }}px;"
+                >
+              {% else %}
+                <div class="flex items-center gap-2.5 font-medieval font-black text-lg text-[var(--color-gold-bright)] tracking-wider uppercase drop-shadow-[0_0_15px_var(--color-gold-glow)] mb-4">
+                  <i class="fa-solid fa-shield-halved text-[var(--color-gold-bright)] text-base"></i>
+                  <span>{{ shop.name | default: settings.server_name }}</span>
+                </div>
+              {% endif %}
               <p class="text-slate-400 text-xs leading-relaxed font-sans mb-6">
                 {{ settings.footer.about | default: 'Türkiye\'nin en gelişmiş RPG & Orta Çağ Minecraft sunucu ağı. Loncanı kur ve adını altın harflerle yazdır.' }}
               </p>
@@ -557,46 +864,46 @@
 
             <!-- Col 2: HIZLI MENÜ -->
             <div>
-              <h3 class="font-medieval font-bold text-[var(--color-gold-bright)] mb-5 uppercase tracking-widest text-xs border-b border-realm-border pb-2">Hızlı Menü</h3>
+              <h3 class="font-medieval font-bold mb-5 uppercase tracking-widest text-xs border-b pb-2" style="color: var(--color-footer-title); border-color: var(--color-footer-border);">Hızlı Menü</h3>
               <ul class="space-y-3 font-sans text-xs">
                 {% if settings.footer.quick_links and settings.footer.quick_links.size > 0 %}
                   {% for link in settings.footer.quick_links %}
-                    <li><a href="{{ link.url | default: '#' }}" class="text-slate-400 hover:text-[var(--color-gold-bright)] transition-colors">{{ link.title }}</a></li>
+                    <li><a href="{{ link.url | default: '#' }}" class="hover:text-[var(--color-gold-bright)] transition-colors" style="color: var(--color-footer-text);">{{ link.title }}</a></li>
                   {% endfor %}
                 {% else %}
-                  <li><a href="/" class="text-slate-400 hover:text-[var(--color-gold-bright)] transition-colors">Anasayfa</a></li>
-                  <li><a href="/store" class="text-slate-400 hover:text-[var(--color-gold-bright)] transition-colors">Mağaza</a></li>
-                  <li><a href="/forum" class="text-slate-400 hover:text-[var(--color-gold-bright)] transition-colors">Forum</a></li>
-                  <li><a href="/help" class="text-slate-400 hover:text-[var(--color-gold-bright)] transition-colors">Yardım</a></li>
+                  <li><a href="/" class="hover:text-[var(--color-gold-bright)] transition-colors" style="color: var(--color-footer-text);">Anasayfa</a></li>
+                  <li><a href="/store" class="hover:text-[var(--color-gold-bright)] transition-colors" style="color: var(--color-footer-text);">Mağaza</a></li>
+                  <li><a href="/forum" class="hover:text-[var(--color-gold-bright)] transition-colors" style="color: var(--color-footer-text);">Forum</a></li>
+                  <li><a href="/help" class="hover:text-[var(--color-gold-bright)] transition-colors" style="color: var(--color-footer-text);">Yardım</a></li>
                 {% endif %}
               </ul>
             </div>
 
             <!-- Col 3: SOSYAL MEDYA -->
             <div>
-              <h3 class="font-medieval font-bold text-[var(--color-gold-bright)] mb-5 uppercase tracking-widest text-xs border-b border-realm-border pb-2">Sosyal Medya</h3>
+              <h3 class="font-medieval font-bold mb-5 uppercase tracking-widest text-xs border-b pb-2" style="color: var(--color-footer-title); border-color: var(--color-footer-border);">Sosyal Medya</h3>
               <ul class="space-y-3 font-sans text-xs">
-                {% if settings.discord_url != blank %}<li><a href="{{ settings.discord_url }}" target="_blank" class="text-slate-400 hover:text-[#5865F2] transition-colors"><i class="fa-brands fa-discord mr-2"></i> Discord</a></li>{% endif %}
-                {% if settings.instagram_url != blank %}<li><a href="{{ settings.instagram_url }}" target="_blank" class="text-slate-400 hover:text-[#E1306C] transition-colors"><i class="fa-brands fa-instagram mr-2"></i> Instagram</a></li>{% endif %}
-                {% if settings.youtube_url != blank %}<li><a href="{{ settings.youtube_url }}" target="_blank" class="text-slate-400 hover:text-[#FF0000] transition-colors"><i class="fa-brands fa-youtube mr-2"></i> YouTube</a></li>{% endif %}
-                {% if settings.tiktok_url != blank %}<li><a href="{{ settings.tiktok_url }}" target="_blank" class="text-slate-400 hover:text-white transition-colors"><i class="fa-brands fa-tiktok mr-2"></i> TikTok</a></li>{% endif %}
-                {% if settings.twitter_url != blank %}<li><a href="{{ settings.twitter_url }}" target="_blank" class="text-slate-400 hover:text-white transition-colors"><i class="fa-brands fa-x-twitter mr-2"></i> X (Twitter)</a></li>{% endif %}
-                {% if settings.forum_url != blank %}<li><a href="{{ settings.forum_url }}" class="text-slate-400 hover:text-[var(--color-gold-bright)] transition-colors"><i class="fa-solid fa-comments mr-2"></i> Topluluk Forumu</a></li>{% endif %}
+                {% if settings.discord_url != blank %}<li><a href="{{ settings.discord_url }}" target="_blank" class="hover:text-[#5865F2] transition-colors" style="color: var(--color-footer-text);"><i class="fa-brands fa-discord mr-2"></i> Discord</a></li>{% endif %}
+                {% if settings.instagram_url != blank %}<li><a href="{{ settings.instagram_url }}" target="_blank" class="hover:text-[#E1306C] transition-colors" style="color: var(--color-footer-text);"><i class="fa-brands fa-instagram mr-2"></i> Instagram</a></li>{% endif %}
+                {% if settings.youtube_url != blank %}<li><a href="{{ settings.youtube_url }}" target="_blank" class="hover:text-[#FF0000] transition-colors" style="color: var(--color-footer-text);"><i class="fa-brands fa-youtube mr-2"></i> YouTube</a></li>{% endif %}
+                {% if settings.tiktok_url != blank %}<li><a href="{{ settings.tiktok_url }}" target="_blank" class="hover:text-white transition-colors" style="color: var(--color-footer-text);"><i class="fa-brands fa-tiktok mr-2"></i> TikTok</a></li>{% endif %}
+                {% if settings.twitter_url != blank %}<li><a href="{{ settings.twitter_url }}" target="_blank" class="hover:text-white transition-colors" style="color: var(--color-footer-text);"><i class="fa-brands fa-x-twitter mr-2"></i> X (Twitter)</a></li>{% endif %}
+                {% if settings.forum_url != blank %}<li><a href="{{ settings.forum_url }}" class="hover:text-[var(--color-gold-bright)] transition-colors" style="color: var(--color-footer-text);"><i class="fa-solid fa-comments mr-2"></i> Topluluk Forumu</a></li>{% endif %}
               </ul>
             </div>
 
             <!-- Col 4: BAĞLANTILAR -->
             <div>
-              <h3 class="font-medieval font-bold text-[var(--color-gold-bright)] mb-5 uppercase tracking-widest text-xs border-b border-realm-border pb-2">Bağlantılar</h3>
+              <h3 class="font-medieval font-bold mb-5 uppercase tracking-widest text-xs border-b pb-2" style="color: var(--color-footer-title); border-color: var(--color-footer-border);">Bağlantılar</h3>
               <ul class="space-y-3 font-sans text-xs">
                 {% if settings.footer.support_links and settings.footer.support_links.size > 0 %}
                   {% for link in settings.footer.support_links %}
-                    <li><a href="{{ link.url | default: '#' }}" class="text-slate-400 hover:text-[var(--color-gold-bright)] transition-colors">{{ link.title }}</a></li>
+                    <li><a href="{{ link.url | default: '#' }}" class="hover:text-[var(--color-gold-bright)] transition-colors" style="color: var(--color-footer-text);">{{ link.title }}</a></li>
                   {% endfor %}
                 {% else %}
-                  <li><a href="/help" class="text-slate-400 hover:text-[var(--color-gold-bright)] transition-colors">Sunucu Kuralları</a></li>
-                  <li><a href="/help" class="text-slate-400 hover:text-[var(--color-gold-bright)] transition-colors">Hizmet Şartları</a></li>
-                  <li><a href="/legal" class="text-slate-400 hover:text-[var(--color-gold-bright)] transition-colors">Gizlilik Politikası</a></li>
+                  <li><a href="/help" class="hover:text-[var(--color-gold-bright)] transition-colors" style="color: var(--color-footer-text);">Sunucu Kuralları</a></li>
+                  <li><a href="/help" class="hover:text-[var(--color-gold-bright)] transition-colors" style="color: var(--color-footer-text);">Hizmet Şartları</a></li>
+                  <li><a href="/legal" class="hover:text-[var(--color-gold-bright)] transition-colors" style="color: var(--color-footer-text);">Gizlilik Politikası</a></li>
                 {% endif %}
               </ul>
             </div>
@@ -615,7 +922,14 @@
       NProgress.configure({ showSpinner: false });
       NProgress.done();
       async function logoutAccount() {
-        try { await fetch('/api/storefront/v2/auth/logout', { method: 'POST' }); window.location.reload(); } catch (err) { window.location.reload(); }
+        try {
+          if (window.crafter?.auth) {
+            await window.crafter.auth.logout();
+          } else {
+            await fetch('/api/storefront/v2/auth/logout', { method: 'POST' });
+          }
+        } catch (err) {}
+        window.location.reload();
       }
       document.addEventListener('click', e => {
         const a = e.target.closest('a');
@@ -678,106 +992,135 @@
           window.showToast?.('Ürün envanterinize eklendi!', 'success');
         } catch (e) {}
       };
-      document.addEventListener('DOMContentLoaded', updateGlobalCartBadge);
-      window.addEventListener('storage', (e) => { if (e.key === 'cart') updateGlobalCartBadge(); });
+      // Cookie Helper & Crafter CMS Auth Bridge
+      window.getCrafterCookie = function(name) {
+        try {
+          const parts = (document.cookie || '').split(';');
+          for (let i = 0; i < parts.length; i++) {
+            const item = parts[i].trim();
+            if (item.indexOf(name + '=') === 0) {
+              return item.substring(name.length + 1);
+            }
+          }
+        } catch (e) {}
+        try {
+          const ls = localStorage.getItem(name);
+          if (ls) return ls;
+        } catch (e) {}
+        if (name === 'crafter_token' && window.crafter && typeof window.crafter.getToken === 'function') {
+          return window.crafter.getToken() || '';
+        }
+        return '';
+      };
+
+      window.openCmsPanel = function(websiteId, e) {
+        if (e) {
+          if (e.preventDefault) e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
+        }
+        const token = window.getCrafterCookie('crafter_token');
+        const refreshToken = window.getCrafterCookie('crafter_refresh_token');
+        const wid = websiteId || '{{ customer.websiteId }}';
+        const url = 'https://app.crafter.net.tr/cms/auth?websiteId=' + encodeURIComponent(wid) + '&accessToken=' + encodeURIComponent(token) + '&refreshToken=' + encodeURIComponent(refreshToken);
+        window.open(url, '_blank');
+        return false;
+      };
+
+      window.updateCmsAuthLinks = function() {
+        const token = window.getCrafterCookie('crafter_token');
+        const refreshToken = window.getCrafterCookie('crafter_refresh_token');
+        document.querySelectorAll('a.cms-admin-link').forEach((link) => {
+          const wid = link.getAttribute('data-website-id') || '{{ customer.websiteId }}';
+          link.href = 'https://app.crafter.net.tr/cms/auth?websiteId=' + encodeURIComponent(wid) + '&accessToken=' + encodeURIComponent(token) + '&refreshToken=' + encodeURIComponent(refreshToken);
+        });
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', window.updateCmsAuthLinks);
+      } else {
+        window.updateCmsAuthLinks();
+      }
+
+      // Reactive Crafter SDK Event Bus Listeners
+      if (window.crafter) {
+        async function syncHeaderBalance() {
+          try {
+            {% if customer %}
+            const data = await window.crafter.users.getBalance('me');
+            if (data && data.balance !== undefined) {
+              document.querySelectorAll('#nav-credit, .header-balance').forEach(el => {
+                el.innerHTML = `<i class="fa-solid fa-coins text-[10px]"></i> ${data.balance} ${data.currency || '₺'}`;
+              });
+            }
+            {% endif %}
+          } catch (e) {}
+        }
+
+        window.crafter.on('cart:purchased', async (order) => {
+          localStorage.removeItem('cart');
+          updateGlobalCartBadge();
+          await syncHeaderBalance();
+        });
+
+        window.crafter.on('balance:sent', async () => {
+          await syncHeaderBalance();
+        });
+
+        window.crafter.on('redeem:used', async (res) => {
+          if (res?.bonus) {
+            await syncHeaderBalance();
+          }
+        });
+
+        window.crafter.on('auth:logout', () => {
+          window.location.reload();
+        });
+
+        window.crafter.on('2fa:enabled', (data) => {
+          window.showToast?.(`İki aşamalı doğrulama (${data?.method || '2FA'}) aktifleştirildi.`, 'success');
+        });
+
+        window.crafter.on('2fa:disabled', () => {
+          window.showToast?.('İki aşamalı doğrulama devre dışı bırakıldı.', 'info');
+        });
+
+        window.crafter.on('discord:unlinked', () => {
+          window.showToast?.('Discord bağlantısı kaldırıldı.', 'info');
+        });
+      }
     </script>
 
     <script>
-      // Unified Continuous Page Transition Preloader Logic (Disabled in Preview Mode)
+      // Lightweight & Non-blocking Preloader Management
       (function() {
-        const isPreview = window.location.search.includes('preview_theme_id') || 
-                          window.location.search.includes('preview_ts') || 
-                          (window.self !== window.top);
-
         const preloader = document.getElementById('rpg-page-preloader');
-        if (isPreview) {
-          if (preloader) {
-            preloader.classList.add('preloader-hidden');
-            preloader.style.display = 'none';
-          }
+        if (!preloader) return;
+
+        function dismissPreloader() {
           document.documentElement.classList.remove('rpg-is-preloading');
-          return;
-        }
-
-        const barFill = document.getElementById('rpg-progress-bar-fill');
-        let progressTimer = null;
-        let currentProgress = parseFloat(sessionStorage.getItem('rpg_progress') || '0');
-
-        function updateBar(val) {
-          currentProgress = Math.min(100, Math.max(0, val));
-          if (barFill) barFill.style.width = currentProgress + '%';
-          sessionStorage.setItem('rpg_progress', currentProgress);
-        }
-
-        function startProgress() {
-          if (!preloader) return;
-          document.documentElement.classList.add('rpg-is-preloading');
-          preloader.classList.remove('preloader-hidden');
-          
-          if (currentProgress <= 0 || currentProgress >= 95) {
-            updateBar(10);
-          } else {
-            updateBar(currentProgress);
-          }
-
-          clearInterval(progressTimer);
-          progressTimer = setInterval(() => {
-            if (currentProgress < 90) {
-              updateBar(currentProgress + (90 - currentProgress) * 0.14);
-            }
-          }, 100);
-        }
-
-        function finishProgress() {
-          if (!preloader) return;
-          clearInterval(progressTimer);
-          updateBar(100);
-          
+          preloader.classList.add('preloader-hidden');
           setTimeout(() => {
-            document.documentElement.classList.remove('rpg-is-preloading');
-            preloader.classList.add('preloader-hidden');
-            setTimeout(() => {
-              updateBar(0);
-              sessionStorage.removeItem('rpg_progress');
-            }, 600);
-          }, 300);
+            preloader.style.display = 'none';
+          }, 400);
         }
 
-        if (sessionStorage.getItem('rpg_progress')) {
-          startProgress();
-        }
-
-        if (document.readyState === 'complete') {
-          setTimeout(finishProgress, 300);
+        // Always dismiss quickly on page load
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+          setTimeout(dismissPreloader, 150);
         } else {
-          window.addEventListener('load', () => {
-            setTimeout(finishProgress, 350);
-          });
+          window.addEventListener('DOMContentLoaded', () => setTimeout(dismissPreloader, 150));
+          window.addEventListener('load', dismissPreloader);
         }
 
-        setTimeout(finishProgress, 1800);
-
-        document.addEventListener('click', (e) => {
-          const link = e.target.closest('a');
-          if (!link) return;
-          const href = link.getAttribute('href');
-          if (
-            href &&
-            !href.startsWith('#') &&
-            !href.startsWith('javascript:') &&
-            !href.startsWith('mailto:') &&
-            !href.startsWith('tel:') &&
-            link.target !== '_blank' &&
-            !e.ctrlKey &&
-            !e.metaKey
-          ) {
-            startProgress();
-          }
-        });
+        // Failsafe timer (never hang)
+        setTimeout(dismissPreloader, 600);
 
         window.addEventListener('pageshow', (e) => {
-          if (e.persisted) finishProgress();
+          if (e.persisted) dismissPreloader();
         });
+
+        // Clean any leftover progress states
+        sessionStorage.removeItem('rpg_progress');
       })();
     </script>
 

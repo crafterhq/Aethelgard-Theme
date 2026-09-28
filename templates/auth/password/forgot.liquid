@@ -1,4 +1,4 @@
-﻿{% layout none %}
+{% layout none %}
 {% if websiteData.security.cf_turnstile.site_key %}
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 {% endif %}
@@ -32,8 +32,8 @@
           E-posta adresini gir, sana şifreni sıfırlaman için bir bağlantı gönderelim.
         </p>
 
-        <div class="mb-5 p-3 rounded-sm bg-amber-950/60 border border-amber-800/80 text-amber-300 text-xs font-medieval flex items-start gap-2.5">
-          <i class="fa-solid fa-circle-info text-amber-400 mt-0.5"></i>
+        <div class="mb-5 p-3 rounded-sm bg-red-950/60 border border-red-800/80 text-rose-300 text-xs font-medieval flex items-start gap-2.5">
+          <i class="fa-solid fa-circle-info text-rose-400 mt-0.5"></i>
           <span>Sıfırlama bağlantısı gelen kutunuza ulaşmazsa lütfen <strong>Spam / Gereksiz</strong> klasörünüzü kontrol ediniz.</span>
         </div>
 
@@ -133,21 +133,15 @@ Minecraft Topluluğu" }}
     btn.innerHTML = '<span class="animate-pulse">Gönderiliyor...</span>';
 
     try {
-      const res = await fetch('/api/storefront/v2/auth/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      const result = await res.json();
-
-      if (result.success) {
-        window.showToast?.('Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.', 'success') || alert('Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.');
+      const result = await window.crafter.auth.forgotPassword(data.email, data.turnstileToken);
+      if (result.success || result) {
+        window.showToast(result.message || 'Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.', 'success');
         e.target.reset();
       } else {
-        window.showToast?.(result.message || 'Bir hata oluştu!', 'error') || alert(result.message || 'Bir hata oluştu!');
+        window.showToast(result.message || 'Bir hata oluştu!', 'error');
       }
     } catch (err) {
-      window.showToast?.('Bağlantı hatası!', 'error') || alert('Bağlantı hatası!');
+      window.showToast(err.message || 'Bağlantı hatası!', 'error');
     } finally {
       btn.disabled = false;
       btn.innerHTML = originalText;

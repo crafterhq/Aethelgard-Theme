@@ -1,4 +1,4 @@
-﻿<div class="container max-w-[1400px] mx-auto px-4 mt-8 mb-24 space-y-8 min-h-[60vh] text-slate-100">
+<div class="container max-w-[1400px] mx-auto px-4 mt-8 mb-24 space-y-8 min-h-[60vh] text-slate-100">
   <!-- Breadcrumb -->
   <div class="flex flex-wrap items-center gap-2 text-xs font-medieval font-bold text-slate-400 bg-realm-card py-2.5 px-5 rounded-sm w-fit border border-realm-border">
     <a href="/store" class="hover:text-gold-bright transition-colors flex items-center gap-2">
@@ -42,7 +42,7 @@
     <div class="bg-realm-surface border-2 border-realm-border rounded-sm overflow-hidden h-fit shadow-2xl">
       <div class="p-5 border-b border-realm-border flex items-center justify-between bg-realm-card">
         <h2 class="text-base font-medieval font-black text-gold-bright uppercase tracking-wider flex items-center gap-2">
-          <i class="fa-solid fa-basket-shopping text-amber-500"></i>
+          <i class="fa-solid fa-basket-shopping text-gold-bright"></i>
           <span>SEPET ÜRÜNLERİ</span>
           <span class="text-slate-400 text-xs">(<span id="cart-count">0</span>)</span>
         </h2>
@@ -63,9 +63,9 @@
     <!-- Order Summary Sidebar -->
     <div class="space-y-6">
       <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-6 sticky top-24 shadow-2xl">
-        <h2 class="text-base font-medieval font-black text-slate-100 mb-6 flex items-center gap-2 uppercase tracking-wider border-b border-realm-border pb-4">
+        <h2 class="text-base font-medieval font-black text-gold-bright mb-6 flex items-center gap-2 uppercase tracking-wider border-b border-realm-border pb-4">
           <i class="fa-solid fa-receipt text-gold-bright"></i>
-          <span>SİPARİŞ ÖZETİ</span>
+          <span class="text-gold-bright">SİPARİŞ ÖZETİ</span>
         </h2>
 
         <!-- Coupon Form -->
@@ -109,9 +109,9 @@
         </div>
 
         <div class="space-y-3 mb-6 text-xs font-medieval">
-          <div class="flex items-center justify-between text-slate-400">
+          <div class="flex items-center justify-between text-slate-300">
             <span>Ara Toplam</span>
-            <span id="subtotal" class="font-bold text-slate-200">0.00 ₺</span>
+            <span id="subtotal" class="font-bold text-slate-100">0.00 ₺</span>
           </div>
           <div id="coupon-discount-row" class="hidden items-center justify-between text-emerald-400 font-bold">
             <span>Kupon İndirimi</span>
@@ -123,7 +123,7 @@
 
         <div class="pt-2 mb-8">
           <div class="flex items-center justify-between">
-            <span class="text-sm font-medieval font-bold text-slate-300 uppercase tracking-wider">TOPLAM TUTAR</span>
+            <span class="text-sm font-medieval font-bold text-slate-200 uppercase tracking-wider">TOPLAM TUTAR</span>
             <span id="total" class="text-2xl font-medieval font-black text-gold-bright drop-shadow-md">0.00 ₺</span>
           </div>
         </div>
@@ -133,7 +133,6 @@
           id="purchaseBtn"
           class="w-full rpg-btn-sharp-gold py-4 rounded-sm font-medieval font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <i class="fa-solid fa-[#d4af37]"></i>
           <i class="fa-solid fa-lock"></i>
           <span>SİPARİŞİ TAMAMLA</span>
         </button>
@@ -144,7 +143,7 @@
 
 <script>
   // Marketplace Settings injected from server
-  const bulkDiscount = {{ marketplace.bulkDiscount | json | default: 'null' }};
+  const bulkDiscount = {% if marketplace and marketplace.bulkDiscount %}{{ marketplace.bulkDiscount | json }}{% else %}null{% endif %};
   const isCustomer = {% if customer %}true{% else %}false{% endif %};
   
   let cartProducts = [];
@@ -173,7 +172,15 @@
     }
 
     try {
-      cartProducts = cart;
+      cartProducts = cart.map(item => ({
+        id: item.id || item._id,
+        name: item.name || 'Eşya #' + (item.id || ''),
+        price: Number(item.price) || 0,
+        discountValue: Number(item.discountValue) || 0,
+        discountType: item.discountType || 'fixed',
+        image: item.image || item.imageUrl || '',
+        quantity: Math.max(1, parseInt(item.quantity) || 1)
+      }));
       document.getElementById('cart-loading').classList.add('hidden');
       
       if (cartProducts.length === 0) {
@@ -260,7 +267,7 @@
       totalSubtotal += lineTotal;
 
       const imgUrl = product.image;
-      const imgHtml = imgUrl ? `<img src="${imgUrl}" class="w-full h-full object-contain p-2 filter drop-shadow-md" alt="">` : `<div class="flex items-center justify-center text-amber-500/60 h-full"><i class="fa-solid fa-cube text-2xl"></i></div>`;
+      const imgHtml = imgUrl ? `<img src="${imgUrl}" class="w-full h-full object-contain p-2 filter drop-shadow-md" alt="">` : `<div class="flex items-center justify-center text-gold/60 h-full"><i class="fa-solid fa-cube text-2xl"></i></div>`;
 
       let priceHtml = '';
       if (finalPrice < originalPrice || hasCouponDiscount) {
@@ -379,8 +386,7 @@
   }
 
   function saveCart() {
-    const minCart = cartProducts.map(p => ({ id: p.id, quantity: p.quantity }));
-    localStorage.setItem('cart', JSON.stringify(minCart));
+    localStorage.setItem('cart', JSON.stringify(cartProducts));
     updateCartHeaderCount();
   }
 
@@ -404,25 +410,23 @@
     btn.innerHTML = '...';
 
     try {
-      const res = await fetch(`/api/storefront/v1/coupons/${code}`);
-      const data = await res.json().catch(() => ({}));
-      
-      const c = data.data || (data.code || data.id ? data : null);
-      if (res.ok && c && data.success !== false) {
+      const data = await window.crafter.coupons.get(code);
+      const c = data?.data || (data?.code || data?.id ? data : null);
+      if (c) {
         if (!c.isActive) {
-          window.showToast?.('Kupon artık aktif değil.', 'error') || alert('Kupon artık aktif değil.');
+          window.showToast('Kupon artık aktif değil.', 'error');
           return;
         }
 
         const currentSubtotal = cartProducts.reduce((sum, p) => sum + (Number(p.price) || 0) * p.quantity, 0);
         if (c.minCartValue && currentSubtotal < c.minCartValue) {
-          window.showToast?.(`Minimum sepet tutarı: ${c.minCartValue}₺`, 'warning') || alert(`Minimum sepet tutarı: ${c.minCartValue}₺`);
+          window.showToast(`Minimum sepet tutarı: ${c.minCartValue}₺`, 'warning');
           return;
         }
 
         if (c.type === 'product_discount' && c.productId) {
           if (!cartProducts.some(p => p.id === c.productId)) {
-            window.showToast?.('Bu kupon sepetinizdeki ürünler için geçerli değil.', 'error') || alert('Bu kupon sepetinizdeki ürünler için geçerli değil.');
+            window.showToast('Bu kupon sepetinizdeki ürünler için geçerli değil.', 'error');
             return;
           }
         }
@@ -439,12 +443,12 @@
         
         document.getElementById('coupon-description').innerText = desc;
         renderCart();
-        window.showToast?.('Kupon uygulandı!', 'success') || alert('Kupon uygulandı!');
+        window.showToast('Kupon uygulandı!', 'success');
       } else {
-        window.showToast?.(data.message || 'Geçersiz kupon kodu.', 'error') || alert(data.message || 'Geçersiz kupon kodu.');
+        window.showToast('Geçersiz kupon kodu.', 'error');
       }
     } catch (e) {
-      window.showToast?.('Kupon kontrol edilemedi.', 'error') || alert('Kupon kontrol edilemedi.');
+      window.showToast(e.message || 'Kupon kontrol edilemedi.', 'error');
     } finally {
       btn.disabled = false;
       btn.innerHTML = ogText;
@@ -487,34 +491,37 @@
     btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> <span>İŞLENİYOR...</span>';
 
     try {
-      const productIds = cartProducts.map(p => p.id);
-      const payload = { productIds };
+      const items = cartProducts.map(p => ({ productId: p.id, quantity: p.quantity }));
+      const payload = { items };
       if (appliedCoupon) payload.coupon = appliedCoupon.code;
 
-      const res = await fetch('/api/storefront/v1/marketplace/purchase', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
+      const data = await window.crafter.cart.purchase(payload);
 
-      if (data.success || res.ok) {
-        window.showToast?.('Sipariş başarıyla tamamlandı! Sandığa yönlendiriliyorsunuz.', 'success') || alert('Sipariş başarıyla tamamlandı!');
-        localStorage.removeItem('cart');
-        setTimeout(() => {
-          window.location.href = '/chest';
-        }, 2000);
-      } else {
-        window.showToast?.(data.message || 'Sipariş tamamlanamadı.', 'error') || alert(data.message || 'Sipariş tamamlanamadı.');
-        btn.disabled = false;
-        btn.innerHTML = ogText;
-      }
+      window.showToast('Sipariş başarıyla tamamlandı! Sandığa yönlendiriliyorsunuz.', 'success');
+      localStorage.removeItem('cart');
+      setTimeout(() => {
+        window.location.href = '/chest';
+      }, 2000);
     } catch (e) {
-      window.showToast?.('Bağlantı hatası.', 'error') || alert('Bağlantı hatası.');
+      window.showToast(e.message || 'Sipariş tamamlanamadı.', 'error');
       btn.disabled = false;
       btn.innerHTML = ogText;
     }
   }
 
-  document.addEventListener('DOMContentLoaded', loadCart);
+  if (window.crafter) {
+    window.crafter.on('cart:purchased', () => {
+      localStorage.removeItem('cart');
+      cartProducts = [];
+      appliedCoupon = null;
+      updateCartHeaderCount();
+      loadCart();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadCart);
+  } else {
+    loadCart();
+  }
 </script>

@@ -29,7 +29,7 @@
 
           <div class="flex items-center justify-center gap-4 text-xs font-medieval text-slate-400 mt-1">
             <div class="flex items-center gap-1.5 bg-realm-card px-3 py-1 rounded-sm border border-realm-border">
-              <i class="fa-solid fa-calendar-days text-amber-500"></i>
+              <i class="fa-solid fa-calendar-days text-gold-bright"></i>
               <span>Kayıt: {{ customer.createdAt | date: '%d.%m.%Y' }}</span>
             </div>
           </div>
@@ -55,7 +55,7 @@
             </div>
             <div class="flex items-center justify-between p-3.5 rounded-sm bg-realm-card border border-realm-border">
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-sm bg-amber-950 text-amber-400 flex items-center justify-center border border-amber-800">
+                <div class="w-8 h-8 rounded-sm bg-red-950 text-[var(--color-gold-bright)] flex items-center justify-center border border-red-800">
                   <i class="fa-solid fa-boxes-stacked"></i>
                 </div>
                 <div>
@@ -94,7 +94,7 @@
               id="sidebar-btn-general"
               class="sidebar-tab-link w-full flex items-center gap-3 p-3.5 rounded-sm font-bold transition-all text-left bg-realm-card text-gold-bright border border-gold/60"
             >
-              <i class="fa-solid fa-gear text-amber-400"></i>
+              <i class="fa-solid fa-gear text-gold-bright"></i>
               <span>AYARLAR</span>
             </button>
             <button
@@ -163,9 +163,9 @@
 
         <!-- TAB 1: GENEL AYARLAR -->
         <div id="tab-general" class="settings-content bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 shadow-2xl">
-          <h2 class="text-xl font-medieval font-black text-slate-100 mb-8 flex items-center gap-3 uppercase tracking-wider border-b border-realm-border pb-4">
+          <h2 class="text-xl font-medieval font-black text-gold-bright mb-8 flex items-center gap-3 uppercase tracking-wider border-b border-realm-border pb-4">
             <i class="fa-solid fa-user-gear text-gold-bright"></i>
-            <span>PROFİL AYARLARI</span>
+            <span class="text-gold-bright">PROFİL AYARLARI</span>
           </h2>
 
           <div id="settings-success" class="hidden mb-6 p-4 rounded-sm bg-emerald-950/80 border border-emerald-800/80 text-emerald-300 font-medieval text-xs font-bold flex items-center gap-3 uppercase">
@@ -242,9 +242,9 @@
         <!-- TAB 2: DISCORD -->
         <div id="tab-discord" class="settings-content hidden bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 shadow-2xl">
           <div class="flex items-center justify-between mb-6 border-b border-realm-border pb-4">
-            <h2 class="text-xl font-medieval font-black text-slate-100 flex items-center gap-3 uppercase tracking-wider">
+            <h2 class="text-xl font-medieval font-black text-gold-bright flex items-center gap-3 uppercase tracking-wider">
               <i class="fa-brands fa-discord text-[#5865F2]"></i>
-              <span>DISCORD HESABI</span>
+              <span class="text-gold-bright">DISCORD HESABI</span>
             </h2>
             <div id="discordStatusBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm text-[10px] font-medieval font-bold bg-realm-card text-slate-400 border border-realm-border">
               Yükleniyor...
@@ -281,9 +281,9 @@
         <!-- TAB 3: 2FA GÜVENLİK -->
         <div id="tab-2fa" class="settings-content hidden bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 shadow-2xl">
           <div class="flex items-center justify-between mb-6 border-b border-realm-border pb-4">
-            <h2 class="text-xl font-medieval font-black text-slate-100 flex items-center gap-3 uppercase tracking-wider">
-              <i class="fa-solid fa-shield-halved text-indigo-400"></i>
-              <span>İKİ AŞAMALI DOĞRULAMA (2FA)</span>
+            <h2 class="text-xl font-medieval font-black text-gold-bright flex items-center gap-3 uppercase tracking-wider">
+              <i class="fa-solid fa-shield-halved text-gold-bright"></i>
+              <span class="text-gold-bright">İKİ AŞAMALI DOĞRULAMA (2FA)</span>
             </h2>
             <div id="twofaOverallBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm text-[10px] font-medieval font-bold bg-realm-card text-slate-400 border border-realm-border">
               Yükleniyor...
@@ -317,7 +317,7 @@
             <!-- Email 2FA -->
             <div class="p-5 rounded-sm border border-realm-border bg-realm-card/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-medieval">
               <div class="flex items-center gap-4">
-                <div class="w-10 h-10 rounded-sm bg-amber-950 text-amber-400 border border-amber-800 flex items-center justify-center shrink-0">
+                <div class="w-10 h-10 rounded-sm bg-red-950 text-[var(--color-gold-bright)] border border-red-800 flex items-center justify-center shrink-0">
                   <i class="fa-solid fa-envelope text-base"></i>
                 </div>
                 <div>
@@ -424,7 +424,7 @@
         <div class="text-center w-full">
           <div class="text-[10px] text-slate-500 uppercase font-medieval font-bold tracking-wider mb-1">Manuel Kurulum Anahtarı</div>
           <div class="flex items-center justify-center gap-2">
-            <code id="authSecretCode" class="text-xs font-mono font-black text-amber-400 bg-realm-card px-2 py-1 rounded-sm border border-realm-border">...</code>
+            <code id="authSecretCode" class="text-xs font-mono font-black text-gold-bright bg-realm-card px-2 py-1 rounded-sm border border-realm-border">...</code>
             <button onclick="copyAuthSecret()" class="text-xs font-medieval text-gold-bright font-bold hover:underline uppercase">Kopyala</button>
           </div>
         </div>
@@ -466,8 +466,8 @@
         <strong class="text-gold-bright">{{ customer.email }}</strong> adresinize gönderilen 6 haneli kodu giriniz.
       </p>
 
-      <div class="mb-5 p-3 rounded-sm bg-amber-950/60 border border-amber-800/80 text-amber-300 text-xs font-medieval flex items-start gap-2.5">
-        <i class="fa-solid fa-circle-info text-amber-400 mt-0.5"></i>
+      <div class="mb-5 p-3 rounded-sm bg-red-950/60 border border-red-800/80 text-rose-300 text-xs font-medieval flex items-start gap-2.5">
+        <i class="fa-solid fa-circle-info text-rose-400 mt-0.5"></i>
         <span>Kod ulaşmadıysa lütfen <strong>Spam / Gereksiz</strong> klasörünüzü kontrol ediniz.</span>
       </div>
 
@@ -503,7 +503,7 @@
         Bu kodlar, 2FA cihazınıza erişimi kaybettiğinizde hesabınızı kurtarmanın TEK yoludur.
       </p>
 
-      <div id="recoveryCodesGrid" class="grid grid-cols-2 gap-2 p-4 bg-realm-bg rounded-sm border border-realm-border mb-6 font-mono font-bold text-xs text-amber-400 text-center"></div>
+      <div id="recoveryCodesGrid" class="grid grid-cols-2 gap-2 p-4 bg-realm-bg rounded-sm border border-realm-border mb-6 font-mono font-bold text-xs text-gold-bright text-center"></div>
 
       <div class="flex flex-wrap items-center gap-3 font-medieval">
         <button
@@ -601,8 +601,7 @@
     let generatedRecoveryCodesCache = [];
 
     const notify = (msg, type = 'info') => {
-      if (window.showToast) window.showToast(msg, type);
-      else alert(msg);
+      window.showToast(msg, type);
     };
 
     function switchSettingsTab(tabId) {
@@ -645,11 +644,9 @@
       const actionContainer = document.getElementById('discordActionBtnContainer');
 
       try {
-        const res = await fetch('/api/storefront/v2/users/me/discord/status');
-        const json = await res.json();
-        const data = json.data || json;
-        const isLinked = data.isLinked === true || data.discordLinked === true || json.isLinked === true;
-        const dUsername = data.discordUsername || json.discordUsername;
+        const data = await window.crafter.users.getDiscordStatus();
+        const isLinked = data?.isLinked === true || data?.discordLinked === true;
+        const dUsername = data?.discordUsername;
 
         if (isLinked) {
           badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-sm text-[10px] font-medieval font-bold bg-emerald-950 text-emerald-300 border border-emerald-800';
@@ -694,29 +691,23 @@
     async function connectDiscord() {
       try {
         const redirectUri = window.location.origin + '/profile/settings?tab=discord';
-        const res = await fetch(`/api/storefront/v2/auth/discord?action=connect&redirectUri=${encodeURIComponent(redirectUri)}`);
-        const data = await res.json();
-        if (data.success && data.data?.oauthUrl) window.location.href = data.data.oauthUrl;
-        else if (data.oauthUrl) window.location.href = data.oauthUrl;
-        else (window.showToast?.(data.message || 'Discord bağlantı URL\'si alınamadı.', 'error') || alert(data.message));
+        const res = await window.crafter.http.get('/v2/auth/discord', { params: { action: 'connect', redirectUri } });
+        if (res?.success && res.data?.oauthUrl) window.location.href = res.data.oauthUrl;
+        else if (res?.oauthUrl) window.location.href = res.oauthUrl;
+        else window.showToast(res?.message || 'Discord bağlantı URL\'si alınamadı.', 'error');
       } catch (e) {
-        (window.showToast?.('Discord servisine bağlanılamadı.', 'error') || alert('Discord servisine bağlanılamadı.'));
+        window.showToast(e.message || 'Discord servisine bağlanılamadı.', 'error');
       }
     }
 
     async function unlinkDiscord() {
       if (!confirm('Discord bağlantınızı kaldırmak istediğinizden emin misiniz?')) return;
       try {
-        const res = await fetch('/api/storefront/v2/users/me/discord/unlink', { method: 'POST' });
-        const data = await res.json();
-        if (data.success) {
-          showToast('Discord bağlantısı kaldırıldı.', 'success');
-          await loadDiscordStatus();
-        } else {
-          showToast(data.message || 'Bağlantı kaldırılamadı.', 'error');
-        }
+        await window.crafter.users.unlinkDiscord();
+        showToast('Discord bağlantısı kaldırıldı.', 'success');
+        await loadDiscordStatus();
       } catch (e) {
-        showToast('Bağlantı hatası.', 'error');
+        showToast(e.message || 'Bağlantı kaldırılamadı.', 'error');
       }
     }
 
@@ -732,22 +723,19 @@
       const recBadge = document.getElementById('recoveryCodesCountBadge');
 
       try {
-        const res = await fetch('/api/storefront/v2/users/me/2fa/status');
-        const json = await res.json();
-        const data = json.data || json;
+        const data = await window.crafter.users.get2FaStatus();
 
-        const is2FaEnabled = data.enabled === true || data.isEnabled === true || json.enabled === true || json.isEnabled === true;
+        const is2FaEnabled = data?.enabled === true || data?.isEnabled === true;
         let methodsArray = [];
-        if (Array.isArray(data.methods)) methodsArray = data.methods;
-        else if (Array.isArray(json.methods)) methodsArray = json.methods;
-        else if (data.methods && typeof data.methods === 'object') {
+        if (Array.isArray(data?.methods)) methodsArray = data.methods;
+        else if (data?.methods && typeof data.methods === 'object') {
           methodsArray = Object.keys(data.methods).filter(k => data.methods[k]?.isEnabled === true || data.methods[k] === true);
         }
 
         const hasAuth = methodsArray.includes('authenticator');
         const hasEmail = methodsArray.includes('email');
-        const primary = data.primaryMethod || json.primaryMethod || 'authenticator';
-        const recCount = data.recoveryCodesCount !== undefined ? data.recoveryCodesCount : (data.recoveryCodesLeft !== undefined ? data.recoveryCodesLeft : 0);
+        const primary = data?.primaryMethod || 'authenticator';
+        const recCount = data?.recoveryCodesCount !== undefined ? data.recoveryCodesCount : (data?.recoveryCodesLeft !== undefined ? data.recoveryCodesLeft : 0);
 
         if (is2FaEnabled) {
           overallBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-sm text-[10px] font-medieval font-bold bg-emerald-950 text-emerald-300 border border-emerald-800';
@@ -795,15 +783,15 @@
         const badgeDiscord = document.getElementById('badgeDiscord2Fa');
         const actionDiscord = document.getElementById('actionDiscord2Fa');
         const discord2FaSub = document.getElementById('discord2FaSubText');
-        const isDiscordLinked = data.discordLinked === true || data.isDiscordLinked === true || (data.discordUsername && data.discordUsername !== null) || data.discordId != null;
+        const isDiscordLinked = data?.discordLinked === true || data?.isDiscordLinked === true || (data?.discordUsername && data?.discordUsername !== null) || data?.discordId != null;
         const hasDiscord2Fa = methodsArray.includes('discord');
-        const dUsername = data.discordUsername || json.discordUsername;
+        const dUsername = data?.discordUsername;
 
         if (badgeDiscord && actionDiscord) {
           if (!isDiscordLinked) {
             badgeDiscord.className = 'text-[10px] font-bold px-2 py-0.5 rounded-sm bg-realm-bg text-slate-500 border border-realm-border';
             badgeDiscord.innerText = 'Kapalı';
-            if (discord2FaSub) discord2FaSub.innerHTML = `<span class="text-amber-400 font-semibold">⚠️ Önce Discord hesabınızı bağlayınız.</span> Bağlandıktan sonra bot DM ile 2FA aktifleştirebilirsiniz.`;
+            if (discord2FaSub) discord2FaSub.innerHTML = `<span class="text-[var(--color-gold-bright)] font-semibold">⚠️ Önce Discord hesabınızı bağlayınız.</span> Bağlandıktan sonra bot DM ile 2FA aktifleştirebilirsiniz.`;
             actionDiscord.innerHTML = `<button type="button" onclick="switchSettingsTab('tab-discord')" class="px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] text-white text-xs font-medieval font-bold rounded-sm uppercase tracking-wider flex items-center gap-1.5"><i class="fa-brands fa-discord"></i><span>DISCORD BAĞLA</span></button>`;
           } else if (hasDiscord2Fa) {
             badgeDiscord.className = 'text-[10px] font-bold px-2 py-0.5 rounded-sm bg-emerald-950 text-emerald-300 border border-emerald-800';
@@ -830,16 +818,15 @@
       qrContainer.innerHTML = '<span class="text-xs text-slate-600 font-bold animate-pulse">QR Kod Yükleniyor...</span>';
 
       try {
-        const res = await fetch('/api/storefront/v2/users/me/2fa/authenticator/setup', { method: 'POST' });
-        const data = await res.json();
-        const payload = data.data || data;
-        const qr = payload.qrCode || data.qrCode;
-        const secret = payload.secret || data.secret;
+        const data = await window.crafter.users.setupAuthenticator();
+        const payload = data?.data || data;
+        const qr = payload.qrCode || payload.qrCodeUrl;
+        const secret = payload.secret;
 
         if (qr) qrContainer.innerHTML = `<img src="${qr}" class="w-full h-full object-contain" alt="2FA QR Code">`;
         if (secret) secretEl.innerText = secret;
       } catch (e) {
-        showToast('Authenticator kurulumu başlatılamadı.', 'error');
+        showToast(e.message || 'Authenticator kurulumu başlatılamadı.', 'error');
       }
     }
 
@@ -859,27 +846,18 @@
       btn.innerText = 'DOĞRULANIYOR...';
 
       try {
-        const res = await fetch('/api/storefront/v2/users/me/2fa/authenticator/enable', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code }),
-        });
-        const result = await res.json();
-        const payload = result.data || result;
+        const result = await window.crafter.users.enableAuthenticator(code);
+        const payload = result?.data || result;
 
-        if (result.success || payload.success) {
-          closeModal('modalAuthSetup');
-          document.getElementById('authSetupCodeInput').value = '';
-          showToast(result.message || payload.message || 'Authenticator başarıyla aktifleştirildi!', 'success');
-          await loadTwoFaStatus();
+        closeModal('modalAuthSetup');
+        document.getElementById('authSetupCodeInput').value = '';
+        showToast(result?.message || payload?.message || 'Authenticator başarıyla aktifleştirildi!', 'success');
+        await loadTwoFaStatus();
 
-          const codes = result.recoveryCodes || payload.recoveryCodes || [];
-          if (codes && codes.length > 0) displayRecoveryCodes(codes);
-        } else {
-          showToast(result.message || payload.message || 'Geçersiz doğrulama kodu.', 'error');
-        }
+        const codes = result?.recoveryCodes || payload?.recoveryCodes || [];
+        if (codes && codes.length > 0) displayRecoveryCodes(codes);
       } catch (err) {
-        showToast('Doğrulama hatası!', 'error');
+        showToast(err.message || 'Doğrulama hatası!', 'error');
       } finally {
         btn.disabled = false;
         btn.innerText = 'DOĞRULA VE AKTİFLEŞTİR';
@@ -889,16 +867,11 @@
     // Email 2FA Setup
     async function startEmail2FaSetup() {
       try {
-        const res = await fetch('/api/storefront/v2/users/me/2fa/email/send-code', { method: 'POST' });
-        const data = await res.json();
-        if (data.success) {
-          showToast('Doğrulama kodu e-postanıza gönderildi.', 'success');
-          openModal('modalEmailSetup');
-        } else {
-          showToast(data.message || 'Kod gönderilemedi.', 'error');
-        }
+        const data = await window.crafter.users.sendEmail2FaCode();
+        showToast(data?.message || 'Doğrulama kodu e-postanıza gönderildi.', 'success');
+        openModal('modalEmailSetup');
       } catch (e) {
-        showToast('Bağlantı hatası.', 'error');
+        showToast(e.message || 'Kod gönderilemedi.', 'error');
       }
     }
 
@@ -910,27 +883,18 @@
       btn.innerText = 'DOĞRULANIYOR...';
 
       try {
-        const res = await fetch('/api/storefront/v2/users/me/2fa/email/enable', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code }),
-        });
-        const result = await res.json();
-        const payload = result.data || result;
+        const result = await window.crafter.users.enableEmail2Fa(code);
+        const payload = result?.data || result;
 
-        if (result.success || payload.success) {
-          closeModal('modalEmailSetup');
-          document.getElementById('emailSetupCodeInput').value = '';
-          showToast(result.message || payload.message || 'E-Posta 2FA başarıyla aktifleştirildi!', 'success');
-          await loadTwoFaStatus();
+        closeModal('modalEmailSetup');
+        document.getElementById('emailSetupCodeInput').value = '';
+        showToast(result?.message || payload?.message || 'E-Posta 2FA başarıyla aktifleştirildi!', 'success');
+        await loadTwoFaStatus();
 
-          const codes = result.recoveryCodes || payload.recoveryCodes || [];
-          if (codes && codes.length > 0) displayRecoveryCodes(codes);
-        } else {
-          showToast(result.message || payload.message || 'Geçersiz kod.', 'error');
-        }
+        const codes = result?.recoveryCodes || payload?.recoveryCodes || [];
+        if (codes && codes.length > 0) displayRecoveryCodes(codes);
       } catch (err) {
-        showToast('Doğrulama hatası!', 'error');
+        showToast(err.message || 'Doğrulama hatası!', 'error');
       } finally {
         btn.disabled = false;
         btn.innerText = 'E-POSTA 2FA\'YI AKTİFLEŞTİR';
@@ -940,20 +904,11 @@
     // Primary Method
     async function updatePrimary2FaMethod(method) {
       try {
-        const res = await fetch('/api/storefront/v2/users/me/2fa/primary-method', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ method }),
-        });
-        const data = await res.json();
-        if (data.success) {
-          showToast('Birincil 2FA yöntemi güncellendi.', 'success');
-          await loadTwoFaStatus();
-        } else {
-          showToast(data.message || 'Güncellenemedi.', 'error');
-        }
+        await window.crafter.users.setPrimary2FaMethod(method);
+        showToast('Birincil 2FA yöntemi güncellendi.', 'success');
+        await loadTwoFaStatus();
       } catch (e) {
-        showToast('Bağlantı hatası.', 'error');
+        showToast(e.message || 'Güncellenemedi.', 'error');
       }
     }
 
@@ -977,20 +932,19 @@
     async function regenerateRecoveryCodes() {
       if (!confirm('Yeni kurtarma kodları üretilsin mi?')) return;
       try {
-        const res = await fetch('/api/storefront/v2/users/me/2fa/recovery-codes/regenerate', { method: 'POST' });
-        const result = await res.json();
-        const payload = result.data || result;
-        const codes = result.recoveryCodes || payload.recoveryCodes || [];
+        const result = await window.crafter.users.regenerateRecoveryCodes();
+        const payload = result?.data || result;
+        const codes = result?.recoveryCodes || payload?.recoveryCodes || [];
 
-        if ((result.success || payload.success) && codes.length > 0) {
+        if (codes && codes.length > 0) {
           displayRecoveryCodes(codes);
           await loadTwoFaStatus();
           showToast('Yeni kurtarma kodları üretildi.', 'success');
         } else {
-          showToast(result.message || payload.message || 'Kodlar üretilemedi.', 'error');
+          showToast('Kodlar üretilemedi.', 'error');
         }
       } catch (e) {
-        showToast('Bağlantı hatası.', 'error');
+        showToast(e.message || 'Bağlantı hatası.', 'error');
       }
     }
 
@@ -1004,25 +958,16 @@
       btn.innerText = 'KAPATILIYOR...';
 
       try {
-        const res = await fetch('/api/storefront/v2/users/me/2fa/disable', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code }),
-        });
-        const result = await res.json();
-        if (result.success) {
-          closeModal('modalDisable2Fa');
-          document.getElementById('disable2FaCodeInput').value = '';
-          showToast('2FA başarıyla devre dışı bırakıldı.', 'success');
-          await loadTwoFaStatus();
-        } else {
-          showToast(result.message || 'Geçersiz 2FA kodu.', 'error');
-        }
+        await window.crafter.users.disable2Fa({ code });
+        closeModal('modalDisable2Fa');
+        document.getElementById('disable2FaCodeInput').value = '';
+        showToast('2FA başarıyla devre dışı bırakıldı.', 'success');
+        await loadTwoFaStatus();
       } catch (e) {
-        showToast('Bağlantı hatası.', 'error');
+        showToast(e.message || 'Geçersiz 2FA kodu.', 'error');
       } finally {
         btn.disabled = false;
-        btn.innerText = '2FA\'YI KAPAT';
+        btn.innerText = "2FA'YI KAPAT";
       }
     });
 
@@ -1035,24 +980,15 @@
       }
       try {
         const discordId = window.__currentUserDiscordId || '';
-        const res = await fetch('/api/storefront/v2/users/me/2fa/discord/enable', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ discordId }),
-        });
-        const result = await res.json();
-        const payload = result.data || result;
+        const result = await window.crafter.users.enableDiscord2Fa(discordId);
+        const payload = result?.data || result;
 
-        if (result.success || payload.success) {
-          (window.showToast?.(result.message || payload.message || 'Discord 2FA başarıyla aktifleştirildi!', 'success') || alert('Discord 2FA başarıyla aktifleştirildi!'));
-          await loadTwoFaStatus();
-          const codes = result.recoveryCodes || payload.recoveryCodes || [];
-          if (codes && codes.length > 0) displayRecoveryCodes(codes);
-        } else {
-          (window.showToast?.(result.message || payload.message || 'Discord 2FA aktifleştirilemedi.', 'error') || alert(result.message || 'Discord 2FA aktifleştirilemedi.'));
-        }
+        window.showToast(result?.message || payload?.message || 'Discord 2FA başarıyla aktifleştirildi!', 'success');
+        await loadTwoFaStatus();
+        const codes = result?.recoveryCodes || payload?.recoveryCodes || [];
+        if (codes && codes.length > 0) displayRecoveryCodes(codes);
       } catch (e) {
-        (window.showToast?.('Bağlantı hatası oluştu.', 'error') || alert('Bağlantı hatası oluştu.'));
+        window.showToast(e.message || 'Bağlantı hatası oluştu.', 'error');
       } finally {
         if (btn) {
           btn.disabled = false;
@@ -1074,6 +1010,16 @@
       loadDiscordStatus();
       loadTwoFaStatus();
 
+      // Reactive Crafter SDK Event Bus Listeners
+      if (window.crafter) {
+        window.crafter.on('2fa:enabled', () => loadTwoFaStatus());
+        window.crafter.on('2fa:disabled', () => loadTwoFaStatus());
+        window.crafter.on('discord:unlinked', () => loadDiscordStatus());
+        window.crafter.on('user:updated', () => {
+          window.showToast('Profil ayarları başarıyla güncellendi.', 'success');
+        });
+      }
+
       const params = new URLSearchParams(window.location.search);
       const discordStatus = params.get('discord_status');
       const discordErr = params.get('discord_error');
@@ -1082,7 +1028,7 @@
 
       if (discordStatus === 'connected') {
         const uName = discordUsername ? decodeURIComponent(discordUsername) : '';
-        (window.showToast?.(uName ? `"${uName}" Discord hesabınız başarıyla bağlandı!` : 'Discord hesabınız başarıyla bağlandı!', 'success') || alert('Discord hesabınız başarıyla bağlandı!'));
+        window.showToast(uName ? `"${uName}" Discord hesabınız başarıyla bağlandı!` : 'Discord hesabınız başarıyla bağlandı!', 'success');
         switchSettingsTab('tab-discord');
         loadDiscordStatus();
         window.history.replaceState({}, '', '/profile/settings?tab=discord');
@@ -1091,7 +1037,7 @@
         if (discordErr === 'ALREADY_LINKED_TO_ANOTHER_ACCOUNT') {
           msg = 'Bu Discord hesabı zaten başka bir oyuncu hesabına bağlı!';
         }
-        (window.showToast?.(msg, 'error') || alert(msg));
+        window.showToast(msg, 'error');
         switchSettingsTab('tab-discord');
         window.history.replaceState({}, '', '/profile/settings?tab=discord');
       } else if (tabParam === 'discord') {
@@ -1113,26 +1059,14 @@
 
         try {
           if (email !== '{{ customer.email }}') {
-            const res = await fetch(`/api/storefront/v2/users/${customerId}`, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email }),
-            });
-            const data = await res.json();
-            if (!data.success) throw new Error(data.message || 'E-posta güncellenemedi.');
+            await window.crafter.users.updateProfile({ email }, customerId);
           }
 
           if (password || currentPassword) {
             if (!currentPassword || !password) throw new Error('Şifrenizi değiştirmek için hem mevcut hem de yeni şifrenizi girmelisiniz.');
             if (password.length < 8) throw new Error('Yeni şifre en az 8 karakter olmalıdır.');
 
-            const pRes = await fetch(`/api/storefront/v2/users/${customerId}/change-password`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ currentPassword, newPassword: password }),
-            });
-            const pData = await pRes.json();
-            if (!pData.success) throw new Error(pData.message || 'Şifre güncellenemedi.');
+            await window.crafter.users.changePassword({ currentPassword, newPassword: password }, customerId);
           }
 
           successBox.classList.remove('hidden');

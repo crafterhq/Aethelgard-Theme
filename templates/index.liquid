@@ -1,63 +1,80 @@
-﻿<!-- HOMEPAGE LAYOUT -->
+<!-- HOMEPAGE LAYOUT -->
 
 <!-- FULL SCREEN (100VH) GRAND MEDIEVAL HERO SECTION -->
-<div class="relative min-h-screen w-full flex items-center justify-center pt-28 pb-20 overflow-hidden border-b-2 border-realm-border-accent">
-  <!-- Background Dark Castle Imagery with Vignette Overlay -->
+<div id="hero-section" class="hero-grand-medieval relative min-h-screen w-full flex items-center justify-center pt-32 sm:pt-36 pb-20 overflow-hidden border-b-2 border-realm-border-accent">
+  <!-- Background Castle Imagery with Crimson Atmosphere Overlay -->
   <div
-    class="absolute inset-0 bg-cover bg-center filter brightness-35 scale-105 transition-transform duration-1000"
+    class="absolute inset-0 bg-cover bg-center scale-105 transition-transform duration-1000"
     style="background-image: url('{% if settings.hero.background_image != blank %}{{ settings.hero.background_image }}{% elsif settings.header.banner != blank %}{{ settings.header.banner }}{% else %}https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=2000&auto=format&fit=crop{% endif %}');"
   ></div>
-  <div class="absolute inset-0 bg-gradient-to-b from-[var(--color-realm-bg)]/95 via-[var(--color-realm-bg)]/75 to-[var(--color-realm-bg)]"></div>
+  <div
+    class="absolute inset-0 bg-black/50 pointer-events-none"
+  ></div>
+  <div
+    class="absolute inset-0 bg-gradient-to-b from-[#0c0606]/80 via-transparent to-[#0c0606] pointer-events-none"
+  ></div>
+  <div
+    class="absolute inset-0 pointer-events-none"
+    style="background: radial-gradient(circle at 50% 35%, rgba(220, 38, 38, 0.22) 0%, transparent 65%);"
+  ></div>
 
   <div class="container max-w-[1240px] mx-auto px-4 relative z-20 text-center flex flex-col items-center justify-center">
     <!-- Heraldic Direct Crossed Swords Emblem -->
     <div class="flex items-center justify-center gap-5 mb-6">
-      <span class="h-[2px] w-20 bg-gradient-to-r from-transparent via-[var(--color-gold)] to-[var(--color-gold-bright)]"></span>
-      <i class="fa-solid fa-khanda text-3xl md:text-4xl text-[var(--color-gold-bright)] drop-shadow-[0_0_20px_rgba(212,175,55,0.9)]"></i>
-      <span class="h-[2px] w-20 bg-gradient-to-l from-transparent via-[var(--color-gold)] to-[var(--color-gold-bright)]"></span>
+      <span
+        class="h-[2px] w-20"
+        style="background: linear-gradient(90deg, transparent, var(--color-gold), var(--color-gold-bright));"
+      ></span>
+      <i
+        class="fa-solid fa-khanda text-3xl md:text-4xl text-gold-glow"
+        style="color: var(--color-gold-bright);"
+      ></i>
+      <span
+        class="h-[2px] w-20"
+        style="background: linear-gradient(270deg, transparent, var(--color-gold), var(--color-gold-bright));"
+      ></span>
     </div>
 
-    <!-- 3-Piece Symmetrical Equal-Width Grid Badges -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-4xl mx-auto mb-8 items-stretch font-medieval">
+    <!-- 3-Piece Symmetrical Grid Badges with Expanded Center IP Button -->
+    <div class="grid grid-cols-1 md:grid-cols-[1fr_1.35fr_1fr] gap-4 md:gap-5 w-full max-w-5xl mx-auto mb-8 items-stretch font-medieval">
       <!-- Left Badge: Aktif Savaşçı -->
-      <div class="h-16 bg-gradient-to-r from-realm-card to-realm-surface border-2 border-[var(--color-gold)]/60 px-4 rounded-sm shadow-xl hover:border-[var(--color-gold-bright)] transition-all flex items-center justify-center gap-3.5">
-        <div class="w-10 h-10 rounded-sm bg-[var(--color-gold)]/20 border border-[var(--color-gold)]/60 flex items-center justify-center text-amber-400 shrink-0">
-          <i class="fa-solid fa-shield-cat text-lg"></i>
+      <div class="h-16 px-4 rounded-sm transition-all flex items-center justify-center gap-3.5 border-2 shadow-xl" style="background: linear-gradient(135deg, var(--color-realm-card) 0%, var(--color-realm-surface) 100%); border-color: rgba(220, 38, 38, 0.5); box-shadow: 0 10px 25px rgba(0,0,0,0.8), 0 0 15px rgba(220,38,38,0.2);">
+        <div class="w-10 h-10 rounded-sm flex items-center justify-center shrink-0 border" style="background: rgba(220, 38, 38, 0.18); border-color: rgba(220, 38, 38, 0.6); color: var(--color-gold-bright);">
+          <i class="fa-solid fa-shield-cat text-lg text-red-400" style="color: var(--color-gold-bright, #ef4444) !important;"></i>
         </div>
         <div class="text-left flex flex-col justify-center">
           <div class="text-[10px] text-slate-400 uppercase tracking-widest leading-none mb-1">AKTİF SAVAŞÇI</div>
-          <div class="text-sm font-black text-[var(--color-gold-bright)] leading-none">
-            <span class="server-online-count">18</span> ÇEVRİMİÇİ
-          </div>
+          <div class="text-sm font-black leading-none" style="color: var(--color-gold-bright);"><span class="server-online-count">--</span> ÇEVRİMİÇİ</div>
         </div>
       </div>
 
-      <!-- Center Hero Button: Glowing IP Copy -->
+      <!-- Center Hero Button: Glowing IP Copy (Full Server Name Visible) -->
       <button
         onclick="copyIp('{{ settings.server_ip | default: 'mc.hypixel.net' }}')"
-        class="group h-16 bg-gradient-to-r from-[var(--color-gold-bright)] via-[var(--color-gold)] to-[var(--color-gold-dark)] text-[#090705] px-4 rounded-sm font-medieval font-black text-xs hover:brightness-110 transition-all cursor-pointer shadow-[0_0_25px_rgba(212,175,55,0.5)] border-2 border-gold-bright flex items-center justify-center gap-3"
+        class="rpg-btn-sharp-gold group h-16 text-white px-4 sm:px-5 rounded-sm font-medieval font-black text-xs hover:brightness-110 transition-all cursor-pointer flex items-center justify-center gap-3"
+        style="box-shadow: 0 0 25px var(--color-gold-glow), 0 10px 30px rgba(0,0,0,0.9);"
         title="Sunucu IP Adresini Kopyala"
       >
-        <i class="fa-solid fa-copy text-lg group-hover:scale-110 transition-transform shrink-0"></i>
+        <i class="fa-solid fa-copy text-lg text-white group-hover:scale-110 transition-transform shrink-0" style="color: #ffffff !important;"></i>
         <div class="flex flex-col text-left justify-center min-w-0">
-          <span class="text-[9px] uppercase font-sans tracking-widest text-[#2e2107] font-extrabold leading-none mb-1 truncate"
+          <span class="text-[9px] uppercase font-sans tracking-wider text-rose-100 font-extrabold leading-none mb-1 truncate"
             >SUNUCU ADRESİ (TIKLA KOPYALA)</span
           >
-          <span class="text-sm tracking-widest uppercase font-black text-[#090705] leading-none truncate">
+          <span class="text-xs sm:text-[13px] md:text-sm font-black tracking-wider uppercase text-white leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
             {{- settings.server_ip | default: 'mc.hypixel.net' -}}
           </span>
         </div>
       </button>
 
       <!-- Right Badge: Discord Loncası -->
-      <div class="h-16 bg-gradient-to-r from-realm-surface to-realm-card border-2 border-[var(--color-gold)]/60 px-4 rounded-sm shadow-xl hover:border-[var(--color-gold-bright)] transition-all flex items-center justify-center gap-3.5">
-        <div class="w-10 h-10 rounded-sm bg-[var(--color-gold)]/20 border border-[var(--color-gold)]/60 flex items-center justify-center text-amber-400 shrink-0">
-          <i class="fa-brands fa-discord text-lg"></i>
+      <div class="h-16 px-4 rounded-sm transition-all flex items-center justify-center gap-3.5 border-2 shadow-xl" style="background: linear-gradient(135deg, var(--color-realm-surface) 0%, var(--color-realm-card) 100%); border-color: rgba(220, 38, 38, 0.5); box-shadow: 0 10px 25px rgba(0,0,0,0.8), 0 0 15px rgba(220,38,38,0.2);">
+        <div class="w-10 h-10 rounded-sm flex items-center justify-center shrink-0 border" style="background: rgba(220, 38, 38, 0.18); border-color: rgba(220, 38, 38, 0.6); color: var(--color-gold-bright);">
+          <i class="fa-brands fa-discord text-lg text-red-400" style="color: var(--color-gold-bright, #ef4444) !important;"></i>
         </div>
         <div class="text-left flex flex-col justify-center">
           <div class="text-[10px] text-slate-400 uppercase tracking-widest leading-none mb-1">DİSCORD LONCASI</div>
-          <div class="text-sm font-black text-[var(--color-gold-bright)] leading-none">
-            <span id="discord-online-count">--</span> ÇEVRİMİÇİ
+          <div class="text-sm font-black leading-none" style="color: var(--color-gold-bright);">
+            <span class="discord-live-count">--</span> ÇEVRİMİÇİ
           </div>
         </div>
       </div>
@@ -67,19 +84,19 @@
     <h1 class="animate-hero-slide text-3xl sm:text-5xl md:text-6xl font-medieval font-black text-slate-100 mb-6 tracking-wider uppercase leading-tight drop-shadow-[0_10px_25px_rgba(0,0,0,0.95)]">
       {{
         settings.home.hero_title
-        | default: 'BU BÜYÜLÜ DÜNYADA <span class="text-gold-gradient block sm:inline drop-shadow-[0_0_30px_rgba(212,175,55,0.85)]">KENDİ EFSANENİ YAZ</span>'
+        | default: 'BU BÜYÜLÜ DÜNYADA <span class="text-gold-gradient block sm:inline drop-shadow-[0_0_30px_var(--color-gold-glow)]">KENDİ EFSANENİ YAZ</span>'
       }}
     </h1>
 
     <!-- Subtitle Text Plaque -->
-    <div class="rpg-sharp-plaque my-4 px-8 md:px-12 py-6 rounded-sm w-full max-w-3xl border-2 border-[var(--color-gold-bright)] shadow-[0_15px_45px_rgba(0,0,0,0.95),0_0_30px_rgba(212,175,55,0.4)]">
+    <div class="rpg-sharp-plaque my-4 px-8 md:px-12 py-6 rounded-sm w-full max-w-3xl">
       <p class="text-base md:text-lg font-medieval font-bold !text-white leading-relaxed tracking-wide text-center drop-shadow-[0_2px_10px_rgba(0,0,0,1)]">
-        <i class="fa-solid fa-quote-left text-[var(--color-gold-bright)] text-xs mr-2 opacity-80"></i>
+        <i class="fa-solid fa-quote-left text-xs mr-2 opacity-80" style="color: var(--color-gold-bright);"></i>
         {{
           settings.home.hero_description
           | default: 'Bu büyülü dünyada unutulmaz bir macera seni bekliyor. Loncanı kur, ticaretini geliştir ve krallığın en güçlü oyuncuları arasında yerini al.'
         }}
-        <i class="fa-solid fa-quote-right text-[var(--color-gold-bright)] text-xs ml-2 opacity-80"></i>
+        <i class="fa-solid fa-quote-right text-xs ml-2 opacity-80" style="color: var(--color-gold-bright);"></i>
       </p>
     </div>
 
@@ -88,18 +105,18 @@
       <a
         href="{{ settings.home.hero_btn1_url | default: settings.discord_url | default: '#' }}"
         target="_blank"
-        class="h-14 px-10 min-w-[220px] bg-gradient-to-r from-[var(--color-gold-bright)] via-[var(--color-gold)] to-[var(--color-gold-dark)] text-[#090705] font-medieval font-black text-sm uppercase tracking-widest rounded-sm border-2 border-gold-bright shadow-[0_0_25px_rgba(212,175,55,0.5)] hover:brightness-110 transition-all flex items-center justify-center gap-3 cursor-pointer"
+        class="rpg-btn-sharp-gold h-14 px-10 min-w-[220px] text-white font-medieval font-black text-sm uppercase tracking-widest rounded-sm border-2 transition-all flex items-center justify-center gap-3 cursor-pointer shadow-xl hover:brightness-110"
       >
-        <i class="fa-brands fa-discord text-lg"></i>
+        <i class="fa-brands fa-discord text-lg text-white" style="color: #ffffff !important;"></i>
         <span>{{ settings.home.hero_btn1_text | default: "DISCORD'A KATIL" }}</span>
       </a>
 
       <a
         href="{{ settings.home.hero_btn2_url | default: '/store' }}"
-        class="h-14 px-10 min-w-[220px] bg-realm-card text-[var(--color-gold-bright)] font-medieval font-bold text-sm uppercase tracking-widest rounded-sm border-2 border-[var(--color-gold-bright)] shadow-xl hover:bg-[var(--color-gold)]/20 hover:text-white transition-all flex items-center justify-center gap-2 cursor-pointer"
+        class="rpg-btn-sharp-outline h-14 px-10 min-w-[220px] font-medieval font-bold text-sm uppercase tracking-widest rounded-sm transition-all flex items-center justify-center gap-3 cursor-pointer shadow-xl"
       >
-        <i class="fa-solid fa-store text-base"></i>
-        <span>{{ settings.home.hero_btn2_text | default: 'MAĞAZAYI KEŞFET' }}</span>
+        <i class="fa-solid fa-store text-base text-red-400 group-hover:text-white" style="color: var(--color-gold-bright, #ef4444) !important;"></i>
+        <span class="text-white">{{ settings.home.hero_btn2_text | default: 'MAĞAZAYI KEŞFET' }}</span>
       </a>
     </div>
 
@@ -108,14 +125,15 @@
       <button
         type="button"
         onclick="document.getElementById('MainContentSection')?.scrollIntoView({ behavior: 'smooth' })"
-        class="flex flex-col items-center gap-1.5 text-[var(--color-gold-bright)] hover:text-white transition-colors cursor-pointer group animate-bounce border-none bg-transparent"
+        class="flex flex-col items-center gap-1.5 hover:text-white transition-colors cursor-pointer group animate-bounce border-none bg-transparent"
+        style="color: var(--color-gold-bright);"
         title="Aşağı Kaydır"
       >
-        <span class="text-[10px] font-medieval uppercase tracking-[0.25em] text-slate-400 group-hover:text-[var(--color-gold-bright)] font-bold"
+        <span class="text-[10px] font-medieval uppercase tracking-[0.25em] text-slate-400 group-hover:text-white font-bold"
           >AŞAĞI KAYDIR</span
         >
-        <div class="w-8 h-8 rounded-sm bg-realm-card/95 border border-[var(--color-gold)] flex items-center justify-center shadow-lg group-hover:border-white transition-colors">
-          <i class="fa-solid fa-chevron-down text-xs text-[var(--color-gold-bright)]"></i>
+        <div class="w-8 h-8 rounded-sm bg-realm-card/95 border flex items-center justify-center shadow-lg group-hover:border-white transition-colors" style="border-color: var(--color-gold); color: var(--color-gold-bright);">
+          <i class="fa-solid fa-chevron-down text-xs text-red-400" style="color: var(--color-gold-bright, #ef4444) !important;"></i>
         </div>
       </button>
     </div>
@@ -124,20 +142,20 @@
 
 <!-- DYNAMIC MARQUEE TICKER STRIP -->
 {% if settings.home.show_marquee != false %}
-  <div class="bg-realm-surface border-y-2 border-realm-border py-3 shadow-2xl relative z-10">
+  <div class="py-3 shadow-2xl relative z-10 border-y-2" style="background-color: var(--color-marquee-bg); border-color: var(--color-marquee-border);">
     <div class="container max-w-[1240px] mx-auto px-4 flex items-center gap-4">
-      <div class="shrink-0 bg-[var(--color-gold)]/20 border border-[var(--color-gold)] px-3 py-1 rounded-sm text-[var(--color-gold-bright)] font-medieval font-bold text-xs uppercase tracking-widest flex items-center gap-2 z-10 shadow-md">
-        <i class="fa-solid fa-scroll text-amber-400 animate-pulse"></i>
+      <div class="shrink-0 px-3 py-1 rounded-sm font-medieval font-bold text-xs uppercase tracking-widest flex items-center gap-2 z-10 shadow-md border" style="background-color: var(--color-badge-bg); border-color: var(--color-badge-border); color: var(--color-badge-text);">
+        <i class="fa-solid fa-scroll text-[var(--color-gold-bright)] animate-pulse"></i>
         <span>DUYURU</span>
       </div>
 
       <div class="rpg-marquee-wrapper flex-1 overflow-hidden">
-        <div class="rpg-marquee-track font-medieval text-xs text-slate-200 tracking-wider">
+        <div class="rpg-marquee-track font-medieval text-xs tracking-wider" style="color: var(--color-marquee-text);">
           {% if settings.header.promo_texts and settings.header.promo_texts.size > 0 %}
             {% for item in settings.header.promo_texts %}
               {% assign pText = item.text | default: item %}
               <span class="px-8 text-[var(--color-gold-bright)] inline-flex items-center gap-2">
-                <i class="fa-solid fa-shield-halved text-amber-400"></i>
+                <i class="fa-solid fa-shield-halved text-[var(--color-gold-bright)]"></i>
                 <span>{{ pText }}</span>
               </span>
             {% endfor %}
@@ -145,28 +163,34 @@
             {% for item in settings.header.promo_texts %}
               {% assign pText = item.text | default: item %}
               <span class="px-8 text-[var(--color-gold-bright)] inline-flex items-center gap-2">
-                <i class="fa-solid fa-shield-halved text-amber-400"></i>
+                <i class="fa-solid fa-shield-halved text-[var(--color-gold-bright)]"></i>
                 <span>{{ pText }}</span>
               </span>
             {% endfor %}
           {% else %}
             <span class="px-8 text-[var(--color-gold-bright)] inline-flex items-center gap-2"
-              ><i class="fa-solid fa-shield-halved text-amber-400"></i> Sunucumuz aktif! Hemen kayıt olarak maceraya başlayabilirsin.</span
+              ><i class="fa-solid fa-shield-halved text-[var(--color-gold-bright)]"></i> Sunucumuz aktif! Hemen kayıt olarak maceraya
+              başlayabilirsin.</span
             >
             <span class="px-8 text-slate-200 inline-flex items-center gap-2"
-              ><i class="fa-solid fa-coins text-amber-400"></i> Mağazada yeni sezon açılışına özel %20 indirim fırsatını kaçırmayın!</span
+              ><i class="fa-solid fa-coins text-[var(--color-gold-bright)]"></i> Mağazada yeni sezon açılışına özel %20 indirim fırsatını
+              kaçırmayın!</span
             >
             <span class="px-8 text-[var(--color-gold-bright)] inline-flex items-center gap-2"
-              ><i class="fa-brands fa-discord text-sky-400"></i> Discord sunucumuza katılarak özel çekilişlere ve etkinliklere katılabilirsiniz.</span
+              ><i class="fa-brands fa-discord text-sky-400"></i> Discord sunucumuza katılarak özel çekilişlere ve
+              etkinliklere katılabilirsiniz.</span
             >
             <span class="px-8 text-[var(--color-gold-bright)] inline-flex items-center gap-2"
-              ><i class="fa-solid fa-shield-halved text-amber-400"></i> Sunucumuz aktif! Hemen kayıt olarak maceraya başlayabilirsin.</span
+              ><i class="fa-solid fa-shield-halved text-[var(--color-gold-bright)]"></i> Sunucumuz aktif! Hemen kayıt olarak maceraya
+              başlayabilirsin.</span
             >
             <span class="px-8 text-slate-200 inline-flex items-center gap-2"
-              ><i class="fa-solid fa-coins text-amber-400"></i> Mağazada yeni sezon açılışına özel %20 indirim fırsatını kaçırmayın!</span
+              ><i class="fa-solid fa-coins text-[var(--color-gold-bright)]"></i> Mağazada yeni sezon açılışına özel %20 indirim fırsatını
+              kaçırmayın!</span
             >
             <span class="px-8 text-[var(--color-gold-bright)] inline-flex items-center gap-2"
-              ><i class="fa-brands fa-discord text-sky-400"></i> Discord sunucumuza katılarak özel çekilişlere ve etkinliklere katılabilirsiniz.</span
+              ><i class="fa-brands fa-discord text-sky-400"></i> Discord sunucumuza katılarak özel çekilişlere ve
+              etkinliklere katılabilirsiniz.</span
             >
           {% endif %}
         </div>
@@ -178,7 +202,10 @@
 <div id="MainContentSection" class="container max-w-[1240px] mx-auto px-4 mt-16 space-y-24">
   <!-- FEATURED SLIDER STRIP -->
   {% if settings.home.slider != blank and settings.home.slider.size > 0 %}
-    <div class="bg-realm-surface border-2 border-realm-border rounded-sm shadow-2xl overflow-hidden relative" data-ax-feature>
+    <div
+      class="bg-realm-surface border-2 border-realm-border rounded-sm shadow-2xl overflow-hidden relative"
+      data-ax-feature
+    >
       {% for slide in settings.home.slider %}
         <div
           class="grid grid-cols-1 lg:grid-cols-12 items-center"
@@ -195,8 +222,8 @@
                 class="w-full h-full object-cover filter brightness-90"
               >
             {% else %}
-              <div class="w-full h-full bg-gradient-to-br from-[#1f1912] to-[var(--color-realm-bg)] flex items-center justify-center">
-                <i class="fa-solid fa-dragon text-6xl text-amber-500/30"></i>
+              <div class="w-full h-full bg-gradient-to-br from-[#1c0c0c] to-[var(--color-realm-bg)] flex items-center justify-center">
+                <i class="fa-solid fa-dragon text-6xl text-[var(--color-gold)]/30"></i>
               </div>
             {% endif %}
             <div
@@ -204,12 +231,16 @@
             ></div>
           </div>
           <div class="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-center">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-[var(--color-gold)]/20 border border-[var(--color-gold)]/60 text-[var(--color-gold-bright)] font-medieval font-bold text-[10px] uppercase tracking-widest w-max mb-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-sm font-medieval font-bold text-[10px] uppercase tracking-widest w-max mb-4 border" style="background: rgba(220, 38, 38, 0.18); border-color: rgba(220, 38, 38, 0.5); color: var(--color-gold-bright);">
               <i class="fa-solid fa-star"></i>
               <span>{{ slide.badge | default: 'ÖNE ÇIKAN DUYURU' }}</span>
             </div>
             <h2 class="text-2xl sm:text-3xl font-medieval font-black text-slate-100 uppercase mb-4 leading-tight">
-              {{ slide.title | default: settings.home.slide_fallback_title | default: 'Aethelgard Güncellemeleri ve Etkinlikler' }}
+              {{
+                slide.title
+                | default: settings.home.slide_fallback_title
+                | default: 'Aethelgard Güncellemeleri ve Etkinlikler'
+              }}
             </h2>
             <p class="text-xs sm:text-sm font-sans text-slate-400 leading-relaxed mb-6">
               {{
@@ -238,14 +269,15 @@
           {% for d in settings.home.slider %}
             <button
               type="button"
-              class="w-3 h-3 rounded-full bg-realm-border border border-[var(--color-gold)]/40 transition-all {% if forloop.first %}!bg-[var(--color-gold-bright)] w-6{% endif %}"
+              class="w-3 h-3 rounded-full bg-realm-border border transition-all {% if forloop.first %}w-6{% endif %}"
+              style="border-color: rgba(220, 38, 38, 0.4); {% if forloop.first %}background-color: var(--color-gold-bright);{% endif %}"
               data-feature-dot="{{ forloop.index0 }}"
               aria-label="Slayt {{ forloop.index }}"
             ></button>
           {% endfor %}
           <button
             type="button"
-            class="ml-2 w-8 h-8 rounded-sm bg-realm-card border border-[var(--color-gold)] text-[var(--color-gold-bright)] flex items-center justify-center hover:bg-[var(--color-gold)] hover:text-[#090705] transition-colors"
+            class="ml-2 w-8 h-8 rounded-sm bg-realm-card border border-[var(--color-gold)] text-[var(--color-gold-bright)] flex items-center justify-center hover:bg-[var(--color-gold)] hover:text-white transition-colors"
             data-feature-next
             aria-label="Sonraki"
           >
@@ -260,7 +292,7 @@
   <div>
     <div class="flex items-center justify-between pb-4 border-b-2 border-realm-border-accent mb-10">
       <h2 class="text-2xl md:text-3xl font-medieval font-bold text-[var(--color-gold-bright)] tracking-wider flex items-center gap-3 uppercase">
-        <i class="fa-solid fa-scroll text-amber-400"></i>
+        <i class="fa-solid fa-scroll text-[var(--color-gold-bright)]"></i>
         <span>{{ settings.home.news_title | default: 'SON GELİŞMELER & DUYURULAR' }}</span>
       </h2>
       <a
@@ -285,9 +317,11 @@
                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 filter brightness-90"
                 alt="{{ post.title }}"
               >
-              <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-realm-bg)] via-transparent to-transparent"></div>
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-[var(--color-realm-bg)] via-transparent to-transparent"
+              ></div>
 
-              <div class="absolute top-4 left-4 bg-realm-card/95 backdrop-blur-md px-3 py-1 rounded-sm text-[10px] font-medieval font-bold text-[var(--color-gold-bright)] border border-[var(--color-gold)]/40 uppercase tracking-widest">
+              <div class="absolute top-4 left-4 bg-realm-card/95 backdrop-blur-md px-3 py-1 rounded-sm text-[10px] font-medieval font-bold text-[var(--color-gold-bright)] border uppercase tracking-widest" style="border-color: rgba(220, 38, 38, 0.5);">
                 {% if post.type == 'update' -%}
                   GÜNCELLEME
                 {%- elsif post.type == 'announcement' -%}
@@ -337,7 +371,7 @@
     <div>
       <div class="flex items-center justify-between pb-3 border-b-2 border-realm-border-accent mb-8">
         <h2 class="text-xl md:text-2xl font-medieval font-bold text-[var(--color-gold-bright)] tracking-wider flex items-center gap-3 uppercase">
-          <i class="fa-solid fa-user-plus text-amber-400"></i>
+          <i class="fa-solid fa-user-plus text-[var(--color-gold-bright)]"></i>
           <span>{{ settings.home.recent_signups_title | default: 'DİYARA SON KATILAN SAVAŞÇILAR' }}</span>
         </h2>
         <span class="text-[10px] font-medieval font-bold text-slate-400 uppercase tracking-widest bg-realm-card px-3 py-1 rounded-sm border border-realm-border">
@@ -356,10 +390,12 @@
               <!-- 3D Full Body Minecraft Skin Avatar Render -->
               <div class="w-24 h-32 flex items-center justify-center my-2 relative">
                 <div
-                  class="absolute inset-0 bg-[var(--color-gold)]/10 rounded-full blur-md group-hover:bg-[var(--color-gold)]/25 transition-all"
+                  class="absolute inset-0 rounded-full blur-md transition-all"
+                  style="background: rgba(220, 38, 38, 0.2);"
                 ></div>
                 <img
                   src="https://api.mcheads.org/avatar/{{ signup.username }}/left/160"
+                  onerror="this.onerror=null; this.src='https://api.mcheads.org/avatar/steve/left/160';"
                   alt="{{ signup.username }}"
                   class="h-full object-contain relative z-10 filter drop-shadow-[0_5px_10px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform duration-500"
                   loading="lazy"
@@ -367,7 +403,10 @@
               </div>
 
               <!-- Pedestal Divider -->
-              <div class="w-full h-[1px] bg-gradient-to-r from-transparent via-[var(--color-gold)]/40 to-transparent mb-3"></div>
+              <div
+                class="w-full h-[1px] mb-3"
+                style="background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.5), transparent);"
+              ></div>
 
               <div class="font-medieval font-bold text-xs text-slate-100 group-hover:text-[var(--color-gold-bright)] transition-colors truncate w-full uppercase">
                 {{ signup.username }}
@@ -401,7 +440,7 @@
         </div>
         <div class="p-3 bg-realm-card rounded-sm border border-realm-border">
           <div class="text-[10px] text-slate-400 uppercase tracking-widest mb-1">TOPLAM OYNAMA</div>
-          <div class="text-lg font-black text-amber-400">{{ stats.playTime.allTime | default: 0 }} Saat</div>
+          <div class="text-lg font-black text-[var(--color-gold-bright)]">{{ stats.playTime.allTime | default: 0 }} Saat</div>
         </div>
         <div class="p-3 bg-realm-card rounded-sm border border-realm-border">
           <div class="text-[10px] text-slate-400 uppercase tracking-widest mb-1">SON KATILAN</div>
@@ -421,7 +460,7 @@
           <div class="bg-realm-card rounded-sm p-5 border border-realm-border-accent">
             <h3 class="text-xs font-medieval font-bold text-[var(--color-gold-bright)] tracking-widest mb-4 border-b border-realm-border-accent pb-3 flex items-center justify-between uppercase">
               <span>{{ settings.home.stats_card_1_title | default: 'TOP DESTEKÇİLER' }}</span>
-              <i class="fa-solid fa-crown text-amber-400"></i>
+              <i class="fa-solid fa-crown text-[var(--color-gold-bright)]"></i>
             </h3>
 
             <div class="flex flex-col gap-3">
@@ -430,6 +469,7 @@
                   <div class="flex items-center gap-3 p-2.5 bg-realm-bg rounded-sm border border-realm-border-accent">
                     <img
                       src="https://api.mcheads.org/avatar/{{ loader.username }}/left/160"
+                      onerror="this.onerror=null; this.src='https://api.mcheads.org/avatar/steve/left/160';"
                       alt=""
                       class="w-10 h-12 object-contain filter drop-shadow-md"
                     >
@@ -437,7 +477,9 @@
                       <div class="font-medieval font-bold text-xs text-slate-100 truncate">{{ loader.username }}</div>
                       <div class="text-[10px] text-slate-500 font-medieval">#{{ forloop.index }} Destekçi</div>
                     </div>
-                    <div class="font-medieval font-bold text-xs text-[var(--color-gold-bright)]">{{ loader.totalAmount }} ₺</div>
+                    <div class="font-medieval font-bold text-xs text-[var(--color-gold-bright)]">
+                      {{ loader.totalAmount }} ₺
+                    </div>
                   </div>
                 {% endfor %}
               {% else %}
@@ -450,7 +492,7 @@
           <div class="bg-realm-card rounded-sm p-5 border border-realm-border-accent">
             <h3 class="text-xs font-medieval font-bold text-[var(--color-gold-bright)] tracking-widest mb-4 border-b border-realm-border-accent pb-3 flex items-center justify-between uppercase">
               <span>{{ settings.home.stats_card_2_title | default: 'SON SATIN ALIMLAR' }}</span>
-              <i class="fa-solid fa-bag-shopping text-amber-400"></i>
+              <i class="fa-solid fa-bag-shopping text-[var(--color-gold-bright)]"></i>
             </h3>
 
             <div class="flex flex-col gap-3">
@@ -459,6 +501,7 @@
                   <div class="flex items-center gap-3 p-2.5 bg-realm-bg rounded-sm border border-realm-border-accent">
                     <img
                       src="https://api.mcheads.org/avatar/{{ purchase.username }}/left/160"
+                      onerror="this.onerror=null; this.src='https://api.mcheads.org/avatar/steve/left/160';"
                       alt=""
                       class="w-10 h-12 object-contain filter drop-shadow-md"
                     >
@@ -479,7 +522,7 @@
           <div class="bg-realm-card rounded-sm p-5 border border-realm-border-accent">
             <h3 class="text-xs font-medieval font-bold text-[var(--color-gold-bright)] tracking-widest mb-4 border-b border-realm-border-accent pb-3 flex items-center justify-between uppercase">
               <span>{{ settings.home.stats_card_3_title | default: 'YENİ KATILANLAR' }}</span>
-              <i class="fa-solid fa-user-plus text-amber-400"></i>
+              <i class="fa-solid fa-user-plus text-[var(--color-gold-bright)]"></i>
             </h3>
 
             <div class="flex flex-col gap-3">
@@ -488,6 +531,7 @@
                   <div class="flex items-center gap-3 p-2.5 bg-realm-bg rounded-sm border border-realm-border-accent">
                     <img
                       src="https://api.mcheads.org/avatar/{{ signup.username }}/left/160"
+                      onerror="this.onerror=null; this.src='https://api.mcheads.org/avatar/steve/left/160';"
                       alt=""
                       class="w-10 h-12 object-contain filter drop-shadow-md"
                     >
@@ -512,7 +556,7 @@
     <div>
       <div class="flex items-center justify-between pb-4 border-b-2 border-realm-border-accent mb-8">
         <h2 class="text-2xl font-medieval font-bold text-[var(--color-gold-bright)] tracking-wider uppercase flex items-center gap-3">
-          <i class="fa-solid fa-compass text-amber-400"></i>
+          <i class="fa-solid fa-compass text-[var(--color-gold-bright)]"></i>
           <span>{{ settings.home.quick_links_title | default: 'HIZLI ERİŞİM VE REHBER' }}</span>
         </h2>
       </div>
@@ -524,7 +568,7 @@
         >
           <div class="flex items-center gap-3.5">
             <div class="w-10 h-10 rounded-sm bg-emerald-950/80 border border-emerald-800 text-emerald-400 flex items-center justify-center text-lg">
-              <i class="fa-solid fa-user-shield"></i>
+              <i class="fa-solid fa-user-shield text-emerald-400"></i>
             </div>
             <div>
               <div class="font-medieval font-bold text-xs text-slate-100 group-hover:text-[var(--color-gold-bright)] transition-colors">
@@ -534,7 +578,7 @@
             </div>
           </div>
           <i
-            class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:text-[var(--color-gold-bright)] group-hover:translate-x-1 transition-all"
+            class="fa-solid fa-chevron-right text-xs text-red-400 group-hover:text-white group-hover:translate-x-1 transition-all"
           ></i>
         </a>
 
@@ -543,8 +587,8 @@
           class="bg-realm-surface border-2 border-realm-border hover:border-[var(--color-gold)] p-5 rounded-sm flex items-center justify-between transition-all group shadow-xl"
         >
           <div class="flex items-center gap-3.5">
-            <div class="w-10 h-10 rounded-sm bg-amber-950/80 border border-amber-800 text-amber-400 flex items-center justify-center text-lg">
-              <i class="fa-solid fa-headset text-amber-400"></i>
+            <div class="w-10 h-10 rounded-sm bg-red-950/80 border border-red-800 text-[var(--color-gold-bright)] flex items-center justify-center text-lg">
+              <i class="fa-solid fa-headset text-red-400"></i>
             </div>
             <div>
               <div class="font-medieval font-bold text-xs text-slate-100 group-hover:text-[var(--color-gold-bright)] transition-colors">
@@ -554,7 +598,7 @@
             </div>
           </div>
           <i
-            class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:text-[var(--color-gold-bright)] group-hover:translate-x-1 transition-all"
+            class="fa-solid fa-chevron-right text-xs text-red-400 group-hover:text-white group-hover:translate-x-1 transition-all"
           ></i>
         </a>
 
@@ -564,7 +608,7 @@
         >
           <div class="flex items-center gap-3.5">
             <div class="w-10 h-10 rounded-sm bg-purple-950/80 border border-purple-800 text-purple-400 flex items-center justify-center text-lg">
-              <i class="fa-solid fa-gem"></i>
+              <i class="fa-solid fa-gem text-purple-400"></i>
             </div>
             <div>
               <div class="font-medieval font-bold text-xs text-slate-100 group-hover:text-[var(--color-gold-bright)] transition-colors">
@@ -574,7 +618,7 @@
             </div>
           </div>
           <i
-            class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:text-[var(--color-gold-bright)] group-hover:translate-x-1 transition-all"
+            class="fa-solid fa-chevron-right text-xs text-red-400 group-hover:text-white group-hover:translate-x-1 transition-all"
           ></i>
         </a>
 
@@ -584,7 +628,7 @@
         >
           <div class="flex items-center gap-3.5">
             <div class="w-10 h-10 rounded-sm bg-sky-950/80 border border-sky-800 text-sky-400 flex items-center justify-center text-lg">
-              <i class="fa-solid fa-book-bookmark"></i>
+              <i class="fa-solid fa-book-bookmark text-sky-400"></i>
             </div>
             <div>
               <div class="font-medieval font-bold text-xs text-slate-100 group-hover:text-[var(--color-gold-bright)] transition-colors">
@@ -594,7 +638,7 @@
             </div>
           </div>
           <i
-            class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:text-[var(--color-gold-bright)] group-hover:translate-x-1 transition-all"
+            class="fa-solid fa-chevron-right text-xs text-red-400 group-hover:text-white group-hover:translate-x-1 transition-all"
           ></i>
         </a>
       </div>
@@ -606,7 +650,7 @@
     <div>
       <div class="flex items-center justify-between pb-4 border-b-2 border-realm-border-accent mb-10">
         <h2 class="text-2xl md:text-3xl font-medieval font-bold text-[var(--color-gold-bright)] tracking-wider flex items-center gap-3 uppercase">
-          <i class="fa-solid fa-shield-halved text-amber-400"></i>
+          <i class="fa-solid fa-shield-halved text-[var(--color-gold-bright)]"></i>
           <span>{{ settings.home.featured_products_title | default: 'EFSANEVİ HAZİNELER & EKİPMANLAR' }}</span>
         </h2>
         <a
@@ -614,7 +658,7 @@
           class="text-xs font-medieval font-bold text-[var(--color-gold-bright)] hover:text-white transition-colors flex items-center gap-2 uppercase tracking-widest"
         >
           <span>MAĞAZAYA GİT</span>
-          <i class="fa-solid fa-arrow-right text-xs"></i>
+          <i class="fa-solid fa-arrow-right text-xs text-red-400"></i>
         </a>
       </div>
 
@@ -640,7 +684,7 @@
                 >
               {% else %}
                 <i
-                  class="fa-solid fa-shield-halved text-5xl text-slate-700 group-hover:scale-110 transition-transform duration-500"
+                  class="fa-solid fa-shield-halved text-5xl text-red-600/40 group-hover:scale-110 transition-transform duration-500"
                 ></i>
               {% endif %}
             </a>
@@ -649,7 +693,9 @@
               <h3 class="text-base font-medieval font-bold text-slate-100 group-hover:text-[var(--color-gold-bright)] transition-colors truncate mb-2 uppercase">
                 {{ product.name }}
               </h3>
-              <div class="text-[var(--color-gold-bright)] font-medieval font-bold text-lg mb-4">₺{{ product.price }}</div>
+              <div class="text-[var(--color-gold-bright)] font-medieval font-bold text-lg mb-4">
+                ₺{{ product.price }}
+              </div>
 
               <button
                 onclick="addToCart({{ product | json }})"
@@ -664,36 +710,49 @@
     </div>
   {% endif %}
 
-  <!-- SECTION 5: "MACERAYA SEN DE KATIL" (KINGDOM CALLOUT BANNER) -->
-  <div class="text-center py-16 border-t-2 border-realm-border-accent flex flex-col items-center">
-    <div class="text-[11px] font-medieval font-bold text-[var(--color-gold-bright)] uppercase tracking-[0.3em] px-5 py-1.5 rounded-sm bg-realm-card border border-realm-border-accent mb-5">
-      {{ settings.home.cta_badge | default: 'AETHELGARD MACERASI' }}
-    </div>
+  <!-- SECTION 5: CALL TO ACTION BANNER -->
+  <div class="my-14 relative rounded-sm border border-red-900/40 bg-gradient-to-r from-[#170a0a] via-[#120707] to-[#1a0a0a] p-8 md:p-12 shadow-xl overflow-hidden">
+    <!-- Subtle Ambient Glow -->
+    <div class="absolute -right-16 -top-16 w-72 h-72 rounded-full pointer-events-none opacity-20 blur-3xl" style="background: radial-gradient(circle, var(--color-gold, #dc2626) 0%, transparent 70%);"></div>
+    <div class="absolute -left-16 -bottom-16 w-72 h-72 rounded-full pointer-events-none opacity-10 blur-3xl" style="background: radial-gradient(circle, var(--color-gold, #dc2626) 0%, transparent 70%);"></div>
 
-    <h2 class="text-3xl md:text-5xl font-medieval font-bold text-slate-100 mb-6 tracking-wider uppercase">
-      {{ settings.home.cta_title | default: 'AETHELGARD DÜNYASINDA YERİNİ AL' }}
-    </h2>
+    <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+      <!-- Left Column: Title & Text -->
+      <div class="text-center lg:text-left max-w-2xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-red-950/60 border border-red-800/40 text-[11px] font-medieval font-bold text-red-400 uppercase tracking-widest mb-3">
+          <i class="fa-brands fa-discord text-xs"></i>
+          <span>{{ settings.home.cta_badge | default: 'TOPLULUĞA KATIL' }}</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-medieval font-bold text-white tracking-wide uppercase mb-3">
+          {{ settings.home.cta_title | default: 'AETHELGARD DÜNYASINDA YERİNİ AL' }}
+        </h2>
+        <p class="text-slate-400 text-xs sm:text-sm font-sans leading-relaxed">
+          {{
+            settings.home.cta_description
+            | default: 'Gelişmiş ekonomi, zorlu zindanlar ve devasa lonca savaşlarıyla dolu sunucumuza hemen katıl, klanınla birlikte zirveye oyna.'
+          }}
+        </p>
+      </div>
 
-    <p class="text-slate-400 text-xs md:text-sm max-w-xl font-sans leading-relaxed mb-10">
-      {{ settings.home.cta_description | default: 'Gelişmiş ekonomi, zorlu zindanlar ve devasa lonca savaşlarıyla dolu sunucumuza hemen katıl, klanınla birlikte zirveye oyna.' }}
-    </p>
+      <!-- Right Column: Action Buttons -->
+      <div class="flex flex-wrap sm:flex-nowrap items-center justify-center gap-4 shrink-0 w-full sm:w-auto">
+        <a
+          href="{{ settings.discord_url | default: '#' }}"
+          target="_blank"
+          class="rpg-btn-sharp-gold h-12 px-7 rounded-sm text-xs font-medieval font-bold uppercase tracking-wider flex items-center justify-center gap-2.5 w-full sm:w-auto shadow-lg hover:brightness-110 transition-all"
+        >
+          <i class="fa-brands fa-discord text-base"></i>
+          <span>{{ settings.home.cta_btn1_text | default: 'DISCORD SUNUCUMUZ' }}</span>
+        </a>
 
-    <div class="flex flex-wrap items-center justify-center gap-5">
-      <a
-        href="{{ settings.discord_url | default: '#' }}"
-        target="_blank"
-        class="rpg-btn-sharp-gold px-9 py-4 rounded-sm text-xs font-medieval font-bold uppercase tracking-widest flex items-center gap-3"
-      >
-        <span>{{ settings.home.cta_btn1_text | default: 'DISCORD TOPLULUĞUMUZA KATILIN' }}</span>
-        <i class="fa-brands fa-discord text-base"></i>
-      </a>
-
-      <a
-        href="{{ settings.home.cta_btn2_url | default: '/help' }}"
-        class="rpg-btn-sharp-outline px-9 py-4 rounded-sm text-xs font-medieval font-bold uppercase tracking-widest"
-      >
-        {{ settings.home.cta_btn2_text | default: 'MACERAYA İLK ADIM' }}
-      </a>
+        <a
+          href="{{ settings.home.cta_btn2_url | default: '/help' }}"
+          class="rpg-btn-sharp-outline h-12 px-6 rounded-sm text-xs font-medieval font-bold uppercase tracking-wider flex items-center justify-center gap-2 w-full sm:w-auto hover:bg-white/5 transition-all text-slate-300"
+        >
+          <span>{{ settings.home.cta_btn2_text | default: 'MACERAYA BAŞLA' }}</span>
+          <i class="fa-solid fa-arrow-right text-xs"></i>
+        </a>
+      </div>
     </div>
   </div>
 </div>

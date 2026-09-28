@@ -43,7 +43,7 @@
         id="login-container"
         class="auth-step {% if request.path contains 'sign-up' or request.path contains 'register' %}hidden{% endif %} animate-[fade-in_300ms_ease-out] bg-realm-surface border-2 border-realm-border rounded-sm p-8 shadow-2xl relative"
       >
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-realm-card border border-realm-border-accent text-[10px] font-medieval font-bold text-amber-400 uppercase tracking-widest mb-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-realm-card border border-realm-border-accent text-[10px] font-medieval font-bold text-gold-bright uppercase tracking-widest mb-3">
           <i class="fa-solid fa-key"></i>
           <span>KAPAN MAĞARASI</span>
         </div>
@@ -213,8 +213,8 @@
           Hesabınıza erişebilmeniz için <strong id="otpMaskedEmail" class="text-gold-bright">e-posta adresinize</strong> 6 haneli kod gönderildi.
         </p>
 
-        <div class="mb-5 p-3 rounded-sm bg-amber-950/60 border border-amber-800/80 text-amber-300 text-xs font-medieval flex items-start gap-2.5">
-          <i class="fa-solid fa-circle-info text-amber-400 mt-0.5"></i>
+        <div class="mb-5 p-3 rounded-sm bg-red-950/60 border border-red-800/80 text-rose-300 text-xs font-medieval flex items-start gap-2.5">
+          <i class="fa-solid fa-circle-info text-rose-400 mt-0.5"></i>
           <span>E-posta gelen kutunuzda görünmüyorsa lütfen <strong>Spam (Gereksiz)</strong> klasörünüzü kontrol ediniz.</span>
         </div>
 
@@ -327,7 +327,7 @@
     <div class="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-luminosity" style="background-image: url('{% if settings.auth.background %}{{ settings.auth.background }}{% else %}https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1968&auto=format&fit=crop{% endif %}');"></div>
     <div class="relative z-10 max-w-lg text-center space-y-6">
       <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-sm bg-realm-card border border-realm-border-accent text-xs font-medieval font-bold text-gold uppercase tracking-widest">
-        <i class="fa-solid fa-shield-halved text-amber-500"></i>
+        <i class="fa-solid fa-shield-halved text-gold-bright"></i>
         <span>DİYAR KAPILARI AÇIK</span>
       </div>
       <h2 class="text-4xl font-medieval font-black text-slate-100 uppercase tracking-wider drop-shadow-lg">
@@ -361,8 +361,8 @@ Adımını At" | newline_to_br }}
         banner.className = 'mb-6 p-4 rounded-sm border bg-emerald-950/80 border-emerald-700 text-emerald-200 text-xs font-medieval font-bold flex items-start gap-3 shadow-lg animate-[fade-in_300ms_ease-out]';
         iconEl.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>';
       } else if (type === 'warning' || type === 'info') {
-        banner.className = 'mb-6 p-4 rounded-sm border bg-amber-950/80 border-amber-700 text-amber-200 text-xs font-medieval font-bold flex items-start gap-3 shadow-lg animate-[fade-in_300ms_ease-out]';
-        iconEl.innerHTML = '<i class="fa-solid fa-circle-info text-amber-400 text-base"></i>';
+        banner.className = 'mb-6 p-4 rounded-sm border bg-red-950/80 border-red-700 text-rose-200 text-xs font-medieval font-bold flex items-start gap-3 shadow-lg animate-[fade-in_300ms_ease-out]';
+        iconEl.innerHTML = '<i class="fa-solid fa-circle-info text-rose-400 text-base"></i>';
       } else {
         banner.className = 'mb-6 p-4 rounded-sm border bg-red-950/90 border-red-800 text-red-200 text-xs font-medieval font-bold flex items-start gap-3 shadow-lg animate-[fade-in_300ms_ease-out]';
         iconEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-400 text-base"></i>';
@@ -417,13 +417,12 @@ Adımını At" | newline_to_br }}
   async function handleDiscordAuth(action = 'login') {
     try {
       const redirectUri = window.location.origin + '/';
-      const res = await fetch(`/api/storefront/v2/auth/discord?action=${action}&redirectUri=${encodeURIComponent(redirectUri)}`);
-      const data = await res.json();
-      if (data.success && data.data?.oauthUrl) window.location.href = data.data.oauthUrl;
-      else if (data.oauthUrl) window.location.href = data.oauthUrl;
-      else showAlert('Discord Hatası', data.message || 'Discord giriş bağlantısı alınamadı!', 'error');
+      const res = await window.crafter.http.get('/v2/auth/discord', { params: { action, redirectUri } });
+      if (res?.success && res.data?.oauthUrl) window.location.href = res.data.oauthUrl;
+      else if (res?.oauthUrl) window.location.href = res.oauthUrl;
+      else showAlert('Discord Hatası', res?.message || 'Discord giriş bağlantısı alınamadı!', 'error');
     } catch (e) {
-      showAlert('Bağlantı Hatası', 'Discord servisine bağlanılamadı!', 'error');
+      showAlert('Bağlantı Hatası', e.message || 'Discord servisine bağlanılamadı!', 'error');
     }
   }
 
@@ -475,12 +474,7 @@ Adımını At" | newline_to_br }}
     btn.innerHTML = '<span class="animate-pulse">KONTROL EDİLİYOR...</span>';
 
     try {
-      const res = await fetch('/api/storefront/v2/auth/signin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      const result = await res.json();
+      const result = await window.crafter.auth.signin(data);
 
       if (result.accessToken || result.data?.accessToken) {
         handleSuccessfulLogin(result);
@@ -522,7 +516,35 @@ Adımını At" | newline_to_br }}
 
       showAlert('Giriş Başarısız', result.message || 'Kullanıcı adı veya şifre hatalı!', 'error');
     } catch (err) {
-      showAlert('Bağlantı Hatası', 'Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.', 'error');
+      const payload = err.details?.data || err.details;
+      if (payload?.requires2FA) {
+        currentAuthTokens.tempToken = payload.tempToken;
+        currentAuthTokens.twoFaMethods = payload.methods || ['authenticator'];
+        currentAuthTokens.currentTwoFaMethod = payload.primaryMethod || payload.methods?.[0] || 'authenticator';
+        currentAuthTokens.maskedEmail = payload.maskedEmail || '';
+        renderTwoFaMethodPicker();
+        switchAuthStep('twofa-container');
+        document.getElementById('twofaCodeInput').focus();
+        showAlert('2FA Doğrulaması', payload.message || 'İki aşamalı doğrulama kodunuzu giriniz.', 'info');
+        return;
+      }
+      if (payload?.requiresEmailVerification) {
+        if (!payload.isTempEmail) {
+          currentAuthTokens.emailToken = payload.emailToken;
+          currentAuthTokens.maskedEmail = payload.maskedEmail || '';
+          document.getElementById('otpMaskedEmail').innerText = payload.maskedEmail || 'e-posta adresinize';
+          switchAuthStep('email-otp-container');
+          document.getElementById('otpCodeInput').focus();
+          showAlert('E-Posta Doğrulama', payload.message || 'Lütfen e-posta doğrulama kodunuzu giriniz.', 'info');
+        } else {
+          currentAuthTokens.tempToken = payload.tempToken;
+          switchAuthStep('temp-email-container');
+          document.getElementById('tempEmailInput').focus();
+          showAlert('E-Posta Güncelleme', payload.message || 'Lütfen geçerli bir e-posta adresi giriniz.', 'info');
+        }
+        return;
+      }
+      showAlert('Giriş Başarısız', err.message || 'Kullanıcı adı veya şifre hatalı!', 'error');
     } finally {
       btn.disabled = false;
       btn.innerHTML = originalText;
@@ -551,22 +573,17 @@ Adımını At" | newline_to_br }}
     btn.innerHTML = '<span class="animate-pulse">KAYIT EDİLİYOR...</span>';
 
     try {
-      const res = await fetch('/api/storefront/v2/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      const result = await res.json();
-      if (result.success || res.ok) {
+      const result = await window.crafter.auth.signup(data);
+      if (result?.success || result) {
         showAlert('Kayıt Başarılı', 'Hesabınız başarıyla oluşturuldu! Şimdi giriş yapabilirsiniz.', 'success');
         toggleAuth('login');
         const loginUserInput = document.querySelector('#loginForm input[name="username"]');
         if (loginUserInput) loginUserInput.value = data.username;
       } else {
-        showAlert('Kayıt Başarısız', result.message || 'Kayıt işlemi başarısız!', 'error');
+        showAlert('Kayıt Başarısız', result?.message || 'Kayıt işlemi başarısız!', 'error');
       }
     } catch (err) {
-      showAlert('Bağlantı Hatası', 'Sunucuya bağlanılamadı!', 'error');
+      showAlert('Kayıt Başarısız', err.message || 'Kayıt işlemi başarısız!', 'error');
     } finally {
       btn.disabled = false;
       btn.innerHTML = originalText;
@@ -585,19 +602,14 @@ Adımını At" | newline_to_br }}
     btn.innerHTML = '<span class="animate-pulse">DOĞRULANIYOR...</span>';
 
     try {
-      const res = await fetch('/api/storefront/v2/auth/verify-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ emailToken: currentAuthTokens.emailToken, code: code }),
-      });
-      const result = await res.json();
+      const result = await window.crafter.auth.verifyEmail({ tempToken: currentAuthTokens.emailToken, code: code });
       if (result.accessToken || (result.success && result.accessToken) || result.data?.accessToken) {
         handleSuccessfulLogin(result.data || result);
       } else {
         showAlert('Doğrulama Hatası', result.message || result.data?.message || 'Geçersiz doğrulama kodu!', 'error');
       }
     } catch (err) {
-      showAlert('Bağlantı Hatası', 'Doğrulama sırasında hata oluştu!', 'error');
+      showAlert('Doğrulama Hatası', err.message || 'Doğrulama sırasında hata oluştu!', 'error');
     } finally {
       btn.disabled = false;
       btn.innerHTML = originalText;
@@ -610,30 +622,20 @@ Adımını At" | newline_to_br }}
     btn.disabled = true;
 
     try {
-      const res = await fetch('/api/storefront/v2/auth/resend-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ emailToken: currentAuthTokens.emailToken }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        showAlert('Kod Gönderildi', 'Doğrulama kodu tekrar e-posta adresinize gönderildi.', 'success');
-        let countdown = 60;
-        const interval = setInterval(() => {
-          btn.innerText = `TEKRAR GÖNDER (${countdown}S)`;
-          countdown--;
-          if (countdown < 0) {
-            clearInterval(interval);
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i><span>Kodu Tekrar Gönder</span>';
-          }
-        }, 1000);
-      } else {
-        showAlert('Kod Gönderilemedi', data.message || 'Kod gönderilemedi.', 'error');
-        btn.disabled = false;
-      }
+      const data = await window.crafter.auth.resendEmail(currentAuthTokens.emailToken);
+      showAlert('Kod Gönderildi', data?.message || 'Doğrulama kodu tekrar e-posta adresinize gönderildi.', 'success');
+      let countdown = 60;
+      const interval = setInterval(() => {
+        btn.innerText = `TEKRAR GÖNDER (${countdown}S)`;
+        countdown--;
+        if (countdown < 0) {
+          clearInterval(interval);
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i><span>Kodu Tekrar Gönder</span>';
+        }
+      }, 1000);
     } catch (e) {
-      showAlert('Bağlantı Hatası', 'Kod gönderilemedi!', 'error');
+      showAlert('Kod Gönderilemedi', e.message || 'Kod gönderilemedi.', 'error');
       btn.disabled = false;
     }
   }
@@ -650,12 +652,7 @@ Adımını At" | newline_to_br }}
     btn.innerHTML = '<span class="animate-pulse">GÜNCELLENİYOR...</span>';
 
     try {
-      const res = await fetch('/api/storefront/v2/auth/update-temp-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tempToken: currentAuthTokens.tempToken, email: email }),
-      });
-      const result = await res.json();
+      const result = await window.crafter.auth.updateTempEmail(currentAuthTokens.tempToken, email);
       const payload = result.data || result;
       if (result.success || payload.emailToken) {
         currentAuthTokens.emailToken = payload.emailToken;
@@ -667,7 +664,7 @@ Adımını At" | newline_to_br }}
         showAlert('Güncelleme Başarısız', result.message || 'E-posta güncellenemedi.', 'error');
       }
     } catch (err) {
-      showAlert('Bağlantı Hatası', 'E-posta güncellenemedi!', 'error');
+      showAlert('Bağlantı Hatası', err.message || 'E-posta güncellenemedi!', 'error');
     } finally {
       btn.disabled = false;
       btn.innerHTML = originalText;
@@ -755,16 +752,10 @@ Adımını At" | newline_to_br }}
     btn.disabled = true;
     btn.innerText = 'Kod gönderiliyor...';
     try {
-      const res = await fetch('/api/storefront/v2/auth/2fa/send-discord-code', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tempToken: currentAuthTokens.tempToken }),
-      });
-      const data = await res.json();
-      if (data.success) showAlert('Kod Gönderildi', data.message || 'Güvenlik kodu Discord DM kutunuza gönderildi.', 'success');
-      else showAlert('Kod Gönderilemedi', data.message || 'Kod gönderilemedi.', 'error');
+      const data = await window.crafter.auth.send2FaDiscordCode(currentAuthTokens.tempToken);
+      showAlert('Kod Gönderildi', data?.message || 'Güvenlik kodu Discord DM kutunuza gönderildi.', 'success');
     } catch (e) {
-      showAlert('Bağlantı Hatası', 'Bağlantı hatası!', 'error');
+      showAlert('Kod Gönderilemedi', e.message || 'Kod gönderilemedi.', 'error');
     } finally {
       btn.disabled = false;
       btn.innerText = 'Kodu Discord DM\'den Tekrar Gönder';
@@ -778,16 +769,10 @@ Adımını At" | newline_to_br }}
     btn.innerText = 'Kod gönderiliyor...';
 
     try {
-      const res = await fetch('/api/storefront/v2/auth/2fa/send-email-code', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tempToken: currentAuthTokens.tempToken }),
-      });
-      const data = await res.json();
-      if (data.success) showAlert('Kod Gönderildi', data.message || '2FA kodu e-postanıza gönderildi.', 'success');
-      else showAlert('Kod Gönderilemedi', data.message || 'Kod gönderilemedi.', 'error');
+      const data = await window.crafter.auth.send2FaEmailCode(currentAuthTokens.tempToken);
+      showAlert('Kod Gönderildi', data?.message || '2FA kodu e-postanıza gönderildi.', 'success');
     } catch (e) {
-      showAlert('Bağlantı Hatası', 'Bağlantı hatası!', 'error');
+      showAlert('Kod Gönderilemedi', e.message || 'Kod gönderilemedi.', 'error');
     } finally {
       btn.disabled = false;
       btn.innerText = 'Kodu E-Postama Gönder';
@@ -805,23 +790,18 @@ Adımını At" | newline_to_br }}
     btn.innerHTML = '<span class="animate-pulse">DOĞRULANIYOR...</span>';
 
     try {
-      const res = await fetch('/api/storefront/v2/auth/2fa/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tempToken: currentAuthTokens.tempToken,
-          method: currentAuthTokens.currentTwoFaMethod,
-          code: code,
-        }),
+      const result = await window.crafter.auth.validate2Fa({
+        tempToken: currentAuthTokens.tempToken,
+        method: currentAuthTokens.currentTwoFaMethod,
+        code: code,
       });
-      const result = await res.json();
       if (result.accessToken || (result.success && result.accessToken) || result.data?.accessToken) {
         handleSuccessfulLogin(result.data || result);
       } else {
         showAlert('Doğrulama Hatası', result.message || result.data?.message || 'Doğrulama kodu hatalı!', 'error');
       }
     } catch (err) {
-      showAlert('Doğrulama Hatası', '2FA doğrulama hatası!', 'error');
+      showAlert('Doğrulama Hatası', err.message || '2FA doğrulama hatası!', 'error');
     } finally {
       btn.disabled = false;
       btn.innerHTML = originalText;

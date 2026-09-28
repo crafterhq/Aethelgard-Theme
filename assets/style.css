@@ -14,24 +14,52 @@ html {
 }
 
 :root {
-  /* Fallback RPG Theme Colors - Overridden by theme.liquid dynamic tokens */
-  --color-gold: #d4af37;
-  --color-gold-bright: #f5d061;
-  --color-gold-dark: #8a6d1c;
-  --color-gold-glow: rgba(212, 175, 55, 0.45);
+  /* Default Red/Crimson RPG Theme Colors - Overridden by theme.liquid dynamic tokens */
+  --color-gold: #dc2626;
+  --color-gold-bright: #ef4444;
+  --color-gold-dark: #991b1b;
+  --color-gold-glow: rgba(220, 38, 38, 0.45);
   
-  --color-bronze: #8c6834;
-  --color-realm-bg: #090705;
-  --color-realm-surface: #110e0b;
-  --color-realm-card: #15110d;
-  --color-realm-card-hover: #1e1913;
-  --color-realm-border: #3d301d;
-  --color-realm-border-accent: #4a3821;
-  --color-realm-border-gold: rgba(212, 175, 55, 0.4);
+  --color-bronze: #7f1d1d;
+  --color-realm-bg: #0c0606;
+  --color-realm-surface: #140a0a;
+  --color-realm-card: #1a0d0d;
+  --color-realm-card-hover: #241212;
+  --color-realm-border: #3f1717;
+  --color-realm-border-accent: #5e1e1e;
+  --color-realm-border-gold: rgba(220, 38, 38, 0.4);
 
   --color-text-primary: #f8fafc;
-  --color-text-gold: #f5d061;
+  --color-text-gold: #ef4444;
   --color-text-muted: #94a3b8;
+
+  /* Additional Default Red Design Tokens */
+  --color-navbar-bg: #140a0a;
+  --color-navbar-border: #5e1e1e;
+  --color-navbar-text: #cbd5e1;
+  --color-navbar-text-active: #ef4444;
+
+  --color-btn-primary-bg: #dc2626;
+  --color-btn-primary-text: #ffffff;
+  --color-btn-secondary-bg: #1a0d0d;
+  --color-btn-secondary-border: #7f1d1d;
+  --color-btn-secondary-text: #fca5a5;
+
+  --color-marquee-bg: #170a0a;
+  --color-marquee-border: #5e1e1e;
+  --color-marquee-text: #fca5a5;
+
+  --color-footer-bg: #090404;
+  --color-footer-border: #3f1717;
+  --color-footer-title: #ef4444;
+  --color-footer-text: #94a3b8;
+
+  --color-badge-bg: #7f1d1d;
+  --color-badge-text: #fee2e2;
+  --color-badge-border: #dc2626;
+
+  --color-preloader-bg: #0c0606;
+  --color-preloader-bar: #ef4444;
 
   /* Sharp medieval corners - no soft rounded bubbles */
   --radius-md: 2px;
@@ -48,12 +76,12 @@ html {
 body {
   font-family: 'Inter', system-ui, sans-serif;
   background-color: var(--color-realm-bg);
-  /* Dark rugged stone & rune background pattern */
+  /* Dark rugged stone & rune background pattern in crimson dark */
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.12) 0%, transparent 65%),
-    radial-gradient(circle at 85% 30%, rgba(139, 0, 0, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 15% 70%, rgba(140, 104, 52, 0.06) 0%, transparent 50%),
-    repeating-linear-gradient(45deg, rgba(212, 175, 55, 0.015) 0, rgba(212, 175, 55, 0.015) 1px, transparent 0, transparent 40px);
+    radial-gradient(circle at 50% 0%, rgba(220, 38, 38, 0.12) 0%, transparent 65%),
+    radial-gradient(circle at 85% 30%, rgba(153, 27, 27, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 15% 70%, rgba(127, 29, 29, 0.06) 0%, transparent 50%),
+    repeating-linear-gradient(45deg, rgba(220, 38, 38, 0.015) 0, rgba(220, 38, 38, 0.015) 1px, transparent 0, transparent 40px);
   background-attachment: fixed;
   color: var(--color-text-primary);
   min-height: 100vh;
@@ -61,6 +89,17 @@ body {
   flex-direction: column;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Base High-Contrast Heading & Typography Rules */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-text-primary, #f8fafc);
+}
+
+.text-gold-bright,
+.text-gold,
+.text-primary {
+  color: var(--color-gold-bright) !important;
 }
 
 /* Force Normal Mixed-Case Typing on All Input Fields */
@@ -89,14 +128,14 @@ textarea::placeholder {
   font-family: 'Inter', sans-serif;
 }
 
-/* Gold Text Glow */
+/* Red / Gold Text Glow */
 .text-gold-glow {
   color: var(--color-gold-bright);
-  text-shadow: 0 0 20px rgba(212, 175, 55, 0.8), 0 2px 4px rgba(0, 0, 0, 0.95);
+  text-shadow: 0 0 20px var(--color-gold-glow), 0 2px 4px rgba(0, 0, 0, 0.95);
 }
 
 .text-gold-gradient {
-  background: linear-gradient(135deg, #ffffff 0%, #ffe082 35%, var(--color-gold-bright) 70%, var(--color-gold) 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #fca5a5 35%, var(--color-gold-bright) 70%, var(--color-gold) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -124,18 +163,18 @@ textarea::placeholder {
 
 /* High Contrast Subtitle Plaque */
 .rpg-sharp-plaque {
-  background: linear-gradient(135deg, rgba(20, 15, 11, 0.96) 0%, rgba(32, 24, 17, 0.96) 50%, rgba(20, 15, 11, 0.96) 100%) !important;
+  background: linear-gradient(135deg, rgba(24, 10, 10, 0.96) 0%, rgba(36, 14, 14, 0.96) 50%, rgba(24, 10, 10, 0.96) 100%) !important;
   border: 2px solid var(--color-gold-bright) !important;
   border-radius: 4px;
   box-shadow: 
     0 15px 40px rgba(0, 0, 0, 0.95), 
-    0 0 30px rgba(212, 175, 55, 0.35), 
+    0 0 30px var(--color-gold-glow), 
     inset 0 0 25px rgba(0, 0, 0, 0.9);
   backdrop-filter: blur(12px);
 }
 
 .rpg-sharp-plaque p {
-  color: #ffe8a3 !important;
+  color: #fecdd3 !important;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 1) !important;
 }
 
@@ -183,7 +222,7 @@ textarea::placeholder {
 
 /* Sharp Subtitle Plaque (High Contrast Legibility) */
 .rpg-sharp-plaque {
-  background: linear-gradient(135deg, rgba(14, 11, 7, 0.97) 0%, rgba(26, 20, 14, 0.97) 50%, rgba(14, 11, 7, 0.97) 100%) !important;
+  background: linear-gradient(135deg, rgba(20, 8, 8, 0.97) 0%, rgba(32, 12, 12, 0.97) 50%, rgba(20, 8, 8, 0.97) 100%) !important;
   border: 2px solid var(--color-gold-bright) !important;
   border-radius: 4px;
   box-shadow: 
@@ -298,18 +337,18 @@ textarea::placeholder {
 .rpg-btn:hover {
   border-color: var(--color-gold);
   color: var(--color-gold-bright);
-  background: rgba(212, 175, 55, 0.1);
+  background: rgba(220, 38, 38, 0.1);
   box-shadow: 0 0 20px var(--color-gold-glow);
 }
 
 .rpg-btn-gold {
-  background: linear-gradient(185deg, #261c10 0%, var(--color-realm-card) 100%);
+  background: linear-gradient(185deg, #260a0a 0%, var(--color-realm-card) 100%);
   border: 1px solid var(--color-gold);
   color: var(--color-gold-bright);
 }
 .rpg-btn-gold:hover {
-  background: linear-gradient(185deg, #3d2c18 0%, var(--color-realm-card-hover) 100%);
-  border-color: #ffe596;
+  background: linear-gradient(185deg, #3d1414 0%, var(--color-realm-card-hover) 100%);
+  border-color: #fca5a5;
   box-shadow: 0 0 20px var(--color-gold-glow);
 }
 
@@ -317,8 +356,8 @@ textarea::placeholder {
    SHARP FLOATING NAVBAR
    ============================================================ */
 .rpg-floating-nav {
-  background: linear-gradient(180deg, rgba(17, 14, 11, 0.95) 0%, rgba(10, 8, 6, 0.98) 100%);
-  border: 1px solid rgba(212, 175, 55, 0.45);
+  background: var(--color-navbar-bg, linear-gradient(180deg, rgba(20, 10, 10, 0.95) 0%, rgba(12, 6, 6, 0.98) 100%));
+  border: 1px solid var(--color-navbar-border, rgba(220, 38, 38, 0.45));
   border-radius: 6px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9), 0 0 20px var(--color-gold-glow);
   backdrop-filter: blur(12px);
@@ -328,41 +367,42 @@ textarea::placeholder {
    SHARP METALLIC BUTTONS
    ============================================================ */
 .rpg-btn-sharp-gold {
-  background: linear-gradient(135deg, var(--color-gold-bright) 0%, var(--color-gold) 50%, var(--color-gold-dark) 100%);
-  color: #090705;
+  background: linear-gradient(135deg, var(--color-btn-primary-bg, var(--color-gold-bright)) 0%, var(--color-gold) 50%, var(--color-gold-dark) 100%);
+  color: var(--color-btn-primary-text, #ffffff);
   font-family: 'Cinzel', serif;
   font-weight: 800;
   letter-spacing: 0.08em;
-  border: 1px solid #ffe596;
+  border: 1px solid #fca5a5;
   border-radius: 3px;
-  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  box-shadow: 0 6px 20px var(--color-gold-glow), inset 0 1px 0 rgba(255, 255, 255, 0.6);
   transition: all 0.25s ease;
   position: relative;
   overflow: hidden;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 .rpg-btn-sharp-gold:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(212, 175, 55, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  filter: brightness(1.12);
+  box-shadow: 0 8px 28px rgba(220, 38, 38, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  filter: brightness(1.15);
 }
 
 .rpg-btn-sharp-outline {
-  background: rgba(17, 14, 11, 0.9);
-  color: var(--color-gold-bright);
+  background: var(--color-btn-secondary-bg, rgba(20, 10, 10, 0.9));
+  color: var(--color-btn-secondary-text, var(--color-gold-bright));
   font-family: 'Cinzel', serif;
   font-weight: 700;
-  border: 1px solid rgba(212, 175, 55, 0.6);
+  border: 1px solid var(--color-btn-secondary-border, rgba(220, 38, 38, 0.6));
   border-radius: 3px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
   transition: all 0.25s ease;
 }
 
 .rpg-btn-sharp-outline:hover {
-  background: rgba(30, 24, 18, 0.95);
-  border-color: var(--color-gold);
+  background: rgba(36, 16, 16, 0.95);
+  border-color: var(--color-gold-bright);
   color: #ffffff;
-  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35);
+  box-shadow: 0 6px 20px var(--color-gold-glow);
   transform: translateY(-2px);
 }
 
@@ -376,14 +416,14 @@ textarea::placeholder {
   border-radius: 6px;
   box-shadow: 
     0 25px 60px rgba(0, 0, 0, 0.9),
-    0 0 0 1px rgba(212, 175, 55, 0.25),
+    0 0 0 1px rgba(220, 38, 38, 0.25),
     inset 0 0 40px rgba(0, 0, 0, 0.9);
   padding: 48px 24px 28px 24px;
 }
 
 .rpg-grand-board-inner {
-  background: radial-gradient(circle at 50% 50%, rgba(35, 27, 19, 0.6) 0%, rgba(12, 9, 7, 0.95) 100%);
-  border: 1px solid rgba(212, 175, 55, 0.25);
+  background: radial-gradient(circle at 50% 50%, rgba(35, 12, 12, 0.6) 0%, rgba(12, 6, 6, 0.95) 100%);
+  border: 1px solid rgba(220, 38, 38, 0.25);
   border-radius: 4px;
 }
 
@@ -392,11 +432,11 @@ textarea::placeholder {
   top: -22px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(180deg, #231b13 0%, var(--color-realm-bg) 100%);
+  background: linear-gradient(180deg, #240c0c 0%, var(--color-realm-bg) 100%);
   border: 2px solid var(--color-gold);
   border-radius: 4px;
   padding: 8px 42px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.95), 0 0 15px rgba(212, 175, 55, 0.35);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.95), 0 0 15px var(--color-gold-glow);
 }
 
 /* Scrollbar */

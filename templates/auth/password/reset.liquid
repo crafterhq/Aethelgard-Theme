@@ -103,7 +103,7 @@ Minecraft Topluluğu" }}
   if (token) {
     document.getElementById('resetTokenInput').value = token;
   } else {
-    window.showToast?.('Geçersiz veya eksik token. Lütfen e-postanızdaki bağlantıyı kontrol edin.', 'error') || alert('Geçersiz veya eksik token. Lütfen e-postanızdaki bağlantıyı kontrol edin.');
+    window.showToast('Geçersiz veya eksik token. Lütfen e-postanızdaki bağlantıyı kontrol edin.', 'error');
   }
 
   // Dynamic Online Players
@@ -140,12 +140,12 @@ Minecraft Topluluğu" }}
     const data = Object.fromEntries(formData.entries());
     
     if (!data.token) {
-      window.showToast?.('Şifre sıfırlama tokeni eksik!', 'error') || alert('Şifre sıfırlama tokeni eksik!');
+      window.showToast('Şifre sıfırlama tokeni eksik!', 'error');
       return;
     }
 
     if (data.new_password !== data.confirm_password) {
-      window.showToast?.('Şifreler eşleşmiyor!', 'error') || alert('Şifreler eşleşmiyor!');
+      window.showToast('Şifreler eşleşmiyor!', 'error');
       return;
     }
 
@@ -163,23 +163,17 @@ Minecraft Topluluğu" }}
     btn.innerHTML = '<span class="animate-pulse">Güncelleniyor...</span>';
 
     try {
-      const res = await fetch('/api/storefront/v2/auth/reset-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      const result = await res.json();
-
-      if (result.success) {
-        window.showToast?.('Şifreniz başarıyla güncellendi! Giriş yapabilirsiniz.', 'success') || alert('Şifreniz başarıyla güncellendi! Giriş yapabilirsiniz.');
+      const result = await window.crafter.auth.resetPassword(data);
+      if (result.success || result) {
+        window.showToast(result.message || 'Şifreniz başarıyla güncellendi! Giriş yapabilirsiniz.', 'success');
         setTimeout(() => {
           window.location.href = '/auth';
         }, 2000);
       } else {
-        window.showToast?.(result.message || 'Bir hata oluştu!', 'error') || alert(result.message || 'Bir hata oluştu!');
+        window.showToast(result.message || 'Bir hata oluştu!', 'error');
       }
     } catch (err) {
-      window.showToast?.('Bağlantı hatası!', 'error') || alert('Bağlantı hatası!');
+      window.showToast(err.message || 'Bağlantı hatası!', 'error');
     } finally {
       btn.disabled = false;
       btn.innerHTML = originalText;
