@@ -11,9 +11,9 @@
 {% if displayUser.username %}
   <div class="container max-w-[1350px] mx-auto px-4 sm:px-6 py-8 sm:py-12 min-h-[60vh] text-slate-100">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      <!-- Sol Kolon: Profil Bilgileri ve Navigasyon -->
+      <!-- Left column: profile info and navigation -->
       <div class="lg:col-span-4 space-y-6">
-        <!-- Profil Kartı -->
+        <!-- Profile card -->
         <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-8 shadow-2xl relative overflow-hidden flex flex-col items-center text-center">
           <div class="relative w-28 h-28 mb-5">
             <div class="absolute inset-0 bg-gold/20 rounded-full blur-xl animate-pulse"></div>
@@ -46,7 +46,7 @@
           </div>
         </div>
 
-        <!-- İstatistikler -->
+        <!-- Statistics -->
         <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-6 shadow-2xl">
           <h3 class="text-sm font-medieval font-bold text-slate-200 mb-4 uppercase tracking-wider border-b border-realm-border pb-3 flex items-center gap-2">
             <i class="fa-solid fa-chart-simple text-gold-bright"></i>
@@ -81,7 +81,7 @@
           </div>
         </div>
 
-        <!-- Navigasyon (Tab Butonları) -->
+        <!-- Navigation (tab buttons) -->
         <div class="bg-realm-surface border-2 border-realm-border rounded-sm p-6 shadow-2xl">
           <h3 class="text-sm font-medieval font-bold text-slate-200 mb-4 uppercase tracking-wider border-b border-realm-border pb-3 flex items-center gap-2">
             <i class="fa-solid fa-compass text-gold-bright"></i>
@@ -149,16 +149,16 @@
         </div>
       </div>
 
-      <!-- Sağ Kolon: Tab İçerikleri -->
+      <!-- Right column: tab contents -->
       <div class="lg:col-span-8">
-        <!-- DUVAR TABI -->
+        <!-- WALL TAB -->
         <div id="tab-wall" class="tab-content block bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 shadow-2xl">
           <h2 class="text-xl font-medieval font-black text-gold-bright mb-6 flex items-center gap-3 uppercase tracking-wider border-b border-realm-border pb-4">
             <i class="fa-solid fa-scroll text-gold-bright"></i>
             <span class="text-gold-bright">PROFİL DUVARI</span>
           </h2>
 
-          <!-- Mesaj Gönderme Kutusu -->
+          <!-- Message composer -->
           {% if customer %}
           <div class="flex gap-4 mb-8">
             <div class="w-10 h-10 rounded-sm bg-realm-bg border border-realm-border shrink-0 overflow-hidden">
@@ -187,7 +187,7 @@
           </div>
           {% endif %}
 
-          <!-- Duvar Mesajları Listesi -->
+          <!-- Wall messages list -->
           <div id="wall-messages-list" class="space-y-4">
             <div class="py-12 text-center text-slate-500 font-medieval text-xs bg-realm-bg rounded-sm border border-realm-border border-dashed uppercase tracking-widest">
               MESAJLAR YÜKLENİYOR...
@@ -195,7 +195,7 @@
           </div>
         </div>
 
-        <!-- ENVANTER TABI -->
+        <!-- INVENTORY TAB -->
         <div
           id="tab-inventory"
           class="tab-content hidden bg-realm-surface border-2 border-realm-border rounded-sm p-6 sm:p-8 shadow-2xl"
@@ -275,7 +275,7 @@
         });
       });
 
-      // Duvar Mesajları Logic
+      // Wall messages logic
       const wallContainer = document.getElementById('wall-messages-list');
       const wallInput = document.getElementById('wall-message-input');
       const btnSend = document.getElementById('btn-send-message');
