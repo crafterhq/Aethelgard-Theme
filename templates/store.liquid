@@ -1,4 +1,4 @@
-<!-- MAĞAZA ANA SAYFASI -->
+<!-- STORE HOME PAGE -->
 <div class="container max-w-[1240px] mx-auto px-4 pt-32 pb-24 space-y-16">
   
   <!-- 1. HERO SHOWCASE BANNER -->
@@ -29,7 +29,7 @@
     </div>
   </div>
 
-  <!-- 2. SUNUCULAR & KATEGORİLER GRİDİ -->
+  <!-- 2. SERVERS & CATEGORIES GRID -->
   <div>
     <div class="flex items-center justify-between pb-4 border-b border-realm-border mb-10">
       <h2 class="text-2xl font-medieval font-bold text-gold-bright uppercase tracking-widest flex items-center gap-3">
@@ -38,7 +38,7 @@
       </h2>
     </div>
 
-    <!-- Sunucu Kartları Gridi (Hanging Bottom Crests) -->
+    <!-- Server cards grid (hanging bottom crests) -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {% if servers and servers.size > 0 %}
         {% for server in servers %}

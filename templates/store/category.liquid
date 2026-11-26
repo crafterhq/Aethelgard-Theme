@@ -17,7 +17,7 @@
     <span class="text-gold-bright">{{ category.name | default: 'ÜRÜNLER' }}</span>
   </div>
 
-  <!-- KARŞILAŞTIRMA TABLOSU MODU (If category.type == 'listed_products') -->
+  <!-- COMPARISON TABLE MODE (if category.type == 'listed_products') -->
   {% if category.type == 'listed_products' %}
     <div class="overflow-x-auto w-full pb-6">
       <div class="min-w-[800px]">
@@ -117,7 +117,7 @@
   {% else %}
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
       
-      <!-- SOL: Ana Ürün Listesi Gridi -->
+      <!-- LEFT: main product list grid -->
       <div class="lg:col-span-8 space-y-8">
         
         <!-- Top Toolbar Header -->
@@ -140,12 +140,12 @@
         </div>
 
         {% if products and products.size > 0 %}
-          <!-- Ürün Kartları Gridi -->
+          <!-- Product cards grid -->
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             {% for product in products %}
               <div class="flex flex-col justify-between group">
                 
-                <!-- Ürün Resim Çerçevesi -->
+                <!-- Product image frame -->
                 <div class="relative w-full aspect-square bg-realm-bg border border-realm-border group-hover:border-gold p-6 flex items-center justify-center transition-all duration-300 shadow-lg mb-3">
                   {% if product.discountValue and product.discountValue > 0 %}
                     <span class="absolute top-2 left-2 z-10 bg-red-950 text-red-200 border border-red-800 text-[9px] font-medieval font-bold px-2 py-0.5">
@@ -164,7 +164,7 @@
                   </a>
                 </div>
 
-                <!-- Ürün Başlığı & Fiyat Satırı -->
+                <!-- Product title & price row -->
                 <div class="space-y-1">
                   <div class="flex items-baseline justify-between gap-2">
                     <a href="/store/{{ server.slug }}/{{ category.slug }}/{{ product.slug }}" class="truncate">
@@ -180,7 +180,7 @@
                   </p>
                 </div>
 
-                <!-- Sepete Ekle Butonu -->
+                <!-- Add to cart button -->
                 <button
                   data-product="{{ product | json | escape }}"
                   onclick="window.addToCart(JSON.parse(this.dataset.product))"
@@ -198,10 +198,10 @@
         {% endif %}
       </div>
 
-      <!-- SAĞ: Sidebar Widget'ları -->
+      <!-- RIGHT: sidebar widgets -->
       <div class="lg:col-span-4 space-y-8">
         
-        <!-- Widget 1: Mağaza İçi Arama -->
+        <!-- Widget 1: in-store search -->
         <div class="bg-realm-bg border border-realm-border p-6 rounded-sm space-y-4">
           <h4 class="text-sm font-medieval font-bold text-slate-100 uppercase tracking-widest border-b border-realm-border pb-3">
             MAĞAZADA ARA
@@ -216,7 +216,7 @@
           </div>
         </div>
 
-        <!-- Widget 2: Fiyat Filtresi -->
+        <!-- Widget 2: price filter -->
         <div class="bg-realm-bg border border-realm-border p-6 rounded-sm space-y-4">
           <h4 class="text-sm font-medieval font-bold text-slate-100 uppercase tracking-widest border-b border-realm-border pb-3">
             FİYAT FİLTRESİ
@@ -231,7 +231,7 @@
           </div>
         </div>
 
-        <!-- Widget 3: Popüler Paketler -->
+        <!-- Widget 3: popular packages -->
         <div class="bg-realm-bg border border-realm-border p-6 rounded-sm space-y-4">
           <h4 class="text-sm font-medieval font-bold text-slate-100 uppercase tracking-widest border-b border-realm-border pb-3">
             EN POPÜLER PAKETLER
